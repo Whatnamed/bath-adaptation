@@ -1,0 +1,277 @@
+/* ============================================
+   安浴到家 · 组件样式系统
+   ============================================ */
+
+/* ── 按钮 ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 48px;
+  padding: 0 24px;
+  border-radius: var(--radius-lg);
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-medium);
+  line-height: 1;
+  transition: all var(--duration-fast) var(--ease-out);
+  white-space: nowrap;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+.btn-primary:hover {
+  background: var(--accent-hover);
+}
+
+.btn-secondary {
+  background: var(--accent-soft);
+  color: var(--accent-deep);
+}
+
+.btn-secondary:hover {
+  background: #DFF0DA;
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.btn-ghost:hover {
+  background: var(--surface-warm);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+.btn-lg {
+  height: 52px;
+  font-size: var(--text-body);
+  border-radius: var(--radius-xl);
+}
+
+.btn-sm {
+  height: 36px;
+  padding: 0 16px;
+  font-size: var(--text-label);
+  border-radius: var(--radius-md);
+}
+
+/* ── 卡片 ── */
+.card {
+  background: var(--surface-card);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-card);
+}
+
+.card-soft {
+  background: var(--surface-soft);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+}
+
+.card-warm {
+  background: var(--surface-warm);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+}
+
+.card-accent {
+  background: var(--accent-soft);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+}
+
+/* ── 标签 / Chip ── */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  height: 28px;
+  padding: 0 12px;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-medium);
+  white-space: nowrap;
+}
+
+.chip-accent {
+  background: var(--accent-soft);
+  color: var(--accent-deep);
+}
+
+.chip-warning {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.chip-danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+
+.chip-info {
+  background: var(--info-soft);
+  color: var(--info);
+}
+
+.chip-success {
+  background: var(--success-soft);
+  color: var(--success);
+}
+
+/* ── 列表行 ── */
+.list-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) 0;
+  min-height: 56px;
+}
+
+.list-row-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+}
+
+.list-row-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.list-row-accessory {
+  flex-shrink: 0;
+  color: var(--text-tertiary);
+}
+
+/* ── 头像 ── */
+.avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: var(--accent-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatar-sm {
+  width: 32px;
+  height: 32px;
+}
+
+.avatar-lg {
+  width: 56px;
+  height: 56px;
+}
+
+/* ── 区块标题 ── */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.section-title {
+  font-size: var(--text-section);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.section-action {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: var(--text-caption);
+  color: var(--text-tertiary);
+}
+
+/* ── 分割线 ── */
+.divider {
+  height: 1px;
+  background: var(--divider);
+  margin: var(--space-3) 0;
+}
+
+/* ── 图标容器 ── */
+.icon-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.icon-circle-sm {
+  width: 32px;
+  height: 32px;
+}
+
+.icon-circle-md {
+  width: 40px;
+  height: 40px;
+}
+
+.icon-circle-lg {
+  width: 48px;
+  height: 48px;
+}
+
+/* ── 数据高亮 ── */
+.highlight-number {
+  font-size: var(--text-title);
+  font-weight: var(--weight-bold);
+  color: var(--accent);
+  line-height: 1;
+}
+
+/* ── 间距辅助 ── */
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-5 { gap: var(--space-5); }
+
+.mb-1 { margin-bottom: var(--space-1); }
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-3 { margin-bottom: var(--space-3); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-5 { margin-bottom: var(--space-5); }
+.mb-6 { margin-bottom: var(--space-6); }
+
+.mt-2 { margin-top: var(--space-2); }
+.mt-3 { margin-top: var(--space-3); }
+.mt-4 { margin-top: var(--space-4); }
+
+/* ── Flex 辅助 ── */
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.flex-center { align-items: center; justify-content: center; }
+.flex-between { justify-content: space-between; }
+.items-center { align-items: center; }
+.flex-1 { flex: 1; }

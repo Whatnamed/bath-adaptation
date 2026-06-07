@@ -1,0 +1,110 @@
+/* ============================================
+   安浴到家 · 设计 Token
+   基于参考图视觉提取 — 纯绿+灰双色调
+   ============================================ */
+
+:root {
+  /* ── 表面色 ── */
+  --surface-page: #FFFFFF;
+  --surface-card: #FFFFFF;
+  --surface-soft: #F4F7F2;
+  --surface-warm: #F6F6F4;
+  --surface-elevated: #FFFFFF;
+  --surface-muted: #F8F8F6;
+
+  /* ── 文字色 ── */
+  --text-primary: #1A1D1A;
+  --text-secondary: #6B6F6B;
+  --text-tertiary: #A3A7A3;
+  --text-inverse: #FFFFFF;
+  --text-accent: #4A7C59;
+
+  /* ── 主题色（鼠尾草绿，统一全局） ── */
+  --accent: #5B8C5A;
+  --accent-hover: #4E7A4E;
+  --accent-soft: #EDF3EC;
+  --accent-softer: #F4F7F2;
+  --accent-deep: #3D6B3D;
+  --accent-muted: #A8C5A7;
+  --accent-light: #D5E5D4;
+
+  /* ── 状态色（统一用绿色色调，保持克制） ── */
+  --success: #5B8C5A;
+  --success-soft: #EDF3EC;
+  --warning: #5B8C5A;
+  --warning-soft: #EDF3EC;
+  --danger: #5B8C5A;
+  --danger-soft: #EDF3EC;
+  --info: #5B8C5A;
+  --info-soft: #EDF3EC;
+
+  /* ── 边框 & 分割 ── */
+  --border: #E8EAE8;
+  --border-light: #F0F1F0;
+  --divider: #EEEFEE;
+
+  /* ── 阴影（极度轻柔） ── */
+  --shadow-card: 0 1px 3px rgba(0, 0, 0, 0.03), 0 0.5px 1px rgba(0, 0, 0, 0.02);
+  --shadow-elevated: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  --shadow-float: 0 4px 16px rgba(0, 0, 0, 0.06), 0 1px 4px rgba(0, 0, 0, 0.03);
+  --shadow-phone: 0 20px 60px rgba(0, 0, 0, 0.12), 0 4px 20px rgba(0, 0, 0, 0.06);
+
+  /* ── 字体 ── */
+  --font-family: -apple-system, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "Noto Sans SC", "Helvetica Neue", sans-serif;
+  --font-mono: "SF Mono", "Menlo", "Consolas", monospace;
+
+  /* ── 字体大小 ── */
+  --text-display: 30px;
+  --text-title: 24px;
+  --text-section: 20px;
+  --text-body: 17px;
+  --text-body-sm: 15px;
+  --text-label: 14px;
+  --text-caption: 13px;
+  --text-micro: 11px;
+
+  /* ── 字体字重 ── */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* ── 行高 ── */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.65;
+
+  /* ── 间距 ── */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-page: 20px;
+
+  /* ── 圆角 ── */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-2xl: 24px;
+  --radius-pill: 999px;
+
+  /* ── 过渡 ── */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+
+  /* ── 手机壳尺寸 ── */
+  --phone-width: 430px;
+  --phone-height: 932px;
+  --statusbar-height: 54px;
+  --bottomnav-height: 84px;
+  --header-height: 56px;
+}
