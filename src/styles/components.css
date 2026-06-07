@@ -80,12 +80,14 @@
   background: var(--surface-soft);
   border-radius: var(--radius-xl);
   padding: var(--space-5);
+  box-shadow: var(--shadow-card);
 }
 
 .card-warm {
   background: var(--surface-warm);
   border-radius: var(--radius-xl);
   padding: var(--space-5);
+  box-shadow: var(--shadow-card);
 }
 
 .card-accent {

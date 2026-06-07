@@ -56,6 +56,7 @@ export default function ProgressPage() {
             <span className="section-title">进度时间线</span>
           </div>
 
+          <div className="card">
           <div className="timeline">
             {serviceTimeline.map((item, i) => {
               /* 节点样式 */
@@ -93,6 +94,7 @@ export default function ProgressPage() {
                 </div>
               )
             })}
+          </div>
           </div>
         </div>
 

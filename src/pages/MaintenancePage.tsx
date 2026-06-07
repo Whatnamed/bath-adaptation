@@ -126,6 +126,7 @@ export default function MaintenancePage() {
             <span className="section-title">即将到来的维护</span>
           </div>
 
+          <div className="card" style={{ padding: 'var(--space-3) var(--space-5)' }}>
           {reminders.map((item, i) => (
             <div className="reminder-item" key={i}>
               {/* 图标 */}
@@ -146,6 +147,7 @@ export default function MaintenancePage() {
               <ChevronRight size={18} style={{ color: 'var(--text-tertiary)' }} />
             </div>
           ))}
+          </div>
         </div>
 
         {/* ── 报修入口 ── */}

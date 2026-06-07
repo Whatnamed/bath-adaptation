@@ -29,6 +29,7 @@ export default function PlanConfirmPage() {
           <div className="section-header">
             <span className="section-title">已选改造项目</span>
           </div>
+          <div className="card">
           {planItems.map((item) => (
             <div
               className="list-row"
@@ -71,6 +72,7 @@ export default function PlanConfirmPage() {
               </div>
             </div>
           ))}
+          </div>
         </div>
 
         {/* ── 费用明细 ── */}

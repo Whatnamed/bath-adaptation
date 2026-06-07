@@ -188,7 +188,7 @@ export default function HomePage() {
             </button>
           </div>
 
-          <div className="card" style={{ padding: '0 var(--space-5)' }}>
+          <div className="card" style={{ padding: 'var(--space-3) var(--space-5)' }}>
             {reminders.map((item) => (
               <div className="reminder-item" key={item.id}>
                 <div

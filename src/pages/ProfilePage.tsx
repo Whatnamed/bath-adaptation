@@ -87,7 +87,7 @@ export default function ProfilePage() {
 
   /* 渲染菜单组 */
   const renderMenuGroup = (items: typeof familyMenu) => (
-    <div>
+    <div className="menu-group">
       {items.map((item) => (
         <div className="menu-item" key={item.label}>
           <div

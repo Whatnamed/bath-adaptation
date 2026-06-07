@@ -2,8 +2,6 @@ import { useNavigate } from 'react-router-dom'
 import {
   ChevronLeft,
   AlertTriangle,
-  Droplets,
-  Hand,
   Lightbulb,
   PhoneCall,
   ChevronRight,
@@ -13,13 +11,6 @@ import { riskFindings, planItems } from '../data/mock'
 /* 导入图片资源 */
 import antislipImg from '../assets/images/antislip.png'
 import handrailImg from '../assets/images/handrail.png'
-
-/* ── 风险图标映射 ── */
-const riskIcons: Record<string, React.ReactNode> = {
-  '地面湿滑': <Droplets size={18} />,
-  '起身借力不足': <Hand size={18} />,
-  '夜间照明不足': <Lightbulb size={18} />,
-}
 
 /* ── 推荐方案页 ── */
 export default function PlanPage() {

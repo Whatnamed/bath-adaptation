@@ -4,7 +4,6 @@ import {
   Home,
   ClipboardList,
   User,
-  ChevronRight,
   Package,
   Clock,
 } from 'lucide-react'
