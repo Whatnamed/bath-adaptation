@@ -20,17 +20,25 @@ import {
   Wrench,
   Sparkles,
 } from 'lucide-react'
-import { familyInfo, reminders, stageSteps, stageCards } from '../data/mock'
+import { reminders, stageSteps, stageCards } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
 
 /* ── 首页 ── */
 export default function HomePage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { stage } = useAppStage()
+  const { stage, familyDetails } = useAppStage()
 
-  /* 当前阶段的配置数据 */
-  const card = stageCards[stage]
+  /* 当前阶段的配置数据 - 动态将 '张奶奶' 替换为用户填写的真实姓名 */
+  const rawCard = stageCards[stage]
+  const card = rawCard
+    ? {
+        ...rawCard,
+        title: rawCard.title.replace('张奶奶', familyDetails.elderName),
+        desc: rawCard.desc.replace('张奶奶', familyDetails.elderName),
+      }
+    : null
+
   const steps = stageSteps[stage]
 
   /* 是否显示家庭选择器 */
@@ -117,7 +125,7 @@ export default function HomePage() {
       <div className="page-content">
         {/* ── 家庭选择器（未绑定时不显示） ── */}
         {showFamilySelector && (
-          <div className="family-selector page-section">
+          <div className="family-selector page-section" onClick={() => navigate('/bind')}>
             <div
               className="avatar"
               style={{ background: 'var(--accent-soft)' }}
@@ -126,7 +134,7 @@ export default function HomePage() {
             </div>
             <div className="family-selector-info">
               <span className="family-selector-name">
-                {familyInfo.elderName}家 · {familyInfo.village}
+                {familyDetails.elderName}家 · {familyDetails.villageCommunity}
               </span>
             </div>
             <ChevronDown size={18} color="var(--text-tertiary)" />
@@ -275,7 +283,7 @@ export default function HomePage() {
               {[
                 { icon: <ShieldCheck size={20} color="var(--accent)" />, title: '安全评估', desc: '专业人员上门或自行拍照，全面评估卫浴安全隐患' },
                 { icon: <Wrench size={20} color="var(--accent)" />, title: '适老改造', desc: '防滑、扶手、恒温花洒等适老化产品安装' },
-                { icon: <CalendarClock size={20} color="var(--accent)" />, title: '长期维护', desc: '设备定期检查和维护，确保持续安全' },
+                { icon: <CalendarClock size={20} color="var(--accent)" />, title: '长期维护', desc: '设备定期检查 and 维护，确保持续安全' },
               ].map((item) => (
                 <div
                   key={item.title}

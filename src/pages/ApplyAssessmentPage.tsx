@@ -34,9 +34,9 @@ const ApplyAssessmentPage: React.FC = () => {
   }
 
   return (
-    <div className="page-container">
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       {/* ---- 顶栏 ---- */}
-      <header className="page-header">
+      <header className="page-header" style={{ flexShrink: 0 }}>
         <button className="page-header-back" onClick={() => navigate(-1)}>
           <ChevronLeft size={24} />
         </button>
@@ -44,9 +44,9 @@ const ApplyAssessmentPage: React.FC = () => {
       </header>
 
       {/* ---- 可滚动主体 ---- */}
-      <div className="subpage-content">
+      <div className="subpage-content" style={{ flex: 1, overflowY: 'auto', paddingBottom: 'var(--space-4)' }}>
         {/* 评估说明卡片 */}
-        <div className="card" style={{ padding: 'var(--space-4)' }}>
+        <div className="card" style={{ padding: 'var(--space-4)', marginTop: 'var(--space-4)' }}>
           {/* 标题行 */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-3)' }}>
             <ClipboardCheck size={24} style={{ color: 'var(--accent)', flexShrink: 0 }} />
@@ -154,7 +154,7 @@ const ApplyAssessmentPage: React.FC = () => {
       </div>
 
       {/* ---- 固定底部 ---- */}
-      <div className="fixed-bottom">
+      <div className="fixed-bottom" style={{ flexShrink: 0, position: 'relative', background: 'var(--surface-page)', borderTop: '1px solid var(--border-light)', zIndex: 10, padding: 'var(--space-4) var(--space-page)' }}>
         <button
           className="btn btn-primary btn-block btn-lg"
           onClick={handleSubmit}

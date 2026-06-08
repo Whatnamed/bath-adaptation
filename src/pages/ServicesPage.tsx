@@ -16,7 +16,7 @@ import { useAppStage } from '../context/AppStageContext'
 export default function ServicesPage() {
   const navigate = useNavigate()
   const location = useLocation()
-  const { stage } = useAppStage()
+  const { stage, familyDetails } = useAppStage()
   const [activeTab, setActiveTab] = useState<'current' | 'history'>('current')
 
   /* 判断是否有活跃服务（只有进入评估流程之后才有） */
@@ -64,7 +64,7 @@ export default function ServicesPage() {
       {/* ── 页面内容 ── */}
       <div className="page-content">
         {/* 页面标题 */}
-        <div style={{ padding: '4px 0 16px' }}>
+        <div style={{ padding: '4px 0 16px', marginTop: 'var(--space-4)' }}>
           <h1
             style={{
               fontSize: 'var(--text-title)',
@@ -196,7 +196,9 @@ export default function ServicesPage() {
                       </div>
 
                       {/* 标题 */}
-                      <div className="service-card-title">{service.title}</div>
+                      <div className="service-card-title">
+                        {service.title.replace('张奶奶', familyDetails.elderName)}
+                      </div>
 
                       {/* 改造项标签 */}
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>

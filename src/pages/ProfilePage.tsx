@@ -12,12 +12,24 @@ import {
   Info,
   ChevronRight,
 } from 'lucide-react'
-import { currentUser, familyInfo, stationInfo } from '../data/mock'
+import { stationInfo } from '../data/mock'
+import { useAppStage } from '../context/AppStageContext'
 
 /* ── 我的页面 ── */
 export default function ProfilePage() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { familyDetails } = useAppStage()
+
+  /* 手机号脱敏显示 */
+  const formatMaskedPhone = (p: string) => {
+    if (p && p.length >= 7) {
+      return p.substring(0, 3) + '****' + p.substring(p.length - 4)
+    }
+    return p || '未填写'
+  }
+
+  const fullAddress = `${familyDetails.provinceCityDistrict} ${familyDetails.townStreet} ${familyDetails.villageCommunity} ${familyDetails.houseNumber}`
 
   /* 菜单项数据 */
   const familyMenu = [
@@ -26,14 +38,14 @@ export default function ProfilePage() {
       iconBg: 'var(--accent-soft)',
       iconColor: 'var(--accent)',
       label: '老人信息',
-      desc: `${familyInfo.elderName} · ${familyInfo.elderAge}岁`,
+      desc: `${familyDetails.elderName} · ${familyDetails.elderAge}岁`,
     },
     {
       icon: <Home size={20} />,
       iconBg: 'var(--accent-soft)',
       iconColor: 'var(--accent)',
       label: '房屋信息',
-      desc: familyInfo.address,
+      desc: fullAddress,
     },
     {
       icon: <Users size={20} />,
@@ -111,7 +123,7 @@ export default function ProfilePage() {
       {/* ── 页面内容 ── */}
       <div className="page-content">
         {/* 用户卡片 */}
-        <div className="profile-header page-section">
+        <div className="profile-header page-section" style={{ marginTop: 'var(--space-4)' }}>
           <div
             className="avatar avatar-lg"
             style={{ background: 'var(--accent-soft)' }}
@@ -119,9 +131,9 @@ export default function ProfilePage() {
             <User size={32} color="#fff" />
           </div>
           <div>
-            <div className="profile-name">{currentUser.name}</div>
-            <div className="profile-phone">{currentUser.phone}</div>
-            <span className="chip chip-accent">{currentUser.relation}</span>
+            <div className="profile-name">张建国</div>
+            <div className="profile-phone">{formatMaskedPhone(familyDetails.phone)}</div>
+            <span className="chip chip-accent">{familyDetails.relationship}</span>
           </div>
         </div>
 

@@ -56,17 +56,17 @@ export default function PlanPage() {
   }
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       {/* ── 页面头部 ── */}
-      <div className="page-header">
-        <button className="page-header-back" onClick={() => navigate(-1)}>
+      <div className="page-header" style={{ flexShrink: 0 }}>
+        <button className="page-header-back" onClick={() => navigate('/')}>
           <ChevronLeft size={22} />
         </button>
         <span className="page-header-title">推荐方案</span>
       </div>
 
       {/* ── 可滚动内容区域 ── */}
-      <div className="subpage-content" style={{ paddingBottom: '100px' }}>
+      <div className="subpage-content" style={{ flex: 1, overflowY: 'auto', paddingBottom: 'var(--space-4)' }}>
         {/* ── 说明文字 ── */}
         <p
           className="page-section"
@@ -76,6 +76,7 @@ export default function PlanPage() {
             lineHeight: 'var(--leading-relaxed)',
             margin: 0,
             marginBottom: 'var(--space-6)',
+            marginTop: 'var(--space-4)',
           }}
         >
           根据评估结果，建议优先处理以下项目
@@ -167,7 +168,7 @@ export default function PlanPage() {
       </div>
 
       {/* ── 固定底部 CTA ── */}
-      <div className="fixed-bottom">
+      <div className="fixed-bottom" style={{ flexShrink: 0, position: 'relative', background: 'var(--surface-page)', borderTop: '1px solid var(--border-light)', zIndex: 10, padding: 'var(--space-4) var(--space-page)' }}>
         <button
           className="btn btn-primary btn-block btn-lg"
           onClick={() => navigate('/products')}
@@ -180,7 +181,7 @@ export default function PlanPage() {
             background: 'none',
             border: 'none',
             width: '100%',
-            padding: 'var(--space-3) 0',
+            padding: 'var(--space-3) 0 0',
             fontSize: 'var(--text-caption)',
             color: 'var(--text-tertiary)',
             cursor: 'pointer',
@@ -190,6 +191,6 @@ export default function PlanPage() {
           跳过，由服务站推荐方案
         </button>
       </div>
-    </>
+    </div>
   )
 }

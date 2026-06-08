@@ -15,9 +15,9 @@ export default function PlanConfirmPage() {
   const { setStage } = useAppStage()
 
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       {/* ── 页面头部 ── */}
-      <div className="page-header">
+      <div className="page-header" style={{ flexShrink: 0 }}>
         <button className="page-header-back" onClick={() => navigate(-1)}>
           <ChevronLeft size={22} />
         </button>
@@ -25,55 +25,55 @@ export default function PlanConfirmPage() {
       </div>
 
       {/* ── 可滚动内容区域 ── */}
-      <div className="subpage-content" style={{ paddingBottom: '100px' }}>
+      <div className="subpage-content" style={{ flex: 1, overflowY: 'auto', paddingBottom: 'var(--space-4)' }}>
         {/* ── 已选项目摘要 ── */}
-        <div className="page-section">
+        <div className="page-section" style={{ marginTop: 'var(--space-4)' }}>
           <div className="section-header">
             <span className="section-title">已选改造项目</span>
           </div>
           <div className="card">
-          {planItems.map((item) => (
-            <div
-              className="list-row"
-              key={item.id}
-              style={{ minHeight: 44 }}
-            >
-              {/* 左侧绿色对勾 */}
+            {planItems.map((item) => (
               <div
-                className="icon-circle icon-circle-sm"
-                style={{
-                  background: 'var(--accent-soft)',
-                  color: 'var(--accent)',
-                }}
+                className="list-row"
+                key={item.id}
+                style={{ minHeight: 44 }}
               >
-                <Check size={16} />
-              </div>
-              {/* 项目名 */}
-              <div className="list-row-content">
-                <span
+                {/* 左侧绿色对勾 */}
+                <div
+                  className="icon-circle icon-circle-sm"
                   style={{
-                    fontSize: 'var(--text-body-sm)',
-                    fontWeight: 'var(--weight-medium)',
-                    color: 'var(--text-primary)',
+                    background: 'var(--accent-soft)',
+                    color: 'var(--accent)',
                   }}
                 >
-                  {item.name}
-                </span>
+                  <Check size={16} />
+                </div>
+                {/* 项目名 */}
+                <div className="list-row-content">
+                  <span
+                    style={{
+                      fontSize: 'var(--text-body-sm)',
+                      fontWeight: 'var(--weight-medium)',
+                      color: 'var(--text-primary)',
+                    }}
+                  >
+                    {item.name}
+                  </span>
+                </div>
+                {/* 价格 */}
+                <div className="list-row-accessory">
+                  <span
+                    style={{
+                      fontSize: 'var(--text-body-sm)',
+                      fontWeight: 'var(--weight-medium)',
+                      color: 'var(--text-primary)',
+                    }}
+                  >
+                    ¥{item.price}
+                  </span>
+                </div>
               </div>
-              {/* 价格 */}
-              <div className="list-row-accessory">
-                <span
-                  style={{
-                    fontSize: 'var(--text-body-sm)',
-                    fontWeight: 'var(--weight-medium)',
-                    color: 'var(--text-primary)',
-                  }}
-                >
-                  ¥{item.price}
-                </span>
-              </div>
-            </div>
-          ))}
+            ))}
           </div>
         </div>
 
@@ -230,7 +230,7 @@ export default function PlanConfirmPage() {
       </div>
 
       {/* ── 固定底部 CTA ── */}
-      <div className="fixed-bottom">
+      <div className="fixed-bottom" style={{ flexShrink: 0, position: 'relative', background: 'var(--surface-page)', borderTop: '1px solid var(--border-light)', zIndex: 10, padding: 'var(--space-4) var(--space-page)' }}>
         <button
           className="btn btn-primary btn-block btn-lg"
           onClick={() => {
@@ -241,6 +241,6 @@ export default function PlanConfirmPage() {
           确认方案并预约安装
         </button>
       </div>
-    </>
+    </div>
   )
 }

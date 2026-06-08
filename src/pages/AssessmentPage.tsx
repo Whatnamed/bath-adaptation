@@ -10,10 +10,12 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { assessmentResult, riskFindings } from '../data/mock'
+import { useAppStage } from '../context/AppStageContext'
 
 /* ── 入户评估结果页 ── */
 export default function AssessmentPage() {
   const navigate = useNavigate()
+  const { familyDetails } = useAppStage()
 
   /* 照片占位区域配置 */
   const photos = [
@@ -22,10 +24,12 @@ export default function AssessmentPage() {
     { bg: 'var(--surface-muted)', desc: '走廊夜间照明' },
   ]
 
+  const fullAddress = `${familyDetails.provinceCityDistrict} ${familyDetails.townStreet} ${familyDetails.villageCommunity} ${familyDetails.houseNumber}`
+
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       {/* ── 页面头部 ── */}
-      <div className="page-header">
+      <div className="page-header" style={{ flexShrink: 0 }}>
         <button className="page-header-back" onClick={() => navigate(-1)}>
           <ChevronLeft size={20} />
         </button>
@@ -33,9 +37,9 @@ export default function AssessmentPage() {
       </div>
 
       {/* ── 可滚动内容区域 ── */}
-      <div className="subpage-content" style={{ paddingBottom: '100px' }}>
+      <div className="subpage-content" style={{ flex: 1, overflowY: 'auto', paddingBottom: 'var(--space-4)' }}>
         {/* ── 评估概要卡片 ── */}
-        <div className="card page-section">
+        <div className="card page-section" style={{ marginTop: 'var(--space-4)' }}>
           {/* 评估信息 */}
           <div className="flex items-center gap-2" style={{ marginBottom: 'var(--space-2)' }}>
             <Calendar size={16} style={{ color: 'var(--text-tertiary)' }} />
@@ -67,7 +71,7 @@ export default function AssessmentPage() {
                 color: 'var(--text-secondary)',
               }}
             >
-              地点：{assessmentResult.location}
+              地点：{fullAddress}
             </span>
           </div>
 
@@ -83,7 +87,7 @@ export default function AssessmentPage() {
               margin: 0,
             }}
           >
-            {assessmentResult.summary}
+            {assessmentResult.summary.replace('桂林村 142 号', familyDetails.villageCommunity + ' ' + familyDetails.houseNumber)}
           </p>
         </div>
 
@@ -148,7 +152,7 @@ export default function AssessmentPage() {
               gap: 'var(--space-3)',
             }}
           >
-            {/* 用户已上传的照片（示例占位） */}
+            {/* 用户已上传的照片 */}
             <div
               style={{
                 width: '100px',
@@ -156,19 +160,19 @@ export default function AssessmentPage() {
                 borderRadius: 'var(--radius-md)',
                 background: 'var(--accent-soft)',
                 display: 'flex',
+                flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
+                gap: '4px',
                 flexShrink: 0,
-                position: 'relative',
               }}
             >
-              <Camera size={24} style={{ color: 'var(--accent)', opacity: 0.6 }} />
+              <Camera size={24} style={{ color: 'var(--accent)', opacity: 0.8 }} />
               <span
                 style={{
-                  position: 'absolute',
-                  bottom: 4,
                   fontSize: 'var(--text-micro)',
                   color: 'var(--accent)',
+                  fontWeight: 'var(--weight-medium)',
                 }}
               >
                 浴室全景
@@ -251,7 +255,7 @@ export default function AssessmentPage() {
       </div>
 
       {/* ── 底部 CTA ── */}
-      <div className="fixed-bottom">
+      <div className="fixed-bottom" style={{ flexShrink: 0, position: 'relative', background: 'var(--surface-page)', borderTop: '1px solid var(--border-light)', zIndex: 10, padding: 'var(--space-4) var(--space-page)' }}>
         <button
           className="btn btn-primary btn-block btn-lg"
           onClick={() => navigate('/plan')}
@@ -260,6 +264,6 @@ export default function AssessmentPage() {
           <ChevronRight size={18} />
         </button>
       </div>
-    </>
+    </div>
   )
 }

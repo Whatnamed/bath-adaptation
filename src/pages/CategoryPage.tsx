@@ -7,7 +7,8 @@ import {
   Sparkles,
   Lightbulb,
 } from 'lucide-react'
-import { productCategories, familyInfo } from '../data/mock'
+import { productCategories, productOptions } from '../data/mock'
+import { useAppStage } from '../context/AppStageContext'
 
 /* ── 图标映射：根据类别 icon 字段选择对应的 lucide 图标 ── */
 const iconMap: Record<string, React.ReactNode> = {
@@ -19,26 +20,34 @@ const iconMap: Record<string, React.ReactNode> = {
 /* ── 改造类别选择页 ── */
 export default function CategoryPage() {
   const navigate = useNavigate()
+  const { selectedProducts, familyDetails } = useAppStage()
 
   /* 点击卡片跳转到对应类别的产品页 */
   const handleCategoryClick = (id: string) => {
     navigate(`/products/${id}`)
   }
 
+  /* 统计总共选了几个产品 */
+  const totalSelectedCount = Object.values(selectedProducts).reduce(
+    (acc, list) => acc + list.length,
+    0
+  )
+
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       {/* ── 页面头部 ── */}
-      <div className="page-header">
-        <button className="page-header-back" onClick={() => navigate(-1)}>
+      <div className="page-header" style={{ flexShrink: 0 }}>
+        {/* 返回到方案推荐页面而非历史上一页 */}
+        <button className="page-header-back" onClick={() => navigate('/plan')}>
           <ChevronLeft size={20} />
         </button>
         <span className="page-header-title">选择改造类别</span>
       </div>
 
       {/* ── 可滚动内容区域 ── */}
-      <div className="subpage-content">
+      <div className="subpage-content" style={{ flex: 1, overflowY: 'auto', paddingBottom: 'var(--space-4)' }}>
         {/* ── 顶部说明 ── */}
-        <div className="page-section">
+        <div className="page-section" style={{ marginTop: 'var(--space-4)' }}>
           <div
             style={{
               fontSize: 'var(--text-section)',
@@ -47,7 +56,7 @@ export default function CategoryPage() {
               marginBottom: 'var(--space-1)',
             }}
           >
-            为{familyInfo.elderName}家选择改造项目
+            为{familyDetails.elderName || '老人'}家选择改造项目
           </div>
           <div
             style={{
@@ -61,74 +70,106 @@ export default function CategoryPage() {
 
         {/* ── 三张类别卡片 ── */}
         <div className="page-section">
-          {productCategories.map((cat) => (
-            <div
-              key={cat.id}
-              className="card"
-              onClick={() => handleCategoryClick(cat.id)}
-              style={{
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--space-4)',
-                marginBottom: 'var(--space-3)',
-              }}
-            >
-              {/* 圆形图标容器 */}
+          {productCategories.map((cat) => {
+            const selectedIds = selectedProducts[cat.id] || []
+            const options = productOptions[cat.id] || []
+            const selectedItems = options.filter((item) => selectedIds.includes(item.id))
+            const hasSelected = selectedItems.length > 0
+
+            return (
               <div
+                key={cat.id}
+                className="card"
+                onClick={() => handleCategoryClick(cat.id)}
                 style={{
-                  width: 64,
-                  height: 64,
-                  minWidth: 64,
-                  borderRadius: '50%',
-                  background: 'var(--accent-soft)',
-                  color: 'var(--accent)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
                   display: 'flex',
                   alignItems: 'center',
-                  justifyContent: 'center',
+                  gap: 'var(--space-4)',
+                  marginBottom: 'var(--space-3)',
+                  border: hasSelected ? '1px solid var(--accent)' : '1px solid transparent',
+                  background: hasSelected ? 'var(--accent-soft)' : 'var(--surface-card)',
                 }}
               >
-                {iconMap[cat.icon]}
-              </div>
-
-              {/* 右侧文字区 */}
-              <div style={{ flex: 1, minWidth: 0 }}>
+                {/* 圆形图标容器 */}
                 <div
                   style={{
-                    fontSize: 'var(--text-body)',
-                    fontWeight: 'var(--weight-semibold)',
-                    color: 'var(--text-primary)',
-                    marginBottom: 'var(--space-1)',
-                  }}
-                >
-                  {cat.name}
-                </div>
-                <div
-                  style={{
-                    fontSize: 'var(--text-caption)',
-                    color: 'var(--text-secondary)',
-                    marginBottom: 'var(--space-2)',
-                  }}
-                >
-                  {cat.desc}
-                </div>
-                <div
-                  style={{
+                    width: 64,
+                    height: 64,
+                    minWidth: 64,
+                    borderRadius: '50%',
+                    background: hasSelected ? 'var(--surface-card)' : 'var(--accent-soft)',
+                    color: 'var(--accent)',
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
+                    justifyContent: 'center',
                   }}
                 >
-                  <span className="chip chip-accent">{cat.count} 个产品可选</span>
-                  <ChevronRight
-                    size={18}
-                    style={{ color: 'var(--text-tertiary)' }}
-                  />
+                  {iconMap[cat.icon]}
+                </div>
+
+                {/* 右侧文字区 */}
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div
+                    style={{
+                      fontSize: 'var(--text-body)',
+                      fontWeight: 'var(--weight-semibold)',
+                      color: 'var(--text-primary)',
+                      marginBottom: 'var(--space-1)',
+                    }}
+                  >
+                    {cat.name}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 'var(--text-caption)',
+                      color: 'var(--text-secondary)',
+                      marginBottom: 'var(--space-2)',
+                    }}
+                  >
+                    {cat.desc}
+                  </div>
+
+                  {/* 动态显示已选的产品列表 */}
+                  {hasSelected ? (
+                    <div
+                      style={{
+                        background: 'rgba(110, 158, 107, 0.15)',
+                        padding: '6px 10px',
+                        borderRadius: '6px',
+                        fontSize: 'var(--text-caption)',
+                        color: 'var(--accent-deep)',
+                        fontWeight: 'var(--weight-medium)',
+                        marginBottom: 'var(--space-2)',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                      }}
+                    >
+                      已选：{selectedItems.map((item) => item.name).join('、')}
+                    </div>
+                  ) : null}
+
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}
+                  >
+                    <span className={`chip ${hasSelected ? 'chip-success' : 'chip-accent'}`}>
+                      {hasSelected ? `已选 ${selectedItems.length} 款` : `${cat.count} 个产品可选`}
+                    </span>
+                    <ChevronRight
+                      size={18}
+                      style={{ color: 'var(--text-tertiary)' }}
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         {/* ── 底部提示 ── */}
@@ -163,6 +204,16 @@ export default function CategoryPage() {
           </div>
         </div>
       </div>
-    </>
+
+      {/* ── 固定底部操作栏 ── */}
+      <div className="fixed-bottom" style={{ flexShrink: 0, position: 'relative', background: 'var(--surface-page)', borderTop: '1px solid var(--border-light)', zIndex: 10, padding: 'var(--space-4) var(--space-page)' }}>
+        <button
+          className="btn btn-primary btn-block btn-lg"
+          onClick={() => navigate('/plan/confirm')}
+        >
+          {totalSelectedCount > 0 ? `确认已选并进入下一步` : '下一步'}
+        </button>
+      </div>
+    </div>
   )
 }

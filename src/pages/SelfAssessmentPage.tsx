@@ -51,7 +51,7 @@ const SelfAssessmentPage: React.FC = () => {
   const handleUpload = (areaId: string) => {
     if (uploaded.has(areaId)) return // 已上传则忽略
 
-    // 首次上传时切换阶段
+    // 首次上传时切换阶段到 self_assessing
     if (stage !== 'self_assessing') {
       setStage('self_assessing')
     }
@@ -70,9 +70,9 @@ const SelfAssessmentPage: React.FC = () => {
   }
 
   return (
-    <div className="page-container">
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       {/* ---- 顶栏 ---- */}
-      <header className="page-header">
+      <header className="page-header" style={{ flexShrink: 0 }}>
         <button className="page-header-back" onClick={() => navigate(-1)}>
           <ChevronLeft size={24} />
         </button>
@@ -80,9 +80,9 @@ const SelfAssessmentPage: React.FC = () => {
       </header>
 
       {/* ---- 可滚动主体 ---- */}
-      <div className="subpage-content">
+      <div className="subpage-content" style={{ flex: 1, overflowY: 'auto', paddingBottom: 'var(--space-4)' }}>
         {/* 顶部引导说明 */}
-        <div style={{ marginBottom: 'var(--space-4)' }}>
+        <div style={{ marginBottom: 'var(--space-4)', marginTop: 'var(--space-4)' }}>
           <h2 style={{
             fontSize: 'var(--text-body)',
             fontWeight: 'var(--weight-semibold)',
@@ -204,7 +204,7 @@ const SelfAssessmentPage: React.FC = () => {
       </div>
 
       {/* ---- 固定底部 ---- */}
-      <div className="fixed-bottom">
+      <div className="fixed-bottom" style={{ flexShrink: 0, position: 'relative', background: 'var(--surface-page)', borderTop: '1px solid var(--border-light)', zIndex: 10, padding: 'var(--space-4) var(--space-page)' }}>
         <p style={{
           textAlign: 'center',
           fontSize: 'var(--text-caption)',

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useAppStage } from '../context/AppStageContext'
+import { useAppStage, type FamilyDetails } from '../context/AppStageContext'
 
 /* ── 进度指示器组件 ── */
 function StepIndicator({ current }: { current: 1 | 2 | 3 }) {
@@ -36,7 +36,7 @@ function StepIndicator({ current }: { current: 1 | 2 | 3 }) {
           >
             {s}
           </div>
-          {/* 连接线（最后一个不需要） */}
+          {/* 连接线 */}
           {i < steps.length - 1 && (
             <div
               style={{
@@ -75,24 +75,49 @@ const labelStyle: React.CSSProperties = {
   fontWeight: 'var(--weight-medium)',
 }
 
-/* ── 绑定家庭页 ── */
 export default function FamilyBindPage() {
   const navigate = useNavigate()
-  const { setStage } = useAppStage()
+  const { setStage, familyDetails, setFamilyDetails } = useAppStage()
   const [step, setStep] = useState<1 | 2 | 3>(1)
-  const [gender, setGender] = useState<'男' | '女'>('女')
+
+  /* 本地表单状态，初始用全局数据填充，防止演示时需要手动输入 */
+  const [form, setForm] = useState<FamilyDetails>({
+    ...familyDetails
+  })
+
+  const updateForm = (key: keyof FamilyDetails, val: any) => {
+    setForm((prev) => ({ ...prev, [key]: val }))
+  }
 
   /* 确认绑定 */
   const handleConfirm = () => {
+    setFamilyDetails(form)
     setStage('idle')
     navigate('/')
+  }
+
+  /* 手机号脱敏显示 */
+  const formatMaskedPhone = (p: string) => {
+    if (p.length >= 7) {
+      return p.substring(0, 3) + '****' + p.substring(p.length - 4)
+    }
+    return p
   }
 
   return (
     <>
       {/* ── 页面头部 ── */}
       <div className="page-header">
-        <button className="page-header-back" onClick={() => navigate('/')}>
+        <button
+          className="page-header-back"
+          onClick={() => {
+            if (step > 1) {
+              setStep((step - 1) as 1 | 2 | 3)
+            } else {
+              navigate('/')
+            }
+          }}
+        >
           <ChevronLeft size={20} />
         </button>
         <span className="page-header-title">绑定家庭</span>
@@ -105,252 +130,271 @@ export default function FamilyBindPage() {
           <StepIndicator current={step} />
         </div>
 
-        {/* ── 步骤 1：老人基本信息 ── */}
+        {/* ── 步骤 1：老人与您的关系信息 ── */}
         {step === 1 && (
-          <>
-            <div className="page-section">
-              <div
-                style={{
-                  fontSize: 'var(--text-section)',
-                  fontWeight: 'var(--weight-semibold)',
-                  color: 'var(--text-primary)',
-                  marginBottom: 'var(--space-4)',
-                }}
-              >
-                老人基本信息
-              </div>
+          <div className="page-section">
+            <div
+              style={{
+                fontSize: 'var(--text-section)',
+                fontWeight: 'var(--weight-semibold)',
+                color: 'var(--text-primary)',
+                marginBottom: 'var(--space-4)',
+              }}
+            >
+              老人基本信息
+            </div>
 
-              {/* 姓名 */}
-              <div style={{ marginBottom: 'var(--space-4)' }}>
-                <div style={labelStyle}>姓名</div>
-                <input
-                  type="text"
-                  placeholder="请输入老人姓名"
-                  defaultValue=""
-                  style={inputStyle}
-                  onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
-                  onBlur={(e) => (e.target.style.borderColor = 'var(--border-light)')}
-                />
-              </div>
+            {/* 姓名 */}
+            <div style={{ marginBottom: 'var(--space-4)' }}>
+              <div style={labelStyle}>姓名</div>
+              <input
+                type="text"
+                placeholder="请输入老人姓名"
+                value={form.elderName}
+                onChange={(e) => updateForm('elderName', e.target.value)}
+                style={inputStyle}
+                onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
+                onBlur={(e) => (e.target.style.borderColor = 'var(--border-light)')}
+              />
+            </div>
 
-              {/* 年龄 */}
-              <div style={{ marginBottom: 'var(--space-4)' }}>
-                <div style={labelStyle}>年龄</div>
-                <input
-                  type="number"
-                  placeholder="请输入年龄"
-                  defaultValue=""
-                  style={inputStyle}
-                  onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
-                  onBlur={(e) => (e.target.style.borderColor = 'var(--border-light)')}
-                />
-              </div>
+            {/* 年龄 */}
+            <div style={{ marginBottom: 'var(--space-4)' }}>
+              <div style={labelStyle}>年龄</div>
+              <input
+                type="number"
+                placeholder="请输入年龄"
+                value={form.elderAge || ''}
+                onChange={(e) => updateForm('elderAge', parseInt(e.target.value) || 0)}
+                style={inputStyle}
+                onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
+                onBlur={(e) => (e.target.style.borderColor = 'var(--border-light)')}
+              />
+            </div>
 
-              {/* 性别 */}
-              <div style={{ marginBottom: 'var(--space-4)' }}>
-                <div style={labelStyle}>性别</div>
-                <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
-                  {(['男', '女'] as const).map((g) => (
-                    <div
-                      key={g}
-                      onClick={() => setGender(g)}
-                      style={{
-                        flex: 1,
-                        padding: '10px 0',
-                        borderRadius: 8,
-                        border: `1.5px solid ${gender === g ? 'var(--accent)' : 'var(--border-light)'}`,
-                        background: gender === g ? 'var(--accent-soft)' : 'var(--surface)',
-                        color: gender === g ? 'var(--accent)' : 'var(--text-secondary)',
-                        fontWeight: 'var(--weight-medium)',
-                        fontSize: 'var(--text-body)',
-                        textAlign: 'center',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease',
-                      }}
-                    >
-                      {g}
-                    </div>
-                  ))}
-                </div>
+            {/* 性别 */}
+            <div style={{ marginBottom: 'var(--space-4)' }}>
+              <div style={labelStyle}>性别</div>
+              <div style={{ display: 'flex', gap: 'var(--space-3)' }}>
+                {(['男', '女'] as const).map((g) => (
+                  <div
+                    key={g}
+                    onClick={() => updateForm('gender', g)}
+                    style={{
+                      flex: 1,
+                      padding: '10px 0',
+                      borderRadius: 8,
+                      border: `1.5px solid ${form.gender === g ? 'var(--accent)' : 'var(--border-light)'}`,
+                      background: form.gender === g ? 'var(--accent-soft)' : 'var(--surface)',
+                      color: form.gender === g ? 'var(--accent)' : 'var(--text-secondary)',
+                      fontWeight: 'var(--weight-medium)',
+                      fontSize: 'var(--text-body)',
+                      textAlign: 'center',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                    }}
+                  >
+                    {g}
+                  </div>
+                ))}
               </div>
             </div>
-          </>
+
+            {/* 您的关系 */}
+            <div style={{ marginBottom: 'var(--space-4)' }}>
+              <div style={labelStyle}>您的关系</div>
+              <input
+                type="text"
+                placeholder="例如：儿子 / 女儿 / 孙子"
+                value={form.relationship}
+                onChange={(e) => updateForm('relationship', e.target.value)}
+                style={inputStyle}
+                onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
+                onBlur={(e) => (e.target.style.borderColor = 'var(--border-light)')}
+              />
+            </div>
+
+            {/* 联系电话 */}
+            <div style={{ marginBottom: 'var(--space-4)' }}>
+              <div style={labelStyle}>联系电话</div>
+              <input
+                type="tel"
+                placeholder="请输入联系电话"
+                value={form.phone}
+                onChange={(e) => updateForm('phone', e.target.value)}
+                style={inputStyle}
+                onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
+                onBlur={(e) => (e.target.style.borderColor = 'var(--border-light)')}
+              />
+            </div>
+          </div>
         )}
 
         {/* ── 步骤 2：居住地址 ── */}
         {step === 2 && (
-          <>
-            <div className="page-section">
-              <div
-                style={{
-                  fontSize: 'var(--text-section)',
-                  fontWeight: 'var(--weight-semibold)',
-                  color: 'var(--text-primary)',
-                  marginBottom: 'var(--space-4)',
-                }}
-              >
-                居住地址
-              </div>
-
-              {/* 村/社区名称 */}
-              <div style={{ marginBottom: 'var(--space-4)' }}>
-                <div style={labelStyle}>村/社区名称</div>
-                <input
-                  type="text"
-                  placeholder="请输入村或社区名称"
-                  defaultValue=""
-                  style={inputStyle}
-                  onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
-                  onBlur={(e) => (e.target.style.borderColor = 'var(--border-light)')}
-                />
-              </div>
-
-              {/* 门牌号 */}
-              <div style={{ marginBottom: 'var(--space-4)' }}>
-                <div style={labelStyle}>门牌号</div>
-                <input
-                  type="text"
-                  placeholder="请输入门牌号"
-                  defaultValue=""
-                  style={inputStyle}
-                  onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
-                  onBlur={(e) => (e.target.style.borderColor = 'var(--border-light)')}
-                />
-              </div>
+          <div className="page-section">
+            <div
+              style={{
+                fontSize: 'var(--text-section)',
+                fontWeight: 'var(--weight-semibold)',
+                color: 'var(--text-primary)',
+                marginBottom: 'var(--space-4)',
+              }}
+            >
+              居住地址信息
             </div>
-          </>
+
+            {/* 省市区 */}
+            <div style={{ marginBottom: 'var(--space-4)' }}>
+              <div style={labelStyle}>省/市/区</div>
+              <input
+                type="text"
+                placeholder="例如：浙江省 杭州市 西湖区"
+                value={form.provinceCityDistrict}
+                onChange={(e) => updateForm('provinceCityDistrict', e.target.value)}
+                style={inputStyle}
+                onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
+                onBlur={(e) => (e.target.style.borderColor = 'var(--border-light)')}
+              />
+            </div>
+
+            {/* 镇/街道 */}
+            <div style={{ marginBottom: 'var(--space-4)' }}>
+              <div style={labelStyle}>乡镇 / 街道</div>
+              <input
+                type="text"
+                placeholder="例如：留下街道"
+                value={form.townStreet}
+                onChange={(e) => updateForm('townStreet', e.target.value)}
+                style={inputStyle}
+                onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
+                onBlur={(e) => (e.target.style.borderColor = 'var(--border-light)')}
+              />
+            </div>
+
+            {/* 村/社区 */}
+            <div style={{ marginBottom: 'var(--space-4)' }}>
+              <div style={labelStyle}>村 / 社区</div>
+              <input
+                type="text"
+                placeholder="例如：桂林村"
+                value={form.villageCommunity}
+                onChange={(e) => updateForm('villageCommunity', e.target.value)}
+                style={inputStyle}
+                onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
+                onBlur={(e) => (e.target.style.borderColor = 'var(--border-light)')}
+              />
+            </div>
+
+            {/* 详细门牌号 */}
+            <div style={{ marginBottom: 'var(--space-4)' }}>
+              <div style={labelStyle}>门牌号 / 详细地址</div>
+              <input
+                type="text"
+                placeholder="例如：142号 或 3栋1单元201室"
+                value={form.houseNumber}
+                onChange={(e) => updateForm('houseNumber', e.target.value)}
+                style={inputStyle}
+                onFocus={(e) => (e.target.style.borderColor = 'var(--accent)')}
+                onBlur={(e) => (e.target.style.borderColor = 'var(--border-light)')}
+              />
+            </div>
+          </div>
         )}
 
         {/* ── 步骤 3：确认绑定 ── */}
         {step === 3 && (
-          <>
-            <div className="page-section">
+          <div className="page-section">
+            <div
+              style={{
+                fontSize: 'var(--text-section)',
+                fontWeight: 'var(--weight-semibold)',
+                color: 'var(--text-primary)',
+                marginBottom: 'var(--space-4)',
+              }}
+            >
+              确认信息
+            </div>
+
+            {/* 信息预览卡片 */}
+            <div className="card">
+              {/* 老人信息 */}
               <div
                 style={{
-                  fontSize: 'var(--text-section)',
-                  fontWeight: 'var(--weight-semibold)',
-                  color: 'var(--text-primary)',
-                  marginBottom: 'var(--space-4)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: 'var(--space-3)',
                 }}
               >
-                确认信息
+                <span style={{ fontSize: 'var(--text-caption)', color: 'var(--text-tertiary)' }}>
+                  老人
+                </span>
+                <span style={{ fontSize: 'var(--text-body)', fontWeight: 'var(--weight-medium)', color: 'var(--text-primary)' }}>
+                  {form.elderName} · {form.elderAge}岁 · {form.gender}
+                </span>
               </div>
 
-              {/* 信息预览卡片 */}
-              <div className="card">
-                {/* 老人信息 */}
-                <div
+              {/* 地址 */}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'cross-start',
+                  marginBottom: 'var(--space-3)',
+                  gap: 'var(--space-4)',
+                }}
+              >
+                <span style={{ fontSize: 'var(--text-caption)', color: 'var(--text-tertiary)', flexShrink: 0 }}>
+                  地址
+                </span>
+                <span
                   style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: 'var(--space-3)',
+                    fontSize: 'var(--text-body)',
+                    fontWeight: 'var(--weight-medium)',
+                    color: 'var(--text-primary)',
+                    textAlign: 'right',
+                    wordBreak: 'break-all',
                   }}
                 >
-                  <span
-                    style={{
-                      fontSize: 'var(--text-caption)',
-                      color: 'var(--text-tertiary)',
-                    }}
-                  >
-                    老人
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 'var(--text-body)',
-                      fontWeight: 'var(--weight-medium)',
-                      color: 'var(--text-primary)',
-                    }}
-                  >
-                    张奶奶 · 78岁 · 女
-                  </span>
-                </div>
+                  {form.provinceCityDistrict} {form.townStreet} {form.villageCommunity} {form.houseNumber}
+                </span>
+              </div>
 
-                {/* 地址 */}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: 'var(--space-3)',
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 'var(--text-caption)',
-                      color: 'var(--text-tertiary)',
-                    }}
-                  >
-                    地址
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 'var(--text-body)',
-                      fontWeight: 'var(--weight-medium)',
-                      color: 'var(--text-primary)',
-                    }}
-                  >
-                    桂林村 142 号
-                  </span>
-                </div>
+              {/* 关系 */}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  marginBottom: 'var(--space-3)',
+                }}
+              >
+                <span style={{ fontSize: 'var(--text-caption)', color: 'var(--text-tertiary)' }}>
+                  您的关系
+                </span>
+                <span style={{ fontSize: 'var(--text-body)', fontWeight: 'var(--weight-medium)', color: 'var(--text-primary)' }}>
+                  {form.relationship}
+                </span>
+              </div>
 
-                {/* 关系 */}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    marginBottom: 'var(--space-3)',
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 'var(--text-caption)',
-                      color: 'var(--text-tertiary)',
-                    }}
-                  >
-                    您的关系
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 'var(--text-body)',
-                      fontWeight: 'var(--weight-medium)',
-                      color: 'var(--text-primary)',
-                    }}
-                  >
-                    儿子
-                  </span>
-                </div>
-
-                {/* 联系电话 */}
-                <div
-                  style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: 'var(--text-caption)',
-                      color: 'var(--text-tertiary)',
-                    }}
-                  >
-                    联系电话
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 'var(--text-body)',
-                      fontWeight: 'var(--weight-medium)',
-                      color: 'var(--text-primary)',
-                    }}
-                  >
-                    139****8823
-                  </span>
-                </div>
+              {/* 联系电话 */}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                }}
+              >
+                <span style={{ fontSize: 'var(--text-caption)', color: 'var(--text-tertiary)' }}>
+                  联系电话
+                </span>
+                <span style={{ fontSize: 'var(--text-body)', fontWeight: 'var(--weight-medium)', color: 'var(--text-primary)' }}>
+                  {formatMaskedPhone(form.phone)}
+                </span>
               </div>
             </div>
-          </>
+          </div>
         )}
       </div>
 

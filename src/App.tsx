@@ -188,6 +188,50 @@ function AnimatedRoutes() {
   )
 }
 
+/* ── 全局 Toast 提示组件 ── */
+function GlobalToast() {
+  const { toast } = useAppStage()
+
+  if (!toast) return null
+
+  return (
+    <div
+      style={{
+        position: 'absolute',
+        top: 'calc(var(--statusbar-height) + 8px)',
+        left: '16px',
+        right: '16px',
+        background: 'rgba(28, 28, 30, 0.95)',
+        color: '#FFFFFF',
+        padding: '12px 16px',
+        borderRadius: '16px',
+        fontSize: 'var(--text-body-sm)',
+        lineHeight: '1.4',
+        boxShadow: 'var(--shadow-elevated)',
+        zIndex: 9999,
+        display: 'flex',
+        alignItems: 'center',
+        gap: 'var(--space-2)',
+        pointerEvents: 'none',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        backdropFilter: 'blur(10px)',
+      }}
+    >
+      <div
+        style={{
+          width: 8,
+          height: 8,
+          borderRadius: '50%',
+          background: 'var(--accent)',
+          flexShrink: 0,
+          boxShadow: '0 0 8px var(--accent)',
+        }}
+      />
+      <div style={{ flex: 1, fontWeight: 'var(--weight-medium)' }}>{toast}</div>
+    </div>
+  )
+}
+
 /* ── 主应用 ── */
 export default function App() {
   return (
@@ -198,6 +242,7 @@ export default function App() {
           <div className="phone-shell">
             <div className="phone-inner">
               <StatusBar />
+              <GlobalToast />
               <AnimatedRoutes />
               <HomeIndicator />
             </div>
