@@ -7,10 +7,12 @@ import {
   Clock,
 } from 'lucide-react'
 import { planItems, costBreakdown } from '../data/mock'
+import { useAppStage } from '../context/AppStageContext'
 
 /* ── 方案确认 / 费用说明页 ── */
 export default function PlanConfirmPage() {
   const navigate = useNavigate()
+  const { setStage } = useAppStage()
 
   return (
     <>
@@ -231,7 +233,10 @@ export default function PlanConfirmPage() {
       <div className="fixed-bottom">
         <button
           className="btn btn-primary btn-block btn-lg"
-          onClick={() => navigate('/')}
+          onClick={() => {
+            setStage('plan_confirmed')
+            navigate('/')
+          }}
         >
           确认方案并预约安装
         </button>

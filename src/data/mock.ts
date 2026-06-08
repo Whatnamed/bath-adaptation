@@ -263,3 +263,116 @@ export const productOptions: Record<string, Array<{
   ],
 };
 
+/* ── 各阶段对应的服务进度步骤 ── */
+export const stageSteps: Record<string, typeof serviceOrder.steps> = {
+  unbound: [],
+  idle: [],
+  assessment_pending: [
+    { key: 'assessment', label: '入户评估', status: 'current', date: '已申请' },
+    { key: 'plan', label: '方案确认', status: 'pending', date: '待评估' },
+    { key: 'install', label: '上门安装', status: 'pending', date: '待预约' },
+    { key: 'training', label: '使用教学', status: 'pending', date: '待完成' },
+  ],
+  self_assessing: [
+    { key: 'assessment', label: '自行评估', status: 'current', date: '上传中' },
+    { key: 'plan', label: '方案确认', status: 'pending', date: '待评估' },
+    { key: 'install', label: '上门安装', status: 'pending', date: '待预约' },
+    { key: 'training', label: '使用教学', status: 'pending', date: '待完成' },
+  ],
+  plan_pending: [
+    { key: 'assessment', label: '入户评估', status: 'done', date: '5月18日' },
+    { key: 'plan', label: '方案确认', status: 'current', date: '进行中' },
+    { key: 'install', label: '上门安装', status: 'pending', date: '待预约' },
+    { key: 'training', label: '使用教学', status: 'pending', date: '待完成' },
+  ],
+  plan_confirmed: [
+    { key: 'assessment', label: '入户评估', status: 'done', date: '5月18日' },
+    { key: 'plan', label: '方案确认', status: 'done', date: '6月8日' },
+    { key: 'install', label: '上门安装', status: 'current', date: '6月12日' },
+    { key: 'training', label: '使用教学', status: 'pending', date: '待完成' },
+  ],
+  installing: [
+    { key: 'assessment', label: '入户评估', status: 'done', date: '5月18日' },
+    { key: 'plan', label: '方案确认', status: 'done', date: '6月8日' },
+    { key: 'install', label: '上门安装', status: 'current', date: '进行中' },
+    { key: 'training', label: '使用教学', status: 'pending', date: '待完成' },
+  ],
+  completed: [
+    { key: 'assessment', label: '入户评估', status: 'done', date: '5月18日' },
+    { key: 'plan', label: '方案确认', status: 'done', date: '6月8日' },
+    { key: 'install', label: '上门安装', status: 'done', date: '6月12日' },
+    { key: 'training', label: '使用教学', status: 'done', date: '6月12日' },
+  ],
+};
+
+/* ── 各阶段首页状态卡片配置 ── */
+export const stageCards: Record<string, {
+  title: string;
+  desc: string;
+  cta: string;
+  ctaRoute: string;
+  badge?: string;
+  variant: 'welcome' | 'action' | 'waiting' | 'success';
+}> = {
+  unbound: {
+    title: '欢迎使用安浴到家',
+    desc: '绑定家庭，开始您的适老改造之旅',
+    cta: '绑定家庭',
+    ctaRoute: '/bind',
+    variant: 'welcome',
+  },
+  idle: {
+    title: '为张奶奶家开始安全改造',
+    desc: '选择评估方式，让我们了解卫浴现场情况',
+    cta: '开始评估',
+    ctaRoute: '/assessment/choose',
+    variant: 'action',
+  },
+  assessment_pending: {
+    title: '评估申请已提交',
+    desc: '评估员将在6月15日上门评估，届时请确保家中有人',
+    cta: '查看申请详情',
+    ctaRoute: '/progress',
+    badge: '等待中',
+    variant: 'waiting',
+  },
+  self_assessing: {
+    title: '请上传卫浴现场照片',
+    desc: '完成拍照上传后，系统将智能分析风险并生成评估报告',
+    cta: '继续上传',
+    ctaRoute: '/assessment/self',
+    badge: '进行中',
+    variant: 'action',
+  },
+  plan_pending: {
+    title: '方案待确认',
+    desc: '评估已完成，推荐优先改造以下项目：防滑、扶手、夜灯',
+    cta: '查看推荐方案',
+    ctaRoute: '/plan',
+    badge: '最重要',
+    variant: 'action',
+  },
+  plan_confirmed: {
+    title: '安装已预约',
+    desc: '师傅预计6月12日上门安装，届时请确保家中有人',
+    cta: '查看安装详情',
+    ctaRoute: '/progress',
+    badge: '已预约',
+    variant: 'waiting',
+  },
+  installing: {
+    title: '安装进行中',
+    desc: '师傅正在上门安装改造设备，预计今天完成全部项目',
+    cta: '查看安装进度',
+    ctaRoute: '/progress',
+    badge: '进行中',
+    variant: 'action',
+  },
+  completed: {
+    title: '改造已完成 ✓',
+    desc: '所有改造项目已安装完毕，设备运行正常，进入日常维护阶段',
+    cta: '查看维护计划',
+    ctaRoute: '/maintenance',
+    variant: 'success',
+  },
+};

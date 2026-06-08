@@ -2,28 +2,56 @@ import { useNavigate } from 'react-router-dom'
 import {
   ChevronLeft,
   ChevronRight,
-  Armchair,
-  Droplets,
-  Sparkles,
-  Lightbulb,
+  UserCheck,
+  Camera,
+  ShoppingBag,
+  Shield,
 } from 'lucide-react'
-import { productCategories, familyInfo } from '../data/mock'
+import { useAppStage } from '../context/AppStageContext'
 
-/* ── 图标映射：根据类别 icon 字段选择对应的 lucide 图标 ── */
-const iconMap: Record<string, React.ReactNode> = {
-  toilet: <Armchair size={28} />,
-  shower: <Droplets size={28} />,
-  basin: <Sparkles size={28} />,
+/* ── 选项卡片数据 ── */
+interface ChoiceOption {
+  icon: React.ReactNode
+  iconBg: string
+  title: string
+  desc: string
+  chip?: string
+  onClick: () => void
 }
 
-/* ── 改造类别选择页 ── */
-export default function CategoryPage() {
+/* ── 评估方式选择页 ── */
+export default function AssessmentChoicePage() {
   const navigate = useNavigate()
+  const { setStage } = useAppStage()
 
-  /* 点击卡片跳转到对应类别的产品页 */
-  const handleCategoryClick = (id: string) => {
-    navigate(`/products/${id}`)
-  }
+  const options: ChoiceOption[] = [
+    {
+      icon: <UserCheck size={28} />,
+      iconBg: 'var(--accent-soft)',
+      title: '申请专业评估',
+      desc: '由评估员上门实地检查，出具专业评估报告',
+      chip: '免费',
+      onClick: () => navigate('/assessment/apply'),
+    },
+    {
+      icon: <Camera size={28} />,
+      iconBg: '#E8F0FE',
+      title: '自行拍照评估',
+      desc: '拍摄卫浴现场照片，系统智能分析安全风险',
+      chip: '快速',
+      onClick: () => navigate('/assessment/self'),
+    },
+    {
+      icon: <ShoppingBag size={28} />,
+      iconBg: '#FFF3E0',
+      title: '我已了解需求，直接选购',
+      desc: '跳过评估，直接浏览和选择改造产品',
+      onClick: () => {
+        setStage('plan_pending')
+        navigate('/products')
+      },
+    },
+  ]
 
   return (
     <>
@@ -32,40 +60,31 @@ export default function CategoryPage() {
         <button className="page-header-back" onClick={() => navigate(-1)}>
           <ChevronLeft size={20} />
         </button>
-        <span className="page-header-title">选择改造类别</span>
+        <span className="page-header-title">选择评估方式</span>
       </div>
 
       {/* ── 可滚动内容区域 ── */}
       <div className="subpage-content">
-        {/* ── 顶部说明 ── */}
+        {/* ── 说明文字 ── */}
         <div className="page-section">
-          <div
-            style={{
-              fontSize: 'var(--text-section)',
-              fontWeight: 'var(--weight-semibold)',
-              color: 'var(--text-primary)',
-              marginBottom: 'var(--space-1)',
-            }}
-          >
-            为{familyInfo.elderName}家选择改造项目
-          </div>
           <div
             style={{
               fontSize: 'var(--text-body-sm)',
               color: 'var(--text-secondary)',
+              lineHeight: 'var(--leading-relaxed)',
             }}
           >
-            根据评估结果，以下区域需要适老化改造
+            选择一种方式，让我们了解您家的卫浴情况
           </div>
         </div>
 
-        {/* ── 三张类别卡片 ── */}
+        {/* ── 三张选项卡片 ── */}
         <div className="page-section">
-          {productCategories.map((cat) => (
+          {options.map((opt, i) => (
             <div
-              key={cat.id}
+              key={i}
               className="card"
-              onClick={() => handleCategoryClick(cat.id)}
+              onClick={opt.onClick}
               style={{
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
@@ -78,18 +97,18 @@ export default function CategoryPage() {
               {/* 圆形图标容器 */}
               <div
                 style={{
-                  width: 64,
-                  height: 64,
-                  minWidth: 64,
+                  width: 56,
+                  height: 56,
+                  minWidth: 56,
                   borderRadius: '50%',
-                  background: 'var(--accent-soft)',
-                  color: 'var(--accent)',
+                  background: opt.iconBg,
+                  color: opt.iconBg === 'var(--accent-soft)' ? 'var(--accent)' : opt.iconBg === '#E8F0FE' ? '#1A73E8' : '#E65100',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
                 }}
               >
-                {iconMap[cat.icon]}
+                {opt.icon}
               </div>
 
               {/* 右侧文字区 */}
@@ -102,36 +121,33 @@ export default function CategoryPage() {
                     marginBottom: 'var(--space-1)',
                   }}
                 >
-                  {cat.name}
+                  {opt.title}
                 </div>
                 <div
                   style={{
                     fontSize: 'var(--text-caption)',
                     color: 'var(--text-secondary)',
-                    marginBottom: 'var(--space-2)',
+                    lineHeight: 'var(--leading-relaxed)',
+                    marginBottom: opt.chip ? 'var(--space-2)' : 0,
                   }}
                 >
-                  {cat.desc}
+                  {opt.desc}
                 </div>
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <span className="chip chip-accent">{cat.count} 个产品可选</span>
-                  <ChevronRight
-                    size={18}
-                    style={{ color: 'var(--text-tertiary)' }}
-                  />
-                </div>
+                {opt.chip && (
+                  <span className="chip chip-accent">{opt.chip}</span>
+                )}
               </div>
+
+              {/* 右侧箭头 */}
+              <ChevronRight
+                size={18}
+                style={{ color: 'var(--text-tertiary)', flexShrink: 0 }}
+              />
             </div>
           ))}
         </div>
 
-        {/* ── 底部提示 ── */}
+        {/* ── 底部安全提示 ── */}
         <div className="page-section">
           <div
             style={{
@@ -143,7 +159,7 @@ export default function CategoryPage() {
               gap: 'var(--space-2)',
             }}
           >
-            <Lightbulb
+            <Shield
               size={16}
               style={{
                 color: 'var(--accent)',
@@ -158,7 +174,7 @@ export default function CategoryPage() {
                 lineHeight: 'var(--leading-relaxed)',
               }}
             >
-              您也可以跳过产品选择，由服务站为您推荐最合适的方案
+              无论选择哪种方式，我们都会确保方案的安全性和专业性
             </span>
           </div>
         </div>

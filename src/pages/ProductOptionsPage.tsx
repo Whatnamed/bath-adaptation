@@ -1,17 +1,39 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { ChevronLeft, Check, Droplets } from 'lucide-react'
-import { productOptions } from '../data/mock'
+import { useNavigate, useParams } from 'react-router-dom'
+import {
+  ChevronLeft,
+  Check,
+  Droplets,
+  Armchair,
+  Sparkles,
+  CheckCircle,
+} from 'lucide-react'
+import { productOptions, productCategories } from '../data/mock'
 
-/* ── 产品子选项页（淋浴改造） ── */
+/* ── 类别图标映射 ── */
+const categoryIcons: Record<string, React.ReactNode> = {
+  toilet: <Armchair size={36} style={{ color: 'var(--accent)', opacity: 0.6 }} />,
+  shower: <Droplets size={36} style={{ color: 'var(--accent)', opacity: 0.6 }} />,
+  basin: <Sparkles size={36} style={{ color: 'var(--accent)', opacity: 0.6 }} />,
+}
+
+/* ── 产品选项页（支持马桶/淋浴/洗漱台三大类别） ── */
 export default function ProductOptionsPage() {
   const navigate = useNavigate()
+  const { categoryId } = useParams<{ categoryId: string }>()
 
-  /* 淋浴类别的产品列表 */
-  const items = productOptions['shower']
+  /* 获取当前类别信息 */
+  const category = productCategories.find((c) => c.id === categoryId)
+  const categoryName = category?.name ?? '产品选择'
+
+  /* 获取当前类别的产品列表 */
+  const items = productOptions[categoryId ?? 'shower'] ?? []
 
   /* 选中状态管理 */
   const [selected, setSelected] = useState<Set<string>>(new Set())
+
+  /* 是否已确认加入（显示成功提示） */
+  const [confirmed, setConfirmed] = useState(false)
 
   /* 切换选中 */
   const toggleItem = (id: string) => {
@@ -24,16 +46,30 @@ export default function ProductOptionsPage() {
       }
       return next
     })
+    /* 如果之前已确认，重新选择时清除确认状态 */
+    if (confirmed) setConfirmed(false)
   }
+
+  /* 加入改造方案：显示成功提示，然后返回类别页 */
+  const handleAddToPlan = () => {
+    setConfirmed(true)
+    /* 延迟 800ms 让用户看到成功提示，然后返回类别页继续选择其他类别 */
+    setTimeout(() => {
+      navigate('/products')
+    }, 800)
+  }
+
+  /* 获取当前类别对应的图标 */
+  const currentIcon = categoryIcons[categoryId ?? 'shower']
 
   return (
     <>
       {/* ── 页面头部 ── */}
       <div className="page-header">
-        <button className="page-header-back" onClick={() => navigate(-1)}>
+        <button className="page-header-back" onClick={() => navigate('/products')}>
           <ChevronLeft size={20} />
         </button>
-        <span className="page-header-title">淋浴改造</span>
+        <span className="page-header-title">{categoryName}</span>
       </div>
 
       {/* ── 可滚动内容区域 ── */}
@@ -51,7 +87,7 @@ export default function ProductOptionsPage() {
               marginBottom: 'var(--space-1)',
             }}
           >
-            选择适合的淋浴产品
+            选择适合的{categoryName.replace('改造', '')}产品
           </div>
           <div
             style={{
@@ -116,10 +152,7 @@ export default function ProductOptionsPage() {
                   justifyContent: 'center',
                 }}
               >
-                <Droplets
-                  size={36}
-                  style={{ color: 'var(--accent)', opacity: 0.6 }}
-                />
+                {currentIcon}
               </div>
 
               {/* 卡片主体 */}
@@ -162,26 +195,47 @@ export default function ProductOptionsPage() {
 
       {/* ── 固定底部操作栏 ── */}
       <div className="fixed-bottom">
-        <div
-          style={{
-            fontSize: 'var(--text-body-sm)',
-            color: 'var(--text-secondary)',
-            marginBottom: 'var(--space-2)',
-            textAlign: 'center',
-          }}
-        >
-          已选 {selected.size} 项产品
-        </div>
-        <button
-          className="btn btn-primary btn-block btn-lg"
-          style={{
-            opacity: selected.size === 0 ? 0.5 : 1,
-            pointerEvents: selected.size === 0 ? 'none' : 'auto',
-          }}
-          onClick={() => navigate('/plan/confirm')}
-        >
-          加入改造方案
-        </button>
+        {/* 确认成功提示 */}
+        {confirmed ? (
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 'var(--space-2)',
+              padding: 'var(--space-3)',
+              color: 'var(--accent)',
+              fontSize: 'var(--text-body-sm)',
+              fontWeight: 'var(--weight-semibold)',
+            }}
+          >
+            <CheckCircle size={20} />
+            已加入方案，正在返回类别选择…
+          </div>
+        ) : (
+          <>
+            <div
+              style={{
+                fontSize: 'var(--text-body-sm)',
+                color: 'var(--text-secondary)',
+                marginBottom: 'var(--space-2)',
+                textAlign: 'center',
+              }}
+            >
+              已选 {selected.size} 项产品
+            </div>
+            <button
+              className="btn btn-primary btn-block btn-lg"
+              style={{
+                opacity: selected.size === 0 ? 0.5 : 1,
+                pointerEvents: selected.size === 0 ? 'none' : 'auto',
+              }}
+              onClick={handleAddToPlan}
+            >
+              加入改造方案
+            </button>
+          </>
+        )}
       </div>
     </>
   )

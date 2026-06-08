@@ -1,6 +1,9 @@
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 
+/* ── 全局状态 ── */
+import { AppStageProvider, useAppStage, allStages, stageLabels } from './context/AppStageContext'
+
 /* ── 页面组件 ── */
 import HomePage from './pages/HomePage'
 import ServicesPage from './pages/ServicesPage'
@@ -12,6 +15,10 @@ import MaintenancePage from './pages/MaintenancePage'
 import AssessmentPage from './pages/AssessmentPage'
 import CategoryPage from './pages/CategoryPage'
 import ProductOptionsPage from './pages/ProductOptionsPage'
+import FamilyBindPage from './pages/FamilyBindPage'
+import AssessmentChoicePage from './pages/AssessmentChoicePage'
+import ApplyAssessmentPage from './pages/ApplyAssessmentPage'
+import SelfAssessmentPage from './pages/SelfAssessmentPage'
 
 /* ── 侧栏页面导航数据 ── */
 const sidebarPages = [
@@ -20,14 +27,24 @@ const sidebarPages = [
     { path: '/services', label: '服务' },
     { path: '/profile', label: '我的' },
   ]},
-  { group: '子页面', items: [
+  { group: '流程页面', items: [
+    { path: '/bind', label: '绑定家庭' },
+    { path: '/assessment/choose', label: '评估方式选择' },
+    { path: '/assessment/apply', label: '申请专业评估' },
+    { path: '/assessment/self', label: '自行拍照评估' },
+  ]},
+  { group: '方案与产品', items: [
     { path: '/plan', label: '推荐方案' },
     { path: '/plan/confirm', label: '方案确认 / 费用' },
     { path: '/products', label: '改造类别选择' },
+    { path: '/products/toilet', label: '马桶产品选项' },
     { path: '/products/shower', label: '淋浴产品选项' },
+    { path: '/products/basin', label: '洗漱台产品选项' },
+  ]},
+  { group: '服务与售后', items: [
     { path: '/progress', label: '服务进度详情' },
     { path: '/maintenance', label: '维护与提醒' },
-    { path: '/assessment', label: '入户评估结果' },
+    { path: '/assessment', label: '评估结果' },
   ]},
 ]
 
@@ -35,6 +52,7 @@ const sidebarPages = [
 function PageSidebar() {
   const location = useLocation()
   const navigate = useNavigate()
+  const { stage, setStage } = useAppStage()
 
   return (
     <aside className="page-sidebar">
@@ -57,6 +75,42 @@ function PageSidebar() {
             ))}
           </div>
         ))}
+
+        {/* ── 阶段切换器 ── */}
+        <div className="sidebar-group" style={{ borderTop: '1px solid var(--border-light)', paddingTop: 'var(--space-3)' }}>
+          <div className="sidebar-group-label">阶段切换（演示）</div>
+          <select
+            value={stage}
+            onChange={(e) => setStage(e.target.value as typeof stage)}
+            style={{
+              width: '100%',
+              padding: '8px 12px',
+              fontSize: '12px',
+              borderRadius: '8px',
+              border: '1px solid var(--border-light)',
+              background: '#fff',
+              color: 'var(--text-primary)',
+              cursor: 'pointer',
+              outline: 'none',
+            }}
+          >
+            {allStages.map((s) => (
+              <option key={s} value={s}>
+                {stageLabels[s]}
+              </option>
+            ))}
+          </select>
+          <div
+            style={{
+              marginTop: 'var(--space-2)',
+              fontSize: '11px',
+              color: 'var(--text-tertiary)',
+              lineHeight: 1.4,
+            }}
+          >
+            切换阶段后首页和服务页将联动变化
+          </div>
+        </div>
       </div>
     </aside>
   )
@@ -122,7 +176,12 @@ function AnimatedRoutes() {
           <Route path="/maintenance" element={<MaintenancePage />} />
           <Route path="/assessment" element={<AssessmentPage />} />
           <Route path="/products" element={<CategoryPage />} />
-          <Route path="/products/shower" element={<ProductOptionsPage />} />
+          <Route path="/products/:categoryId" element={<ProductOptionsPage />} />
+          {/* 新增流程页面 */}
+          <Route path="/bind" element={<FamilyBindPage />} />
+          <Route path="/assessment/choose" element={<AssessmentChoicePage />} />
+          <Route path="/assessment/apply" element={<ApplyAssessmentPage />} />
+          <Route path="/assessment/self" element={<SelfAssessmentPage />} />
         </Routes>
       </motion.div>
     </AnimatePresence>
@@ -132,17 +191,19 @@ function AnimatedRoutes() {
 /* ── 主应用 ── */
 export default function App() {
   return (
-    <BrowserRouter>
-      <div className="preview-container">
-        <PageSidebar />
-        <div className="phone-shell">
-          <div className="phone-inner">
-            <StatusBar />
-            <AnimatedRoutes />
-            <HomeIndicator />
+    <AppStageProvider initialStage="unbound">
+      <BrowserRouter>
+        <div className="preview-container">
+          <PageSidebar />
+          <div className="phone-shell">
+            <div className="phone-inner">
+              <StatusBar />
+              <AnimatedRoutes />
+              <HomeIndicator />
+            </div>
           </div>
         </div>
-      </div>
-    </BrowserRouter>
+      </BrowserRouter>
+    </AppStageProvider>
   )
 }

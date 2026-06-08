@@ -29,7 +29,7 @@ export default function AssessmentPage() {
         <button className="page-header-back" onClick={() => navigate(-1)}>
           <ChevronLeft size={20} />
         </button>
-        <span className="page-header-title">入户评估结果</span>
+        <span className="page-header-title">评估结果</span>
       </div>
 
       {/* ── 可滚动内容区域 ── */}

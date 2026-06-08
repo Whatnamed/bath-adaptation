@@ -6,14 +6,36 @@ import {
   User,
   Package,
   Clock,
+  Link as LinkIcon,
+  Plus,
 } from 'lucide-react'
 import { serviceHistory } from '../data/mock'
+import { useAppStage } from '../context/AppStageContext'
 
 /* ── 服务页面 ── */
 export default function ServicesPage() {
   const navigate = useNavigate()
   const location = useLocation()
+  const { stage } = useAppStage()
   const [activeTab, setActiveTab] = useState<'current' | 'history'>('current')
+
+  /* 判断是否有活跃服务（只有进入评估流程之后才有） */
+  const hasActiveService = ![
+    'unbound',
+    'idle',
+  ].includes(stage)
+
+  /* 根据阶段动态确定状态文案和 chip */
+  const stageStatusMap: Record<string, { text: string; chipText: string }> = {
+    assessment_pending: { text: '等待评估', chipText: '等待中' },
+    self_assessing: { text: '自行评估中', chipText: '进行中' },
+    plan_pending: { text: '方案待确认', chipText: '进行中' },
+    plan_confirmed: { text: '待安装', chipText: '已预约' },
+    installing: { text: '安装中', chipText: '进行中' },
+    completed: { text: '已完成', chipText: '已完成' },
+  }
+
+  const currentStatus = stageStatusMap[stage]
 
   /* Tab 按钮通用样式 */
   const tabBaseStyle: React.CSSProperties = {
@@ -77,42 +99,124 @@ export default function ServicesPage() {
 
         {/* ── 当前服务 tab ── */}
         {activeTab === 'current' && (
-          <div className="page-section">
-            {serviceHistory
-              .filter((s) => s.status === 'in_progress')
-              .map((service) => (
-                <div
-                  className="service-card"
-                  key={service.id}
-                  onClick={() => navigate('/progress')}
-                  style={{ cursor: 'pointer' }}
+          <>
+            {/* unbound 状态：提示绑定 */}
+            {stage === 'unbound' && (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '60px 0',
+                  gap: '16px',
+                }}
+              >
+                <LinkIcon size={48} color="var(--text-tertiary)" />
+                <span
+                  style={{
+                    color: 'var(--text-tertiary)',
+                    fontSize: 'var(--text-body-sm)',
+                    textAlign: 'center',
+                    lineHeight: 'var(--leading-relaxed)',
+                  }}
                 >
-                  {/* 卡片头部 */}
-                  <div className="service-card-header">
-                    <span className="service-card-id">{service.id}</span>
-                    <span className="chip chip-accent">进行中</span>
-                  </div>
+                  绑定家庭后即可查看服务
+                </span>
+                <button
+                  className="btn btn-primary"
+                  style={{ marginTop: 'var(--space-2)' }}
+                  onClick={() => navigate('/bind')}
+                >
+                  去绑定家庭
+                </button>
+              </div>
+            )}
 
-                  {/* 标题 */}
-                  <div className="service-card-title">{service.title}</div>
+            {/* idle 状态：已绑定但没服务 */}
+            {stage === 'idle' && (
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: '60px 0',
+                  gap: '16px',
+                }}
+              >
+                <Plus size={48} color="var(--text-tertiary)" />
+                <span
+                  style={{
+                    color: 'var(--text-tertiary)',
+                    fontSize: 'var(--text-body-sm)',
+                    textAlign: 'center',
+                    lineHeight: 'var(--leading-relaxed)',
+                  }}
+                >
+                  尚无服务记录
+                </span>
+                <span
+                  style={{
+                    color: 'var(--text-tertiary)',
+                    fontSize: 'var(--text-caption)',
+                    textAlign: 'center',
+                  }}
+                >
+                  开始评估后，服务记录将在此显示
+                </span>
+                <button
+                  className="btn btn-primary"
+                  style={{ marginTop: 'var(--space-2)' }}
+                  onClick={() => navigate('/assessment/choose')}
+                >
+                  开始评估
+                </button>
+              </div>
+            )}
 
-                  {/* 改造项标签 */}
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
-                    {service.items.map((item) => (
-                      <span className="chip chip-accent" key={item}>
-                        {item}
-                      </span>
-                    ))}
-                  </div>
+            {/* 有活跃服务时：显示服务卡片 */}
+            {hasActiveService && (
+              <div className="page-section">
+                {serviceHistory
+                  .filter((s) => s.status === 'in_progress')
+                  .map((service) => (
+                    <div
+                      className="service-card"
+                      key={service.id}
+                      onClick={() => navigate('/progress')}
+                      style={{ cursor: 'pointer' }}
+                    >
+                      {/* 卡片头部 */}
+                      <div className="service-card-header">
+                        <span className="service-card-id">{service.id}</span>
+                        <span className="chip chip-accent">
+                          {currentStatus?.chipText ?? '进行中'}
+                        </span>
+                      </div>
 
-                  {/* 日期 */}
-                  <div className="service-card-meta">
-                    <Clock size={14} />
-                    {service.date}
-                  </div>
-                </div>
-              ))}
-          </div>
+                      {/* 标题 */}
+                      <div className="service-card-title">{service.title}</div>
+
+                      {/* 改造项标签 */}
+                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+                        {service.items.map((item) => (
+                          <span className="chip chip-accent" key={item}>
+                            {item}
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* 日期 */}
+                      <div className="service-card-meta">
+                        <Clock size={14} />
+                        {service.date}
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            )}
+          </>
         )}
 
         {/* ── 历史记录 tab ── */}

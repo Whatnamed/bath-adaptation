@@ -78,7 +78,7 @@ export default function PlanPage() {
             marginBottom: 'var(--space-6)',
           }}
         >
-          根据入户评估结果，建议优先处理以下项目
+          根据评估结果，建议优先处理以下项目
         </p>
 
         {/* ── 重点风险 ── */}
