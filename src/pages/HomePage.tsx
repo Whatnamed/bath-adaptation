@@ -283,7 +283,7 @@ export default function HomePage() {
               {[
                 { icon: <ShieldCheck size={20} color="var(--accent)" />, title: '安全评估', desc: '专业人员上门或自行拍照，全面评估卫浴安全隐患' },
                 { icon: <Wrench size={20} color="var(--accent)" />, title: '适老改造', desc: '防滑、扶手、恒温花洒等适老化产品安装' },
-                { icon: <CalendarClock size={20} color="var(--accent)" />, title: '长期维护', desc: '设备定期检查 and 维护，确保持续安全' },
+                { icon: <CalendarClock size={20} color="var(--accent)" />, title: '长期维护', desc: '设备定期检查和维护，确保持续安全' },
               ].map((item) => (
                 <div
                   key={item.title}

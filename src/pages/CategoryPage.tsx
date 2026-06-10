@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
   ChevronLeft,
   ChevronRight,
@@ -20,11 +20,26 @@ const iconMap: Record<string, React.ReactNode> = {
 /* ── 改造类别选择页 ── */
 export default function CategoryPage() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { selectedProducts, familyDetails } = useAppStage()
 
-  /* 点击卡片跳转到对应类别的产品页 */
+  /* 判断来源：从推荐方案页进来 or 从评估方式选择页的"自行选购"进来 */
+  const fromSource = searchParams.get('from')
+
+  /* 返回按钮：根据来源决定返回目标 */
+  const handleBack = () => {
+    if (fromSource === 'direct') {
+      // 从"自行选购"进入，返回到评估方式选择页
+      navigate('/assessment/choose')
+    } else {
+      // 从推荐方案页进入，返回到推荐方案
+      navigate('/plan')
+    }
+  }
+
+  /* 点击卡片跳转到对应类别的产品页，传递来源信息 */
   const handleCategoryClick = (id: string) => {
-    navigate(`/products/${id}`)
+    navigate(`/products/${id}${fromSource ? `?from=${fromSource}` : ''}`)
   }
 
   /* 统计总共选了几个产品 */
@@ -37,8 +52,8 @@ export default function CategoryPage() {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       {/* ── 页面头部 ── */}
       <div className="page-header" style={{ flexShrink: 0 }}>
-        {/* 返回到方案推荐页面而非历史上一页 */}
-        <button className="page-header-back" onClick={() => navigate('/plan')}>
+        {/* 根据来源返回对应页面 */}
+        <button className="page-header-back" onClick={handleBack}>
           <ChevronLeft size={20} />
         </button>
         <span className="page-header-title">选择改造类别</span>
@@ -64,7 +79,9 @@ export default function CategoryPage() {
               color: 'var(--text-secondary)',
             }}
           >
-            根据评估结果，以下区域需要适老化改造
+            {fromSource === 'direct'
+              ? '浏览并选择您需要的适老化改造产品'
+              : '根据评估结果，以下区域需要适老化改造'}
           </div>
         </div>
 
@@ -210,8 +227,12 @@ export default function CategoryPage() {
         <button
           className="btn btn-primary btn-block btn-lg"
           onClick={() => navigate('/plan/confirm')}
+          style={{
+            opacity: totalSelectedCount > 0 ? 1 : 0.5,
+            pointerEvents: totalSelectedCount > 0 ? 'auto' : 'none',
+          }}
         >
-          {totalSelectedCount > 0 ? `确认已选并进入下一步` : '下一步'}
+          {totalSelectedCount > 0 ? `确认已选 ${totalSelectedCount} 项，进入下一步` : '请先选择改造产品'}
         </button>
       </div>
     </div>

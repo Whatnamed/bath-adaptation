@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
   ChevronLeft,
   Check,
@@ -10,6 +10,13 @@ import {
 } from 'lucide-react'
 import { productOptions, productCategories } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
+
+/* ── 产品价格映射 ── */
+const productPrices: Record<string, number> = {
+  t1: 580, t2: 720, t3: 1680, t4: 1280,
+  s1: 360, s2: 480, s3: 380, s4: 220,
+  b1: 450, b2: 560, b3: 380, b4: 680,
+}
 
 /* ── 类别图标映射 ── */
 const categoryIcons: Record<string, React.ReactNode> = {
@@ -22,6 +29,8 @@ const categoryIcons: Record<string, React.ReactNode> = {
 export default function ProductOptionsPage() {
   const navigate = useNavigate()
   const { categoryId } = useParams<{ categoryId: string }>()
+  const [searchParams] = useSearchParams()
+  const fromSource = searchParams.get('from')
   const { selectedProducts, setSelectedProducts } = useAppStage()
 
   const activeCategoryId = categoryId ?? 'toilet'
@@ -69,7 +78,7 @@ export default function ProductOptionsPage() {
     setConfirmed(true)
     /* 延迟 800ms 让用户看到成功提示，然后返回类别页继续选择其他类别 */
     setTimeout(() => {
-      navigate('/products')
+      navigate(`/products${fromSource ? `?from=${fromSource}` : ''}`)
     }, 800)
   }
 
@@ -80,7 +89,7 @@ export default function ProductOptionsPage() {
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       {/* ── 页面头部 ── */}
       <div className="page-header" style={{ flexShrink: 0 }}>
-        <button className="page-header-back" onClick={() => navigate('/products')}>
+        <button className="page-header-back" onClick={() => navigate(`/products${fromSource ? `?from=${fromSource}` : ''}`)}>
           <ChevronLeft size={20} />
         </button>
         <span className="page-header-title">{categoryName}</span>
@@ -198,9 +207,19 @@ export default function ProductOptionsPage() {
                       fontSize: 'var(--text-caption)',
                       color: 'var(--text-secondary)',
                       lineHeight: 'var(--leading-relaxed)',
+                      marginBottom: 'var(--space-2)',
                     }}
                   >
                     {item.desc}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: 'var(--text-body-sm)',
+                      fontWeight: 'var(--weight-bold)',
+                      color: 'var(--accent-deep)',
+                    }}
+                  >
+                    ¥{productPrices[item.id] ?? '—'}
                   </div>
                 </div>
               </div>

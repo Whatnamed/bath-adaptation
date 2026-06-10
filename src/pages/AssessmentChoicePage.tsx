@@ -48,7 +48,7 @@ export default function AssessmentChoicePage() {
       desc: '跳过评估，直接浏览和选择改造产品',
       onClick: () => {
         setStage('plan_pending')
-        navigate('/products')
+        navigate('/products?from=direct')
       },
     },
   ]

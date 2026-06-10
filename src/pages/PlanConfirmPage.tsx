@@ -6,13 +6,67 @@ import {
   MapPin,
   Clock,
 } from 'lucide-react'
-import { planItems, costBreakdown } from '../data/mock'
+import { productOptions } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
+
+/* ── 产品价格映射（模拟价格数据） ── */
+const productPrices: Record<string, number> = {
+  /* 马桶类 */
+  t1: 580,
+  t2: 720,
+  t3: 1680,
+  t4: 1280,
+  /* 淋浴类 */
+  s1: 360,
+  s2: 480,
+  s3: 380,
+  s4: 220,
+  /* 洗漱台类 */
+  b1: 450,
+  b2: 560,
+  b3: 380,
+  b4: 680,
+}
 
 /* ── 方案确认 / 费用说明页 ── */
 export default function PlanConfirmPage() {
   const navigate = useNavigate()
-  const { setStage } = useAppStage()
+  const { setStage, selectedProducts, familyDetails } = useAppStage()
+
+  /* 从全局状态中获取用户已选产品，构建动态的费用清单 */
+  const selectedItemsList: { id: string; name: string; price: number; category: string }[] = []
+
+  Object.entries(selectedProducts).forEach(([categoryId, ids]) => {
+    const options = productOptions[categoryId] || []
+    ids.forEach((id) => {
+      const product = options.find((p) => p.id === id)
+      if (product) {
+        selectedItemsList.push({
+          id: product.id,
+          name: product.name,
+          price: productPrices[product.id] ?? 500,
+          category: categoryId,
+        })
+      }
+    })
+  })
+
+  /* 如果没有选择任何产品，使用默认推荐方案 */
+  const hasCustomSelection = selectedItemsList.length > 0
+  const displayItems = hasCustomSelection
+    ? selectedItemsList
+    : [
+        { id: 'default1', name: '防滑地面处理', price: 380, category: 'shower' },
+        { id: 'default2', name: '助力扶手安装', price: 260, category: 'toilet' },
+        { id: 'default3', name: '夜间照明系统', price: 150, category: 'basin' },
+        { id: 'default4', name: '紧急呼叫按钮', price: 120, category: 'basin' },
+      ]
+
+  /* 动态计算费用 */
+  const productTotal = displayItems.reduce((sum, item) => sum + item.price, 0)
+  const serviceFee = displayItems.length <= 2 ? 150 : 200
+  const subsidy = Math.min(Math.round(productTotal * 0.15), 300) // 补贴最高300元
+  const total = productTotal + serviceFee - subsidy
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
@@ -30,9 +84,12 @@ export default function PlanConfirmPage() {
         <div className="page-section" style={{ marginTop: 'var(--space-4)' }}>
           <div className="section-header">
             <span className="section-title">已选改造项目</span>
+            <span style={{ fontSize: 'var(--text-caption)', color: 'var(--text-tertiary)' }}>
+              共 {displayItems.length} 项
+            </span>
           </div>
           <div className="card">
-            {planItems.map((item) => (
+            {displayItems.map((item) => (
               <div
                 className="list-row"
                 key={item.id}
@@ -86,15 +143,13 @@ export default function PlanConfirmPage() {
             {/* 产品及材料费 */}
             <div className="cost-row">
               <span className="cost-label">产品及材料费</span>
-              <span className="cost-value">
-                ¥{costBreakdown.items.reduce((sum, i) => sum + i.value, 0)}
-              </span>
+              <span className="cost-value">¥{productTotal}</span>
             </div>
 
             {/* 安装服务费 */}
             <div className="cost-row">
               <span className="cost-label">安装服务费</span>
-              <span className="cost-value">¥{costBreakdown.serviceFee}</span>
+              <span className="cost-value">¥{serviceFee}</span>
             </div>
 
             {/* 入户评估费 */}
@@ -109,14 +164,14 @@ export default function PlanConfirmPage() {
             <div className="cost-row">
               <span className="cost-label">补贴抵扣</span>
               <span className="cost-value" style={{ color: 'var(--accent)' }}>
-                {costBreakdown.subsidy}
+                -¥{subsidy}
               </span>
             </div>
 
             {/* 合计 */}
             <div className="cost-total">
               <span className="cost-total-label">预计合计</span>
-              <span className="cost-total-value">¥{costBreakdown.total}</span>
+              <span className="cost-total-value">¥{total}</span>
             </div>
           </div>
         </div>
@@ -137,7 +192,7 @@ export default function PlanConfirmPage() {
             }}
           >
             <Info size={16} style={{ flexShrink: 0, marginTop: 2 }} />
-            <span>{costBreakdown.note}</span>
+            <span>以上价格为预估参考价，最终价格以上门复核实际情况为准。政府补贴金额以实际批复为准。</span>
           </div>
         </div>
 
@@ -212,7 +267,7 @@ export default function PlanConfirmPage() {
                     marginBottom: 2,
                   }}
                 >
-                  协调服务站
+                  服务地址
                 </div>
                 <div
                   style={{
@@ -221,7 +276,7 @@ export default function PlanConfirmPage() {
                     color: 'var(--text-primary)',
                   }}
                 >
-                  桂林镇便民服务站
+                  {familyDetails.villageCommunity} {familyDetails.houseNumber}
                 </div>
               </div>
             </div>
@@ -231,6 +286,26 @@ export default function PlanConfirmPage() {
 
       {/* ── 固定底部 CTA ── */}
       <div className="fixed-bottom" style={{ flexShrink: 0, position: 'relative', background: 'var(--surface-page)', borderTop: '1px solid var(--border-light)', zIndex: 10, padding: 'var(--space-4) var(--space-page)' }}>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 'var(--space-3)',
+        }}>
+          <span style={{
+            fontSize: 'var(--text-caption)',
+            color: 'var(--text-secondary)',
+          }}>
+            合计
+          </span>
+          <span style={{
+            fontSize: 'var(--text-title)',
+            fontWeight: 'var(--weight-bold)',
+            color: 'var(--accent-deep)',
+          }}>
+            ¥{total}
+          </span>
+        </div>
         <button
           className="btn btn-primary btn-block btn-lg"
           onClick={() => {

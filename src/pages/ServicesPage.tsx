@@ -46,17 +46,20 @@ export default function ServicesPage() {
     fontSize: 'var(--text-body-sm)',
     fontWeight: 'var(--weight-medium)',
     cursor: 'pointer',
-    borderBottom: '2px solid transparent',
     paddingBottom: '12px',
+    borderBottom: '2px solid transparent',
+    transition: 'color 0.2s ease, border-color 0.2s ease',
   }
 
-  /* 选中 / 未选中样式 */
+  /* 选中样式 - 显示下划线 */
   const tabActiveStyle: React.CSSProperties = {
     color: 'var(--accent-deep)',
-    borderBottomColor: 'var(--accent)',
+    borderBottom: '2px solid var(--accent)',
   }
+  /* 未选中样式 - 无下划线 */
   const tabInactiveStyle: React.CSSProperties = {
     color: 'var(--text-tertiary)',
+    borderBottom: '2px solid transparent',
   }
 
   return (
