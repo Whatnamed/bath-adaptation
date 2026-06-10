@@ -3,52 +3,108 @@ import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useAppStage, type FamilyDetails } from '../context/AppStageContext'
 
+/* ── 步骤标签数据 ── */
+const STEP_LABELS = ['基本信息', '居住地址', '确认提交'] as const
+
 /* ── 进度指示器组件 ── */
 function StepIndicator({ current }: { current: 1 | 2 | 3 }) {
-  const steps = [1, 2, 3] as const
   return (
     <div
       style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: 0,
-        padding: 'var(--space-4) 0 var(--space-2)',
+        padding: 'var(--space-3) 0 var(--space-5)',
       }}
     >
-      {steps.map((s, i) => (
-        <div key={s} style={{ display: 'flex', alignItems: 'center' }}>
-          {/* 圆点 */}
-          <div
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: '50%',
-              background: s <= current ? 'var(--accent)' : 'var(--surface-muted)',
-              color: s <= current ? '#fff' : 'var(--text-tertiary)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: 'var(--text-caption)',
-              fontWeight: 'var(--weight-semibold)',
-              transition: 'all 0.3s ease',
-            }}
-          >
-            {s}
-          </div>
-          {/* 连接线 */}
-          {i < steps.length - 1 && (
+      {/* 步骤标签行 */}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          marginBottom: 'var(--space-3)',
+        }}
+      >
+        {STEP_LABELS.map((label, i) => {
+          const stepNum = i + 1
+          const isDone = stepNum < current
+          const isCurrent = stepNum === current
+          const isPending = stepNum > current
+
+          return (
             <div
+              key={label}
               style={{
-                width: 48,
-                height: 2,
-                background: s < current ? 'var(--accent)' : 'var(--border-light)',
-                transition: 'background 0.3s ease',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 6,
+                opacity: isPending ? 0.4 : 1,
+                transition: 'opacity 0.3s ease',
               }}
-            />
-          )}
-        </div>
-      ))}
+            >
+              {/* 序号小圆 */}
+              <div
+                style={{
+                  width: 22,
+                  height: 22,
+                  borderRadius: '50%',
+                  background: isCurrent
+                    ? 'var(--accent)'
+                    : isDone
+                    ? 'var(--accent-muted)'
+                    : 'var(--border-light)',
+                  color: isCurrent || isDone ? '#fff' : 'var(--text-tertiary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '11px',
+                  fontWeight: 'var(--weight-semibold)',
+                  transition: 'all 0.3s ease',
+                  flexShrink: 0,
+                }}
+              >
+                {isDone ? '✓' : stepNum}
+              </div>
+              {/* 文字标签 */}
+              <span
+                style={{
+                  fontSize: 'var(--text-caption)',
+                  fontWeight: isCurrent
+                    ? 'var(--weight-semibold)'
+                    : 'var(--weight-regular)',
+                  color: isCurrent
+                    ? 'var(--accent-deep)'
+                    : isDone
+                    ? 'var(--text-secondary)'
+                    : 'var(--text-tertiary)',
+                  transition: 'all 0.3s ease',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {label}
+              </span>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* 连续进度条 */}
+      <div
+        style={{
+          height: 3,
+          borderRadius: 2,
+          background: 'var(--border-light)',
+          overflow: 'hidden',
+        }}
+      >
+        <div
+          style={{
+            height: '100%',
+            borderRadius: 2,
+            background: 'var(--accent)',
+            width: `${((current - 1) / (STEP_LABELS.length - 1)) * 100}%`,
+            transition: 'width 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
+          }}
+        />
+      </div>
     </div>
   )
 }
