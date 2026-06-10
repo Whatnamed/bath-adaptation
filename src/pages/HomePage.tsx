@@ -146,7 +146,7 @@ export default function HomePage() {
           <div className="page-section task-summary-header">
             <div className="task-summary-title">
               今天需要处理{' '}
-              <span className="highlight-number" style={{ fontSize: 32 }}>1</span>
+              <span className="highlight-number pop-in" style={{ fontSize: 32 }}>1</span>
               {' '}项服务
             </div>
             <div className="task-summary-subtitle">及时处理，让改造更快落地</div>
@@ -156,10 +156,12 @@ export default function HomePage() {
         {/* ── 状态卡片（核心：根据 stage 变化） ── */}
         {card && (
           <div
-            className="task-card page-section"
+            className="task-card page-section page-enter"
             style={{
               background: cardBgs[card.variant] ?? '#EAF3E5',
+              cursor: 'pointer',
             }}
+            onClick={() => navigate(card.ctaRoute)}
           >
             <div className="task-card-top">
               <div className="task-card-icon">
@@ -219,7 +221,7 @@ export default function HomePage() {
                       : 'stepper-line-pending'
 
                   return (
-                    <div className="stepper-step" key={step.key}>
+                    <div className="stepper-step step-stagger" key={step.key}>
                       <div className={`stepper-node ${nodeClass}`}>
                         {step.status === 'done' ? (
                           <CheckCircle size={18} />

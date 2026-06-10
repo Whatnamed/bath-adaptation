@@ -24,13 +24,18 @@ const ApplyAssessmentPage: React.FC = () => {
 
   const [selectedTime, setSelectedTime] = useState<string>('')
   const [note, setNote] = useState('')
+  const [submitting, setSubmitting] = useState(false)
 
-  const canSubmit = selectedTime !== ''
+  const canSubmit = selectedTime !== '' && !submitting
 
   const handleSubmit = () => {
     if (!canSubmit) return
-    setStage('assessment_pending')
-    navigate('/')
+    setSubmitting(true)
+    /* 模拟提交过程，给用户反馈 */
+    setTimeout(() => {
+      setStage('assessment_pending')
+      navigate('/')
+    }, 800)
   }
 
   return (
@@ -156,12 +161,9 @@ const ApplyAssessmentPage: React.FC = () => {
       {/* ---- 固定底部 ---- */}
       <div className="fixed-bottom" style={{ flexShrink: 0, position: 'relative', background: 'var(--surface-page)', borderTop: '1px solid var(--border-light)', zIndex: 10, padding: 'var(--space-4) var(--space-page)' }}>
         <button
-          className="btn btn-primary btn-block btn-lg"
+          className={`btn btn-primary btn-block btn-lg ${submitting ? 'btn-loading' : ''}`}
           onClick={handleSubmit}
-          style={{
-            opacity: canSubmit ? 1 : 0.5,
-            pointerEvents: canSubmit ? 'auto' : 'none',
-          }}
+          disabled={!canSubmit}
         >
           提交评估申请
         </button>

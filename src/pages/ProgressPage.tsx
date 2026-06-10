@@ -337,7 +337,7 @@ export default function ProgressPage() {
                     : {}
 
                 return (
-                  <div className="timeline-item" key={i}>
+                  <div className="timeline-item step-stagger" key={i}>
                     <div className={`timeline-dot ${dotClass}`} />
                     <div className="timeline-header">
                       <span className="timeline-title" style={titleStyle}>

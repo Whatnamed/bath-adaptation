@@ -1,0 +1,139 @@
+/* ============================================
+   安浴到家 · 动画系统
+   ============================================ */
+
+/* ── 基础入场动画 ── */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ── 页面入场 ── */
+.page-enter {
+  animation: fadeSlideUp var(--duration-normal) var(--ease-out) both;
+}
+
+/* ── 卡片 stagger 入场 ── */
+.stagger-item {
+  opacity: 0;
+  animation: fadeSlideUp var(--duration-normal) var(--ease-out) both;
+}
+
+.stagger-item:nth-child(1) { animation-delay: 0ms; }
+.stagger-item:nth-child(2) { animation-delay: 50ms; }
+.stagger-item:nth-child(3) { animation-delay: 100ms; }
+.stagger-item:nth-child(4) { animation-delay: 150ms; }
+.stagger-item:nth-child(5) { animation-delay: 200ms; }
+.stagger-item:nth-child(6) { animation-delay: 250ms; }
+
+/* ── 进度步骤 stagger ── */
+.step-stagger {
+  opacity: 0;
+  animation: fadeSlideUp 300ms var(--ease-out) both;
+}
+
+.step-stagger:nth-child(1) { animation-delay: 0ms; }
+.step-stagger:nth-child(2) { animation-delay: 60ms; }
+.step-stagger:nth-child(3) { animation-delay: 120ms; }
+.step-stagger:nth-child(4) { animation-delay: 180ms; }
+.step-stagger:nth-child(5) { animation-delay: 240ms; }
+.step-stagger:nth-child(6) { animation-delay: 300ms; }
+
+/* ── 数字弹出 ── */
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  60% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.pop-in {
+  animation: popIn 400ms var(--ease-spring) both;
+}
+
+/* ── 脉冲指示器 ── */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.pulse {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* ── 进度线条生长 ── */
+@keyframes lineGrow {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+.line-grow {
+  transform-origin: top;
+  animation: lineGrow 400ms var(--ease-out) both;
+}
+
+/* ── 尊重用户减少动画偏好 ── */
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .stagger-item,
+  .step-stagger,
+  .pop-in,
+  .pulse,
+  .line-grow {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

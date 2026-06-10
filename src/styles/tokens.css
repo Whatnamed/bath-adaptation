@@ -28,25 +28,25 @@
   --accent-muted: #A8C5A7;
   --accent-light: #D5E5D4;
 
-  /* ── 状态色（统一用绿色色调，保持克制） ── */
+  /* ── 状态色（保持克制但有语义区分） ── */
   --success: #5B8C5A;
   --success-soft: #EDF3EC;
-  --warning: #5B8C5A;
-  --warning-soft: #EDF3EC;
-  --danger: #5B8C5A;
-  --danger-soft: #EDF3EC;
-  --info: #5B8C5A;
-  --info-soft: #EDF3EC;
+  --warning: #B8923A;
+  --warning-soft: #FDF8EC;
+  --danger: #B85C5C;
+  --danger-soft: #FBEEEE;
+  --info: #5B7C8C;
+  --info-soft: #EDF1F3;
 
   /* ── 边框 & 分割 ── */
   --border: #E8EAE8;
   --border-light: #F0F1F0;
   --divider: #EEEFEE;
 
-  /* ── 阴影 ── */
-  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.06), 0 0.5px 1.5px rgba(0, 0, 0, 0.04);
-  --shadow-elevated: 0 2px 10px rgba(0, 0, 0, 0.07), 0 1px 4px rgba(0, 0, 0, 0.04);
-  --shadow-float: 0 4px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+  /* ── 阴影（带绿色调，与主题色和谐） ── */
+  --shadow-card: 0 1px 4px rgba(60, 80, 60, 0.07), 0 0.5px 1.5px rgba(60, 80, 60, 0.05);
+  --shadow-elevated: 0 2px 10px rgba(60, 80, 60, 0.08), 0 1px 4px rgba(60, 80, 60, 0.05);
+  --shadow-float: 0 4px 16px rgba(60, 80, 60, 0.1), 0 1px 4px rgba(60, 80, 60, 0.05);
   --shadow-phone: 0 20px 60px rgba(0, 0, 0, 0.12), 0 4px 20px rgba(0, 0, 0, 0.06);
 
   /* ── 字体 ── */

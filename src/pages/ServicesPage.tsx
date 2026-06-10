@@ -185,10 +185,9 @@ export default function ServicesPage() {
                   .filter((s) => s.status === 'in_progress')
                   .map((service) => (
                     <div
-                      className="service-card"
+                      className="service-card card-interactive"
                       key={service.id}
                       onClick={() => navigate('/progress')}
-                      style={{ cursor: 'pointer' }}
                     >
                       {/* 卡片头部 */}
                       <div className="service-card-header">
@@ -227,23 +226,49 @@ export default function ServicesPage() {
         {/* ── 历史记录 tab ── */}
         {activeTab === 'history' && (
           <div
+            className="page-enter"
             style={{
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
               justifyContent: 'center',
-              padding: '80px 0',
-              gap: '16px',
+              padding: '60px 0',
+              gap: '12px',
             }}
           >
-            <Package size={48} color="var(--text-tertiary)" />
+            <div
+              style={{
+                width: 72,
+                height: 72,
+                borderRadius: '50%',
+                background: 'var(--surface-soft)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                marginBottom: 'var(--space-2)',
+              }}
+            >
+              <Package size={32} color="var(--text-tertiary)" />
+            </div>
             <span
               style={{
-                color: 'var(--text-tertiary)',
+                color: 'var(--text-secondary)',
                 fontSize: 'var(--text-body-sm)',
+                fontWeight: 'var(--weight-medium)',
               }}
             >
               暂无历史服务记录
+            </span>
+            <span
+              style={{
+                color: 'var(--text-tertiary)',
+                fontSize: 'var(--text-caption)',
+                textAlign: 'center',
+                lineHeight: 'var(--leading-relaxed)',
+                maxWidth: '220px',
+              }}
+            >
+              完成的服务订单将在这里显示，方便您随时查阅
             </span>
           </div>
         )}

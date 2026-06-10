@@ -5,6 +5,7 @@ import './styles/reset.css'
 import './styles/components.css'
 import './styles/layout.css'
 import './styles/pages.css'
+import './styles/animations.css'
 import App from './App'
 
 createRoot(document.getElementById('root')!).render(

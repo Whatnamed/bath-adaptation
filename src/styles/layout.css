@@ -276,8 +276,13 @@
   gap: 2px;
   padding: 4px 0;
   color: var(--text-tertiary);
-  transition: color var(--duration-fast) var(--ease-out);
+  transition: color var(--duration-fast) var(--ease-out),
+              transform var(--duration-fast) var(--ease-out);
   -webkit-tap-highlight-color: transparent;
+}
+
+.bottom-nav-item:active {
+  transform: scale(0.92);
 }
 
 .bottom-nav-item.active {

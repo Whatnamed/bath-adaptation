@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   ChevronLeft,
@@ -32,6 +33,7 @@ const productPrices: Record<string, number> = {
 export default function PlanConfirmPage() {
   const navigate = useNavigate()
   const { setStage, selectedProducts, familyDetails } = useAppStage()
+  const [submitting, setSubmitting] = useState(false)
 
   /* 从全局状态中获取用户已选产品，构建动态的费用清单 */
   const selectedItemsList: { id: string; name: string; price: number; category: string }[] = []
@@ -307,10 +309,14 @@ export default function PlanConfirmPage() {
           </span>
         </div>
         <button
-          className="btn btn-primary btn-block btn-lg"
+          className={`btn btn-primary btn-block btn-lg ${submitting ? 'btn-loading' : ''}`}
+          disabled={submitting}
           onClick={() => {
-            setStage('plan_confirmed')
-            navigate('/')
+            setSubmitting(true)
+            setTimeout(() => {
+              setStage('plan_confirmed')
+              navigate('/')
+            }, 800)
           }}
         >
           确认方案并预约安装

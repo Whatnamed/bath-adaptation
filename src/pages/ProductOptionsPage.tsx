@@ -130,7 +130,7 @@ export default function ProductOptionsPage() {
             return (
               <div
                 key={item.id}
-                className="card"
+                className="card card-interactive stagger-item"
                 onClick={() => toggleItem(item.id)}
                 style={{
                   cursor: 'pointer',

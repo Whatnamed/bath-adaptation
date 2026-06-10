@@ -96,7 +96,7 @@ export default function CategoryPage() {
             return (
               <div
                 key={cat.id}
-                className="card"
+                className="card card-interactive stagger-item"
                 onClick={() => handleCategoryClick(cat.id)}
                 style={{
                   cursor: 'pointer',

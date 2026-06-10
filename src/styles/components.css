@@ -24,6 +24,34 @@
   transform: scale(0.97);
 }
 
+.btn:disabled,
+.btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+
+.btn-loading::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: btn-spin 0.6s linear infinite;
+}
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+
 .btn-primary {
   background: var(--accent);
   color: var(--text-inverse);
@@ -96,6 +124,22 @@
   padding: var(--space-5);
 }
 
+/* 可点击卡片 - 提供触觉反馈 */
+.card-interactive {
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease-out),
+              box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.card-interactive:hover {
+  box-shadow: var(--shadow-elevated);
+}
+
+.card-interactive:active {
+  transform: scale(0.98);
+  box-shadow: var(--shadow-card);
+}
+
 /* ── 标签 / Chip ── */
 .chip {
   display: inline-flex;
@@ -161,6 +205,11 @@
 .list-row-accessory {
   flex-shrink: 0;
   color: var(--text-tertiary);
+}
+
+/* 相邻列表行之间的分割线 */
+.list-row + .list-row {
+  border-top: 1px solid var(--border-light);
 }
 
 /* ── 头像 ── */
