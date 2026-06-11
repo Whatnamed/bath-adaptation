@@ -80,3 +80,66 @@ export function SectionHeader({ title, action }: SectionHeaderProps) {
     </div>
   )
 }
+
+type Tone = 'accent' | 'warning' | 'danger' | 'info' | 'success' | 'neutral'
+type IconBadgeSize = 'sm' | 'md' | 'lg'
+
+interface IconBadgeProps extends HTMLAttributes<HTMLDivElement> {
+  tone?: Tone
+  size?: IconBadgeSize
+}
+
+export function IconBadge({
+  tone = 'accent',
+  size = 'md',
+  className = '',
+  children,
+  ...props
+}: IconBadgeProps) {
+  return (
+    <div
+      className={['icon-badge', `icon-badge-${tone}`, `icon-badge-${size}`, className]
+        .filter(Boolean)
+        .join(' ')}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+}
+
+interface FixedBottomBarProps extends HTMLAttributes<HTMLDivElement> {
+  variant?: 'attached' | 'floating'
+}
+
+export function FixedBottomBar({
+  variant = 'attached',
+  className = '',
+  children,
+  ...props
+}: FixedBottomBarProps) {
+  return (
+    <div
+      className={['fixed-bottom', `fixed-bottom-${variant}`, className]
+        .filter(Boolean)
+        .join(' ')}
+      {...props}
+    >
+      {children}
+    </div>
+  )
+}
+
+interface InfoNoteProps extends HTMLAttributes<HTMLDivElement> {
+  tone?: Tone
+  icon?: ReactNode
+}
+
+export function InfoNote({ tone = 'accent', icon, className = '', children, ...props }: InfoNoteProps) {
+  return (
+    <div className={['info-note', `info-note-${tone}`, className].filter(Boolean).join(' ')} {...props}>
+      {icon && <span className="info-note-icon">{icon}</span>}
+      <span className="info-note-text">{children}</span>
+    </div>
+  )
+}

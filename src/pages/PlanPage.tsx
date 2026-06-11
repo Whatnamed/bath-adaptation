@@ -4,7 +4,7 @@ import {
   ChevronRight,
 } from 'lucide-react'
 import { riskFindings, planItems } from '../data/mock'
-import { Button, Chip, PageHeader, SectionHeader } from '../components'
+import { Button, Chip, FixedBottomBar, PageHeader, SectionHeader } from '../components'
 
 /* 导入图片资源 */
 import antislipImg from '../assets/images/antislip.png'
@@ -117,7 +117,7 @@ export default function PlanPage() {
       </div>
 
       {/* ── 固定底部 CTA ── */}
-      <div className="fixed-bottom fixed-bottom-attached">
+      <FixedBottomBar>
         <Button
           block
           size="lg"
@@ -131,7 +131,7 @@ export default function PlanPage() {
         >
           跳过，由服务站推荐方案
         </button>
-      </div>
+      </FixedBottomBar>
     </div>
   )
 }

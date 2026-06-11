@@ -1,18 +1,17 @@
 import { useNavigate } from 'react-router-dom'
 import {
-  ChevronRight,
   UserCheck,
   Camera,
   ShoppingBag,
   Shield,
 } from 'lucide-react'
 import { useAppStage } from '../context/AppStageContext'
-import { PageHeader } from '../components'
+import { ChoiceCard, InfoNote, PageHeader } from '../components'
 
 /* ── 选项卡片数据 ── */
 interface ChoiceOption {
   icon: React.ReactNode
-  iconBg: string
+  tone: 'accent' | 'warning' | 'info'
   title: string
   desc: string
   chip?: string
@@ -27,7 +26,7 @@ export default function AssessmentChoicePage() {
   const options: ChoiceOption[] = [
     {
       icon: <UserCheck size={28} />,
-      iconBg: 'var(--accent-soft)',
+      tone: 'accent',
       title: '申请专业评估',
       desc: '由评估员上门实地检查，出具专业评估报告',
       chip: '免费',
@@ -35,7 +34,7 @@ export default function AssessmentChoicePage() {
     },
     {
       icon: <Camera size={28} />,
-      iconBg: '#E8F0FE',
+      tone: 'info',
       title: '自行拍照评估',
       desc: '拍摄卫浴现场照片，系统智能分析安全风险',
       chip: '快速',
@@ -43,7 +42,7 @@ export default function AssessmentChoicePage() {
     },
     {
       icon: <ShoppingBag size={28} />,
-      iconBg: '#FFF3E0',
+      tone: 'warning',
       title: '我已了解需求，直接选购',
       desc: '跳过评估，直接浏览和选择改造产品',
       onClick: () => {
@@ -76,102 +75,23 @@ export default function AssessmentChoicePage() {
         {/* ── 三张选项卡片 ── */}
         <div className="page-section">
           {options.map((opt, i) => (
-            <div
+            <ChoiceCard
               key={i}
-              className="card"
+              icon={opt.icon}
+              tone={opt.tone}
+              title={opt.title}
+              desc={opt.desc}
+              chip={opt.chip}
               onClick={opt.onClick}
-              style={{
-                cursor: 'pointer',
-                transition: 'all 0.2s ease',
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--space-4)',
-                marginBottom: 'var(--space-3)',
-              }}
-            >
-              {/* 圆形图标容器 */}
-              <div
-                style={{
-                  width: 56,
-                  height: 56,
-                  minWidth: 56,
-                  borderRadius: '50%',
-                  background: opt.iconBg,
-                  color: opt.iconBg === 'var(--accent-soft)' ? 'var(--accent)' : opt.iconBg === '#E8F0FE' ? '#1A73E8' : '#E65100',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                {opt.icon}
-              </div>
-
-              {/* 右侧文字区 */}
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div
-                  style={{
-                    fontSize: 'var(--text-body)',
-                    fontWeight: 'var(--weight-semibold)',
-                    color: 'var(--text-primary)',
-                    marginBottom: 'var(--space-1)',
-                  }}
-                >
-                  {opt.title}
-                </div>
-                <div
-                  style={{
-                    fontSize: 'var(--text-caption)',
-                    color: 'var(--text-secondary)',
-                    lineHeight: 'var(--leading-relaxed)',
-                    marginBottom: opt.chip ? 'var(--space-2)' : 0,
-                  }}
-                >
-                  {opt.desc}
-                </div>
-                {opt.chip && (
-                  <span className="chip chip-accent">{opt.chip}</span>
-                )}
-              </div>
-
-              {/* 右侧箭头 */}
-              <ChevronRight
-                size={18}
-                style={{ color: 'var(--text-tertiary)', flexShrink: 0 }}
-              />
-            </div>
+            />
           ))}
         </div>
 
         {/* ── 底部安全提示 ── */}
         <div className="page-section">
-          <div
-            style={{
-              background: 'var(--accent-soft)',
-              borderRadius: 'var(--radius-md)',
-              padding: 'var(--space-3) var(--space-4)',
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: 'var(--space-2)',
-            }}
-          >
-            <Shield
-              size={16}
-              style={{
-                color: 'var(--accent)',
-                marginTop: 2,
-                minWidth: 16,
-              }}
-            />
-            <span
-              style={{
-                fontSize: 'var(--text-caption)',
-                color: 'var(--text-secondary)',
-                lineHeight: 'var(--leading-relaxed)',
-              }}
-            >
+          <InfoNote icon={<Shield size={16} />}>
               无论选择哪种方式，我们都会确保方案的安全性和专业性
-            </span>
-          </div>
+          </InfoNote>
         </div>
       </div>
     </>

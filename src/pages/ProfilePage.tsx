@@ -75,22 +75,22 @@ export default function ProfilePage() {
   const otherMenu: MenuGroupItem[] = [
     {
       icon: <Bell size={20} />,
-      iconBg: '#f3f3f5',
-      iconColor: 'var(--text-secondary)',
+      iconBg: 'var(--neutral-soft)',
+      iconColor: 'var(--neutral)',
       label: '通知设置',
       desc: '',
     },
     {
       icon: <HelpCircle size={20} />,
-      iconBg: '#f3f3f5',
-      iconColor: 'var(--text-secondary)',
+      iconBg: 'var(--neutral-soft)',
+      iconColor: 'var(--neutral)',
       label: '帮助与反馈',
       desc: '',
     },
     {
       icon: <Info size={20} />,
-      iconBg: '#f3f3f5',
-      iconColor: 'var(--text-secondary)',
+      iconBg: 'var(--neutral-soft)',
+      iconColor: 'var(--neutral)',
       label: '关于',
       desc: '',
     },

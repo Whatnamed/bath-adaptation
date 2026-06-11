@@ -9,7 +9,7 @@ import {
   ChevronRight,
   Phone,
 } from 'lucide-react'
-import { Card, PageHeader, SectionHeader } from '../components'
+import { Card, IconBadge, PageHeader, SectionHeader } from '../components'
 
 /* ── 维护与提醒页 ── */
 export default function MaintenancePage() {
@@ -88,12 +88,9 @@ export default function MaintenancePage() {
               <div className="device-card" key={i}>
                 <div className="device-card-header">
                   {/* 图标 */}
-                  <div
-                    className="device-card-icon"
-                    style={{ background: device.iconBg, color: device.iconColor }}
-                  >
+                  <IconBadge className="device-card-icon" size="md" style={{ background: device.iconBg, color: device.iconColor }}>
                     <Icon size={20} />
-                  </div>
+                  </IconBadge>
 
                   {/* 名称 */}
                   <div className="device-card-info">

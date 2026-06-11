@@ -51,6 +51,8 @@ const sidebarPages = [
   ]},
 ]
 
+const primaryTabPaths = new Set(['/', '/services', '/profile'])
+
 /* ── 侧栏组件 ── */
 function PageSidebar() {
   const location = useLocation()
@@ -105,15 +107,16 @@ function PageSidebar() {
 /* ── 动画页面路由 ── */
 function AnimatedRoutes() {
   const location = useLocation()
+  const isPrimaryTabPage = primaryTabPaths.has(location.pathname)
 
   return (
     <AnimatePresence mode="wait">
       <motion.div
         key={location.pathname}
-        initial={{ opacity: 0, x: 20 }}
+        initial={isPrimaryTabPage ? false : { opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
-        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+        exit={isPrimaryTabPage ? undefined : { opacity: 0, x: -20 }}
+        transition={isPrimaryTabPage ? { duration: 0 } : { duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
         className="route-frame"
       >
         <Routes location={location}>

@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import { productCategories, productOptions } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
-import { Button, PageHeader } from '../components'
+import { Button, FixedBottomBar, InfoNote, PageHeader } from '../components'
 
 /* ── 图标映射：根据类别 icon 字段选择对应的 lucide 图标 ── */
 const iconMap: Record<string, React.ReactNode> = {
@@ -185,52 +185,23 @@ export default function CategoryPage() {
 
         {/* ── 底部提示 ── */}
         <div className="page-section">
-          <div
-            style={{
-              background: 'var(--accent-soft)',
-              borderRadius: 'var(--radius-md)',
-              padding: 'var(--space-3) var(--space-4)',
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: 'var(--space-2)',
-            }}
-          >
-            <Lightbulb
-              size={16}
-              style={{
-                color: 'var(--accent)',
-                marginTop: 2,
-                minWidth: 16,
-              }}
-            />
-            <span
-              style={{
-                fontSize: 'var(--text-caption)',
-                color: 'var(--text-secondary)',
-                lineHeight: 'var(--leading-relaxed)',
-              }}
-            >
+          <InfoNote icon={<Lightbulb size={16} />}>
               您也可以跳过产品选择，由服务站为您推荐最合适的方案
-            </span>
-          </div>
+          </InfoNote>
         </div>
       </div>
 
       {/* ── 固定底部操作栏 ── */}
-      <div className="fixed-bottom fixed-bottom-attached">
+      <FixedBottomBar>
         <Button
           block
           size="lg"
           onClick={() => navigate('/plan/confirm')}
           disabled={totalSelectedCount <= 0}
-          style={{
-            opacity: totalSelectedCount > 0 ? 1 : 0.5,
-            pointerEvents: totalSelectedCount > 0 ? 'auto' : 'none',
-          }}
         >
           {totalSelectedCount > 0 ? `确认已选 ${totalSelectedCount} 项，进入下一步` : '请先选择改造产品'}
         </Button>
-      </div>
+      </FixedBottomBar>
     </div>
   )
 }

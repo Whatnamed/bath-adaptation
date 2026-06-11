@@ -9,7 +9,9 @@
   justify-content: center;
   height: 100vh;
   gap: 0;
-  background: #E8E5E0;
+  background:
+    radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.56), transparent 34%),
+    var(--surface-preview);
   padding: 20px;
 }
 
@@ -17,7 +19,7 @@
 .page-sidebar {
   width: 180px;
   height: var(--phone-height);
-  background: #FFFFFF;
+  background: var(--surface-card);
   border-radius: 16px 0 0 16px;
   box-shadow: var(--shadow-elevated);
   display: flex;
@@ -134,7 +136,7 @@
   overflow: hidden;
   position: relative;
   flex-shrink: 0;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(26, 29, 26, 0.08);
 }
 
 .phone-inner {
@@ -175,7 +177,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-2) var(--space-page) var(--space-3);
+  padding: var(--space-2) var(--space-page) var(--space-4);
   flex-shrink: 0;
   background: var(--surface-page);
 }
@@ -183,6 +185,7 @@
 .app-header-brand {
   display: flex;
   flex-direction: column;
+  gap: 1px;
 }
 
 .app-header-title {
@@ -214,7 +217,24 @@
   flex-direction: column;
   align-items: center;
   gap: 2px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 5px 6px 4px;
+  border-radius: var(--radius-md);
   color: var(--text-secondary);
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.app-header-btn:hover {
+  background: var(--accent-state);
+  color: var(--accent-deep);
+}
+
+.app-header-btn:active {
+  transform: translateY(1px) scale(0.98);
 }
 
 .app-header-btn-label {
@@ -241,11 +261,22 @@
   height: 36px;
   border-radius: 50%;
   color: var(--text-primary);
-  transition: background var(--duration-fast) var(--ease-out);
+  background: var(--surface-card);
+  box-shadow: var(--shadow-card);
+  transition:
+    background var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
 }
 
 .page-header-back:hover {
-  background: var(--surface-warm);
+  background: var(--accent-soft);
+  box-shadow: var(--shadow-elevated);
+}
+
+.page-header-back:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: var(--shadow-pressed);
 }
 
 .page-header-title {
@@ -274,14 +305,10 @@
   position: relative;
 }
 
-.subpage-content-roomy {
-  padding-bottom: 120px;
-}
-
 .fixed-bottom-attached {
   flex-shrink: 0;
   position: relative;
-  background: var(--surface-page);
+  background: linear-gradient(to top, var(--surface-page) 84%, rgba(245, 245, 243, 0));
   border-top: 1px solid var(--border-light);
   z-index: 10;
   padding: var(--space-4) var(--space-page);
@@ -292,7 +319,7 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: rgba(245, 245, 243, 0.8);
+  background: rgba(245, 245, 243, 0.86);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border-top: 1px solid rgba(232, 234, 232, 0.5);
@@ -305,7 +332,7 @@
   top: calc(var(--statusbar-height) + 8px);
   left: 16px;
   right: 16px;
-  background: rgba(28, 28, 30, 0.95);
+  background: var(--surface-scrim);
   color: var(--text-inverse);
   padding: 12px 16px;
   border-radius: var(--radius-lg);
@@ -360,6 +387,10 @@
   scrollbar-width: none;
 }
 
+.subpage-content.subpage-content-roomy {
+  padding-bottom: 220px;
+}
+
 .subpage-content::-webkit-scrollbar {
   display: none;
 }
@@ -371,7 +402,9 @@
   left: 0;
   right: 0;
   height: var(--bottomnav-height);
-  background: var(--surface-card);
+  background: var(--surface-glass);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
   border-top: 1px solid var(--border-light);
   display: flex;
   align-items: flex-start;
@@ -386,18 +419,33 @@
   align-items: center;
   gap: 2px;
   padding: 4px 0;
+  min-height: 52px;
   color: var(--text-tertiary);
-  transition: color var(--duration-fast) var(--ease-out),
-              transform var(--duration-fast) var(--ease-out);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
   -webkit-tap-highlight-color: transparent;
 }
 
 .bottom-nav-item:active {
-  transform: scale(0.92);
+  transform: translateY(1px) scale(0.96);
 }
 
 .bottom-nav-item.active {
   color: var(--accent);
+  background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 .bottom-nav-label {

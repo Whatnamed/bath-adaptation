@@ -79,10 +79,10 @@ export default function HomePage() {
   const cardIcons: Record<string, React.ReactNode> = {
     unbound: <Heart size={24} color="var(--accent)" />,
     idle: <Sparkles size={24} color="var(--accent)" />,
-    assessment_pending: <Clock size={24} color="#E8A317" />,
+    assessment_pending: <Clock size={24} color="var(--warning)" />,
     self_assessing: <Camera size={24} color="var(--accent)" />,
     plan_pending: <ClipboardCheck size={24} color="var(--accent)" />,
-    plan_confirmed: <CalendarDays size={24} color="#4A90D9" />,
+    plan_confirmed: <CalendarDays size={24} color="var(--info)" />,
     installing: <Wrench size={24} color="var(--accent)" />,
     completed: <CheckCircle size={24} color="var(--accent)" />,
   }
@@ -97,7 +97,7 @@ export default function HomePage() {
           <span className="app-header-subtitle">让父母洗浴更安全，子女更安心</span>
         </div>
         <div className="app-header-actions">
-          <button className="app-header-btn" onClick={() => navigate('/maintenance')}>
+          <button className="app-header-btn" onClick={() => navigate('/notifications')}>
             <MessageSquare size={22} />
             <span className="app-header-btn-label">消息</span>
           </button>
@@ -157,7 +157,13 @@ export default function HomePage() {
                 </div>
               )}
             </div>
-            <button className="task-card-cta" onClick={() => navigate(card.ctaRoute)}>
+            <button
+              className="task-card-cta"
+              onClick={(event) => {
+                event.stopPropagation()
+                navigate(card.ctaRoute)
+              }}
+            >
               {card.cta} <ChevronRight size={16} />
             </button>
           </div>
@@ -226,33 +232,13 @@ export default function HomePage() {
                 { icon: <Wrench size={20} color="var(--accent)" />, title: '适老改造', desc: '防滑、扶手、恒温花洒等适老化产品安装' },
                 { icon: <CalendarClock size={20} color="var(--accent)" />, title: '长期维护', desc: '设备定期检查和维护，确保持续安全' },
               ].map((item) => (
-                <div
-                  key={item.title}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'flex-start',
-                    gap: 'var(--space-3)',
-                    padding: 'var(--space-3) 0',
-                    borderBottom: '1px solid var(--border-light)',
-                  }}
-                >
-                  <div
-                    style={{
-                      width: 36,
-                      height: 36,
-                      minWidth: 36,
-                      borderRadius: '50%',
-                      background: 'var(--accent-soft)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
+                <div key={item.title} className="service-list-item">
+                  <div className="service-list-icon">
                     {item.icon}
                   </div>
                   <div>
-                    <div style={{ fontSize: 'var(--text-body-sm)', fontWeight: 'var(--weight-semibold)', color: 'var(--text-primary)', marginBottom: 2 }}>{item.title}</div>
-                    <div style={{ fontSize: 'var(--text-caption)', color: 'var(--text-secondary)', lineHeight: 'var(--leading-relaxed)' }}>{item.desc}</div>
+                    <div className="service-list-title">{item.title}</div>
+                    <div className="service-list-desc">{item.desc}</div>
                   </div>
                 </div>
               ))}

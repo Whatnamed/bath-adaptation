@@ -8,7 +8,7 @@ import {
 } from 'lucide-react'
 import { productOptions, productCategories } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
-import { Button, PageHeader, ProductCard } from '../components'
+import { Button, FixedBottomBar, PageHeader, ProductCard } from '../components'
 
 /* 产品图片导入 */
 import prodT1 from '../assets/images/01_products/toilet/product_toilet_t1_squat_to_seat_adapter.png'
@@ -115,26 +115,11 @@ export default function ProductOptionsPage() {
       {/* ── 可滚动内容区域 ── */}
       <div className="subpage-content subpage-content-roomy">
         {/* ── 顶部引导 ── */}
-        <div
-          className="page-section"
-          style={{ marginBottom: 'var(--space-5)', marginTop: 'var(--space-4)' }}
-        >
-          <div
-            style={{
-              fontSize: 'var(--text-body)',
-              fontWeight: 'var(--weight-semibold)',
-              color: 'var(--text-primary)',
-              marginBottom: 'var(--space-1)',
-            }}
-          >
+        <div className="page-section product-category-lede">
+          <div className="product-category-title">
             选择适合的{categoryName.replace('改造', '')}产品
           </div>
-          <div
-            style={{
-              fontSize: 'var(--text-caption)',
-              color: 'var(--text-secondary)',
-            }}
-          >
+          <div className="product-category-subtitle">
             可多选，我们会根据实际情况推荐搭配方案
           </div>
         </div>
@@ -162,51 +147,29 @@ export default function ProductOptionsPage() {
       </div>
 
       {/* ── 固定底部操作栏 ── */}
-      <div className="fixed-bottom fixed-bottom-floating">
+      <FixedBottomBar variant="floating">
         {/* 确认成功提示 */}
         {confirmed ? (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 'var(--space-2)',
-              padding: 'var(--space-3)',
-              color: 'var(--accent)',
-              fontSize: 'var(--text-body-sm)',
-              fontWeight: 'var(--weight-semibold)',
-            }}
-          >
+          <div className="bottom-bar-success">
             <CheckCircle size={20} />
             已加入方案，正在返回类别选择…
           </div>
         ) : (
           <>
-            <div
-              style={{
-                fontSize: 'var(--text-body-sm)',
-                color: 'var(--text-secondary)',
-                marginBottom: 'var(--space-2)',
-                textAlign: 'center',
-              }}
-            >
+            <div className="bottom-bar-summary">
               已选 {selected.size} 项产品
             </div>
             <Button
               block
               size="lg"
               disabled={selected.size === 0}
-              style={{
-                opacity: selected.size === 0 ? 0.5 : 1,
-                pointerEvents: selected.size === 0 ? 'none' : 'auto',
-              }}
               onClick={handleAddToPlan}
             >
               加入改造方案
             </Button>
           </>
         )}
-      </div>
+      </FixedBottomBar>
     </div>
   )
 }
