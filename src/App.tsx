@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'motion/react'
 
@@ -105,7 +106,11 @@ function PageSidebar() {
 }
 
 /* ── 动画页面路由 ── */
-function AnimatedRoutes() {
+interface AnimatedRoutesProps {
+  onOpenImagePreview: (src: string) => void
+}
+
+function AnimatedRoutes({ onOpenImagePreview }: AnimatedRoutesProps) {
   const location = useLocation()
   const isPrimaryTabPage = primaryTabPaths.has(location.pathname)
 
@@ -134,11 +139,24 @@ function AnimatedRoutes() {
           <Route path="/bind" element={<FamilyBindPage />} />
           <Route path="/assessment/choose" element={<AssessmentChoicePage />} />
           <Route path="/assessment/apply" element={<ApplyAssessmentPage />} />
-          <Route path="/assessment/self" element={<SelfAssessmentPage />} />
+          <Route path="/assessment/self" element={<SelfAssessmentPage onOpenImagePreview={onOpenImagePreview} />} />
           <Route path="/notifications" element={<NotificationsPage />} />
         </Routes>
       </motion.div>
     </AnimatePresence>
+  )
+}
+
+interface PhoneImagePreviewProps {
+  src: string
+  onClose: () => void
+}
+
+function PhoneImagePreview({ src, onClose }: PhoneImagePreviewProps) {
+  return (
+    <button className="phone-image-preview" onClick={onClose} aria-label="关闭图片预览">
+      <img className="phone-image-preview-img" src={src} alt="预览" />
+    </button>
   )
 }
 
@@ -158,6 +176,8 @@ function GlobalToast() {
 
 /* ── 主应用 ── */
 export default function App() {
+  const [previewImg, setPreviewImg] = useState<string | null>(null)
+
   return (
     <AppStageProvider initialStage="unbound">
       <BrowserRouter>
@@ -166,8 +186,14 @@ export default function App() {
           <PhoneShell>
             <StatusBar />
             <GlobalToast />
-            <AnimatedRoutes />
+            <AnimatedRoutes onOpenImagePreview={setPreviewImg} />
             <HomeIndicator />
+            {previewImg && (
+              <PhoneImagePreview
+                src={previewImg}
+                onClose={() => setPreviewImg(null)}
+              />
+            )}
           </PhoneShell>
         </div>
       </BrowserRouter>

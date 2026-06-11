@@ -1,25 +1,28 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
-  ChevronLeft,
+  Armchair,
   Camera,
   CheckCircle,
-  Home,
-  Armchair,
+  ChevronLeft,
   Droplets,
+  Home,
 } from 'lucide-react'
 import { useAppStage } from '../context/AppStageContext'
 import selfOverall from '../assets/images/03_assessment_scenes/self_photo/self_01_bathroom_overall.png'
 import selfToilet from '../assets/images/03_assessment_scenes/self_photo/self_02_squat_toilet_area.png'
 import selfShower from '../assets/images/03_assessment_scenes/self_photo/self_03_shower_wash_area.png'
 
-/* 拍照区域定义 */
 interface PhotoArea {
   id: string
   icon: React.ReactNode
   title: string
   description: string
   guideImg: string
+}
+
+interface SelfAssessmentPageProps {
+  onOpenImagePreview?: (src: string) => void
 }
 
 const PHOTO_AREAS: PhotoArea[] = [
@@ -46,20 +49,17 @@ const PHOTO_AREAS: PhotoArea[] = [
   },
 ]
 
-const SelfAssessmentPage: React.FC = () => {
+const SelfAssessmentPage: React.FC<SelfAssessmentPageProps> = ({ onOpenImagePreview }) => {
   const navigate = useNavigate()
   const { stage, setStage } = useAppStage()
 
   const [uploaded, setUploaded] = useState<Set<string>>(new Set())
-  const [previewImg, setPreviewImg] = useState<string | null>(null)
   const doneCount = uploaded.size
   const canSubmit = doneCount === 3
 
-  /** 处理区域拍照上传 */
   const handleUpload = (areaId: string) => {
-    if (uploaded.has(areaId)) return // 已上传则忽略
+    if (uploaded.has(areaId)) return
 
-    // 首次上传时切换阶段到 self_assessing
     if (stage !== 'self_assessing') {
       setStage('self_assessing')
     }
@@ -79,33 +79,6 @@ const SelfAssessmentPage: React.FC = () => {
 
   return (
     <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-      {/* 全屏预览 */}
-      {previewImg && (
-        <div
-          onClick={() => setPreviewImg(null)}
-          style={{
-            position: 'absolute',
-            top: 'calc(-1 * var(--statusbar-height))',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            background: 'rgba(0,0,0,0.95)',
-            zIndex: 9999,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'zoom-out',
-          }}
-        >
-          <img
-            src={previewImg}
-            alt="预览"
-            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
-          />
-        </div>
-      )}
-
-      {/* ---- 顶栏 ---- */}
       <header className="page-header" style={{ flexShrink: 0 }}>
         <button className="page-header-back" onClick={() => navigate(-1)}>
           <ChevronLeft size={24} />
@@ -113,9 +86,7 @@ const SelfAssessmentPage: React.FC = () => {
         <h1 className="page-header-title">拍照评估</h1>
       </header>
 
-      {/* ---- 可滚动主体 ---- */}
       <div className="subpage-content" style={{ flex: 1, overflowY: 'auto', paddingBottom: 'var(--space-4)' }}>
-        {/* 顶部引导说明 */}
         <div style={{ marginBottom: 'var(--space-4)', marginTop: 'var(--space-4)' }}>
           <h2 style={{
             fontSize: 'var(--text-body)',
@@ -135,7 +106,6 @@ const SelfAssessmentPage: React.FC = () => {
           </p>
         </div>
 
-        {/* 拍照进度指示 */}
         <div style={{ marginBottom: 'var(--space-4)' }}>
           <p style={{
             fontSize: 'var(--text-caption)',
@@ -145,7 +115,6 @@ const SelfAssessmentPage: React.FC = () => {
           }}>
             已完成 {doneCount} / 3 个区域
           </p>
-          {/* 进度条 */}
           <div style={{
             height: '4px',
             borderRadius: '2px',
@@ -162,13 +131,11 @@ const SelfAssessmentPage: React.FC = () => {
           </div>
         </div>
 
-        {/* 三个拍照区域卡片 */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-3)' }}>
           {PHOTO_AREAS.map((area) => {
             const done = uploaded.has(area.id)
             return (
               <div className="card" key={area.id} style={{ padding: 'var(--space-4)' }}>
-                {/* 卡片头部 */}
                 <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--space-2)', marginBottom: 'var(--space-1)' }}>
                   {area.icon}
                   <span style={{
@@ -188,11 +155,9 @@ const SelfAssessmentPage: React.FC = () => {
                   {area.description}
                 </p>
 
-                {/* 拍照 / 已上传 区域 */}
                 {done ? (
-                  /* 已上传状态 */
                   <div
-                    onClick={() => setPreviewImg(area.guideImg)}
+                    onClick={() => onOpenImagePreview?.(area.guideImg)}
                     style={{
                       height: '140px',
                       borderRadius: '12px',
@@ -206,7 +171,6 @@ const SelfAssessmentPage: React.FC = () => {
                       alt={area.title}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                     />
-                    {/* 已上传角标 */}
                     <div style={{
                       position: 'absolute',
                       top: 8,
@@ -221,7 +185,6 @@ const SelfAssessmentPage: React.FC = () => {
                     }}>
                       <CheckCircle size={14} color="#fff" />
                     </div>
-                    {/* 底部文字 */}
                     <div style={{
                       position: 'absolute',
                       bottom: 0,
@@ -237,7 +200,6 @@ const SelfAssessmentPage: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  /* 未上传：虚线拍照区 */
                   <button
                     onClick={() => handleUpload(area.id)}
                     style={{
@@ -267,7 +229,6 @@ const SelfAssessmentPage: React.FC = () => {
         </div>
       </div>
 
-      {/* ---- 固定底部 ---- */}
       <div className="fixed-bottom" style={{ flexShrink: 0, position: 'relative', background: 'var(--surface-page)', borderTop: '1px solid var(--border-light)', zIndex: 10, padding: 'var(--space-4) var(--space-page)' }}>
         <p style={{
           textAlign: 'center',
