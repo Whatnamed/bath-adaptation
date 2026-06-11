@@ -1,6 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import {
-  ChevronLeft,
   ChevronRight,
   Armchair,
   Droplets,
@@ -9,6 +8,7 @@ import {
 } from 'lucide-react'
 import { productCategories, productOptions } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
+import { Button, PageHeader } from '../components'
 
 /* ── 图标映射：根据类别 icon 字段选择对应的 lucide 图标 ── */
 const iconMap: Record<string, React.ReactNode> = {
@@ -49,18 +49,12 @@ export default function CategoryPage() {
   )
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+    <div className="screen-frame">
       {/* ── 页面头部 ── */}
-      <div className="page-header" style={{ flexShrink: 0 }}>
-        {/* 根据来源返回对应页面 */}
-        <button className="page-header-back" onClick={handleBack}>
-          <ChevronLeft size={20} />
-        </button>
-        <span className="page-header-title">选择改造类别</span>
-      </div>
+      <PageHeader title="选择改造类别" onBack={handleBack} />
 
       {/* ── 可滚动内容区域 ── */}
-      <div className="subpage-content" style={{ flex: 1, overflowY: 'auto', paddingBottom: 'var(--space-4)' }}>
+      <div className="subpage-content">
         {/* ── 顶部说明 ── */}
         <div className="page-section" style={{ marginTop: 'var(--space-4)' }}>
           <div
@@ -223,17 +217,19 @@ export default function CategoryPage() {
       </div>
 
       {/* ── 固定底部操作栏 ── */}
-      <div className="fixed-bottom" style={{ flexShrink: 0, position: 'relative', background: 'var(--surface-page)', borderTop: '1px solid var(--border-light)', zIndex: 10, padding: 'var(--space-4) var(--space-page)' }}>
-        <button
-          className="btn btn-primary btn-block btn-lg"
+      <div className="fixed-bottom fixed-bottom-attached">
+        <Button
+          block
+          size="lg"
           onClick={() => navigate('/plan/confirm')}
+          disabled={totalSelectedCount <= 0}
           style={{
             opacity: totalSelectedCount > 0 ? 1 : 0.5,
             pointerEvents: totalSelectedCount > 0 ? 'auto' : 'none',
           }}
         >
           {totalSelectedCount > 0 ? `确认已选 ${totalSelectedCount} 项，进入下一步` : '请先选择改造产品'}
-        </button>
+        </Button>
       </div>
     </div>
   )

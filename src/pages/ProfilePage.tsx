@@ -1,8 +1,5 @@
-import { useNavigate, useLocation } from 'react-router-dom'
 import {
   Home,
-  ClipboardList,
-  User,
   UserCheck,
   Users,
   MapPin,
@@ -10,18 +7,17 @@ import {
   Bell,
   HelpCircle,
   Info,
-  ChevronRight,
 } from 'lucide-react'
 import { stationInfo } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
+import { BottomNav, Chip, MenuGroup, SectionHeader } from '../components'
+import type { MenuGroupItem } from '../components'
 
 /* 图片素材导入 */
 import userAvatar from '../assets/images/00_brand/avatar_user_default.png'
 
 /* ── 我的页面 ── */
 export default function ProfilePage() {
-  const navigate = useNavigate()
-  const location = useLocation()
   const { familyDetails } = useAppStage()
 
   /* 手机号脱敏显示 */
@@ -35,7 +31,7 @@ export default function ProfilePage() {
   const fullAddress = `${familyDetails.provinceCityDistrict} ${familyDetails.townStreet} ${familyDetails.villageCommunity} ${familyDetails.houseNumber}`
 
   /* 菜单项数据 */
-  const familyMenu = [
+  const familyMenu: MenuGroupItem[] = [
     {
       icon: <UserCheck size={20} />,
       iconBg: 'var(--accent-soft)',
@@ -59,7 +55,7 @@ export default function ProfilePage() {
     },
   ]
 
-  const serviceMenu = [
+  const serviceMenu: MenuGroupItem[] = [
     {
       icon: <MapPin size={20} />,
       iconBg: 'var(--accent-soft)',
@@ -76,7 +72,7 @@ export default function ProfilePage() {
     },
   ]
 
-  const otherMenu = [
+  const otherMenu: MenuGroupItem[] = [
     {
       icon: <Bell size={20} />,
       iconBg: '#f3f3f5',
@@ -100,95 +96,43 @@ export default function ProfilePage() {
     },
   ]
 
-  /* 渲染菜单组 */
-  const renderMenuGroup = (items: typeof familyMenu) => (
-    <div className="menu-group">
-      {items.map((item) => (
-        <div className="menu-item" key={item.label}>
-          <div
-            className="menu-item-icon"
-            style={{ background: item.iconBg, color: item.iconColor }}
-          >
-            {item.icon}
-          </div>
-          <div style={{ flex: 1 }}>
-            <div className="menu-item-label">{item.label}</div>
-            {item.desc && <div className="menu-item-desc">{item.desc}</div>}
-          </div>
-          <ChevronRight size={16} color="var(--text-tertiary)" />
-        </div>
-      ))}
-    </div>
-  )
-
   return (
     <>
       {/* ── 页面内容 ── */}
       <div className="page-content">
         {/* 用户卡片 */}
-        <div className="profile-header page-section" style={{ marginTop: 'var(--space-4)' }}>
-          <div
-            className="avatar avatar-lg"
-            style={{ background: 'var(--accent-soft)', overflow: 'hidden' }}
-          >
-            <img src={userAvatar} alt="用户头像" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        <div className="profile-header page-section mt-4">
+          <div className="avatar avatar-lg">
+            <img src={userAvatar} alt="用户头像" className="avatar-image" />
           </div>
           <div>
             <div className="profile-name">张建国</div>
             <div className="profile-phone">{formatMaskedPhone(familyDetails.phone)}</div>
-            <span className="chip chip-accent">{familyDetails.relationship}</span>
+            <Chip>{familyDetails.relationship}</Chip>
           </div>
         </div>
 
         {/* 家庭档案 */}
         <div className="page-section">
-          <div className="section-header">
-            <span className="section-title">家庭档案</span>
-          </div>
-          {renderMenuGroup(familyMenu)}
+          <SectionHeader title="家庭档案" />
+          <MenuGroup items={familyMenu} />
         </div>
 
         {/* 服务信息 */}
         <div className="page-section">
-          <div className="section-header">
-            <span className="section-title">服务信息</span>
-          </div>
-          {renderMenuGroup(serviceMenu)}
+          <SectionHeader title="服务信息" />
+          <MenuGroup items={serviceMenu} />
         </div>
 
         {/* 其他 */}
         <div className="page-section">
-          <div className="section-header">
-            <span className="section-title">其他</span>
-          </div>
-          {renderMenuGroup(otherMenu)}
+          <SectionHeader title="其他" />
+          <MenuGroup items={otherMenu} />
         </div>
       </div>
 
       {/* ── 底部导航 ── */}
-      <nav className="bottom-nav">
-        <button
-          className={`bottom-nav-item ${location.pathname === '/' ? 'active' : ''}`}
-          onClick={() => navigate('/')}
-        >
-          <Home size={24} />
-          <span className="bottom-nav-label">首页</span>
-        </button>
-        <button
-          className={`bottom-nav-item ${location.pathname === '/services' ? 'active' : ''}`}
-          onClick={() => navigate('/services')}
-        >
-          <ClipboardList size={24} />
-          <span className="bottom-nav-label">服务</span>
-        </button>
-        <button
-          className={`bottom-nav-item ${location.pathname === '/profile' ? 'active' : ''}`}
-          onClick={() => navigate('/profile')}
-        >
-          <User size={24} />
-          <span className="bottom-nav-label">我的</span>
-        </button>
-      </nav>
+      <BottomNav />
     </>
   )
 }

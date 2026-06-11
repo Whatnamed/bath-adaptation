@@ -20,6 +20,7 @@ import AssessmentChoicePage from './pages/AssessmentChoicePage'
 import ApplyAssessmentPage from './pages/ApplyAssessmentPage'
 import SelfAssessmentPage from './pages/SelfAssessmentPage'
 import NotificationsPage from './pages/NotificationsPage'
+import { HomeIndicator, PhoneShell, StatusBar } from './components'
 
 /* ── 侧栏页面导航数据 ── */
 const sidebarPages = [
@@ -79,22 +80,12 @@ function PageSidebar() {
         ))}
 
         {/* ── 阶段切换器 ── */}
-        <div className="sidebar-group" style={{ borderTop: '1px solid var(--border-light)', paddingTop: 'var(--space-3)' }}>
+        <div className="sidebar-group sidebar-stage-group">
           <div className="sidebar-group-label">阶段切换（演示）</div>
           <select
             value={stage}
             onChange={(e) => setStage(e.target.value as typeof stage)}
-            style={{
-              width: '100%',
-              padding: '8px 12px',
-              fontSize: '12px',
-              borderRadius: '8px',
-              border: '1px solid var(--border-light)',
-              background: '#fff',
-              color: 'var(--text-primary)',
-              cursor: 'pointer',
-              outline: 'none',
-            }}
+            className="sidebar-stage-select"
           >
             {allStages.map((s) => (
               <option key={s} value={s}>
@@ -102,56 +93,13 @@ function PageSidebar() {
               </option>
             ))}
           </select>
-          <div
-            style={{
-              marginTop: 'var(--space-2)',
-              fontSize: '11px',
-              color: 'var(--text-tertiary)',
-              lineHeight: 1.4,
-            }}
-          >
+          <div className="sidebar-stage-help">
             切换阶段后首页和服务页将联动变化
           </div>
         </div>
       </div>
     </aside>
   )
-}
-
-/* ── 状态栏组件 ── */
-function StatusBar() {
-  return (
-    <div className="status-bar">
-      <span className="status-bar-time">9:41</span>
-      <div className="status-bar-icons">
-        {/* 信号图标 */}
-        <svg width="17" height="12" viewBox="0 0 17 12" fill="none">
-          <rect x="0" y="8" width="3" height="4" rx="0.5" fill="currentColor"/>
-          <rect x="4.5" y="5" width="3" height="7" rx="0.5" fill="currentColor"/>
-          <rect x="9" y="2" width="3" height="10" rx="0.5" fill="currentColor"/>
-          <rect x="13.5" y="0" width="3" height="12" rx="0.5" fill="currentColor"/>
-        </svg>
-        {/* WiFi 图标 */}
-        <svg width="16" height="12" viewBox="0 0 16 12" fill="none">
-          <path d="M8 10.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z" fill="currentColor" transform="translate(0, -2)"/>
-          <path d="M5 9a4.24 4.24 0 0 1 6 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" transform="translate(0, -2)"/>
-          <path d="M2.5 6.5a7.78 7.78 0 0 1 11 0" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" transform="translate(0, -2)"/>
-          <path d="M0.5 4A11.31 11.31 0 0 1 15.5 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" transform="translate(0, -2)"/>
-        </svg>
-        {/* 电池图标 */}
-        <svg width="27" height="12" viewBox="0 0 27 12" fill="none">
-          <rect x="0.5" y="0.5" width="22" height="11" rx="2" stroke="currentColor" strokeOpacity="0.35"/>
-          <rect x="2" y="2" width="19" height="8" rx="1" fill="currentColor"/>
-          <path d="M24 4v4a2 2 0 0 0 0-4z" fill="currentColor" fillOpacity="0.4"/>
-        </svg>
-      </div>
-    </div>
-  )
-}
-
-/* ── Home Indicator ── */
-function HomeIndicator() {
-  return <div className="home-indicator" />
 }
 
 /* ── 动画页面路由 ── */
@@ -166,7 +114,7 @@ function AnimatedRoutes() {
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-        style={{ position: 'relative', zIndex: 11, display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}
+        className="route-frame"
       >
         <Routes location={location}>
           <Route path="/" element={<HomePage />} />
@@ -198,39 +146,9 @@ function GlobalToast() {
   if (!toast) return null
 
   return (
-    <div
-      style={{
-        position: 'absolute',
-        top: 'calc(var(--statusbar-height) + 8px)',
-        left: '16px',
-        right: '16px',
-        background: 'rgba(28, 28, 30, 0.95)',
-        color: '#FFFFFF',
-        padding: '12px 16px',
-        borderRadius: '16px',
-        fontSize: 'var(--text-body-sm)',
-        lineHeight: '1.4',
-        boxShadow: 'var(--shadow-elevated)',
-        zIndex: 9999,
-        display: 'flex',
-        alignItems: 'center',
-        gap: 'var(--space-2)',
-        pointerEvents: 'none',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        backdropFilter: 'blur(10px)',
-      }}
-    >
-      <div
-        style={{
-          width: 8,
-          height: 8,
-          borderRadius: '50%',
-          background: 'var(--accent)',
-          flexShrink: 0,
-          boxShadow: '0 0 8px var(--accent)',
-        }}
-      />
-      <div style={{ flex: 1, fontWeight: 'var(--weight-medium)' }}>{toast}</div>
+    <div className="global-toast">
+      <div className="global-toast-dot" />
+      <div className="global-toast-text">{toast}</div>
     </div>
   )
 }
@@ -242,14 +160,12 @@ export default function App() {
       <BrowserRouter>
         <div className="preview-container">
           <PageSidebar />
-          <div className="phone-shell">
-            <div className="phone-inner">
-              <StatusBar />
-              <GlobalToast />
-              <AnimatedRoutes />
-              <HomeIndicator />
-            </div>
-          </div>
+          <PhoneShell>
+            <StatusBar />
+            <GlobalToast />
+            <AnimatedRoutes />
+            <HomeIndicator />
+          </PhoneShell>
         </div>
       </BrowserRouter>
     </AppStageProvider>

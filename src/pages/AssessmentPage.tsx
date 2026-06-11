@@ -4,7 +4,6 @@ import {
   Calendar,
   UserCheck,
   MapPin,
-  Camera,
   Upload,
   Image as ImageIcon,
   ChevronRight,

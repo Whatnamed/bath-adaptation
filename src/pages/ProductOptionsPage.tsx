@@ -1,8 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import {
-  ChevronLeft,
-  Check,
   Droplets,
   Armchair,
   Sparkles,
@@ -10,6 +8,7 @@ import {
 } from 'lucide-react'
 import { productOptions, productCategories } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
+import { Button, PageHeader, ProductCard } from '../components'
 
 /* 产品图片导入 */
 import prodT1 from '../assets/images/01_products/toilet/product_toilet_t1_squat_to_seat_adapter.png'
@@ -63,27 +62,26 @@ export default function ProductOptionsPage() {
   /* 获取当前类别的产品列表 */
   const items = productOptions[activeCategoryId] ?? []
 
-  /* 从全局状态读取初始选中项 */
-  const [selected, setSelected] = useState<Set<string>>(new Set())
-
-  useEffect(() => {
-    const initialSelected = selectedProducts[activeCategoryId] || []
-    setSelected(new Set(initialSelected))
-  }, [activeCategoryId, selectedProducts])
+  /* 本地草稿：确认加入前不写回全局 Context */
+  const [selectedByCategory, setSelectedByCategory] = useState<Record<string, string[]>>(() => selectedProducts)
+  const selected = new Set(selectedByCategory[activeCategoryId] ?? selectedProducts[activeCategoryId] ?? [])
 
   /* 是否已确认加入（显示成功提示） */
   const [confirmed, setConfirmed] = useState(false)
 
   /* 切换选中 */
   const toggleItem = (id: string) => {
-    setSelected((prev) => {
-      const next = new Set(prev)
+    setSelectedByCategory((prev) => {
+      const next = new Set(prev[activeCategoryId] ?? selectedProducts[activeCategoryId] ?? [])
       if (next.has(id)) {
         next.delete(id)
       } else {
         next.add(id)
       }
-      return next
+      return {
+        ...prev,
+        [activeCategoryId]: Array.from(next),
+      }
     })
     /* 如果之前已确认，重新选择时清除确认状态 */
     if (confirmed) setConfirmed(false)
@@ -107,17 +105,15 @@ export default function ProductOptionsPage() {
   const currentIcon = categoryIcons[activeCategoryId]
 
   return (
-    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+    <div className="screen-frame screen-frame-overlay">
       {/* ── 页面头部 ── */}
-      <div className="page-header" style={{ flexShrink: 0 }}>
-        <button className="page-header-back" onClick={() => navigate(`/products${fromSource ? `?from=${fromSource}` : ''}`)}>
-          <ChevronLeft size={20} />
-        </button>
-        <span className="page-header-title">{categoryName}</span>
-      </div>
+      <PageHeader
+        title={categoryName}
+        backTo={`/products${fromSource ? `?from=${fromSource}` : ''}`}
+      />
 
       {/* ── 可滚动内容区域 ── */}
-      <div className="subpage-content" style={{ flex: 1, overflowY: 'auto', paddingBottom: '120px' }}>
+      <div className="subpage-content subpage-content-roomy">
         {/* ── 顶部引导 ── */}
         <div
           className="page-section"
@@ -149,138 +145,24 @@ export default function ProductOptionsPage() {
             const isSelected = selected.has(item.id)
 
             return (
-              <div
+              <ProductCard
                 key={item.id}
-                className="card stagger-item"
-                style={{
-                  marginBottom: 'var(--space-3)',
-                  border: isSelected
-                    ? '2px solid var(--accent)'
-                    : '2px solid transparent',
-                  background: isSelected ? '#F4F7F2' : undefined,
-                  padding: 0,
-                  overflow: 'hidden',
-                  position: 'relative',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                {/* 选中对勾 */}
-                {isSelected && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      top: 10,
-                      right: 10,
-                      width: 24,
-                      height: 24,
-                      borderRadius: '50%',
-                      background: 'var(--accent)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      zIndex: 1,
-                    }}
-                  >
-                    <Check size={14} color="#fff" strokeWidth={3} />
-                  </div>
-                )}
-
-                {/* 产品图片 */}
-                <div
-                  style={{
-                    background: '#f5f7f3',
-                    overflow: 'hidden',
-                  }}
-                >
-                  {productImages[item.id] ? (
-                    <img
-                      src={productImages[item.id]}
-                      alt={item.name}
-                      style={{ width: '100%', display: 'block' }}
-                    />
-                  ) : (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: 180 }}>
-                      {currentIcon}
-                    </div>
-                  )}
-                </div>
-
-                {/* 卡片主体 */}
-                <div style={{ padding: 'var(--space-4)' }}>
-                  <div
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: 'var(--space-2)',
-                      marginBottom: 'var(--space-1)',
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: 'var(--text-body-sm)',
-                        fontWeight: 'var(--weight-semibold)',
-                        color: 'var(--text-primary)',
-                      }}
-                    >
-                      {item.name}
-                    </span>
-                    {item.tag && (
-                      <span className="chip chip-accent">{item.tag}</span>
-                    )}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: 'var(--text-caption)',
-                      color: 'var(--text-secondary)',
-                      lineHeight: 'var(--leading-relaxed)',
-                      marginBottom: 'var(--space-2)',
-                    }}
-                  >
-                    {item.desc}
-                  </div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'var(--space-2)' }}>
-                    <div
-                      style={{
-                        fontSize: 'var(--text-body-sm)',
-                        fontWeight: 'var(--weight-bold)',
-                        color: 'var(--accent-deep)',
-                      }}
-                    >
-                      ¥{productPrices[item.id] ?? '—'}
-                    </div>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        toggleItem(item.id)
-                      }}
-                      className="btn"
-                      style={{
-                        height: '36px',
-                        padding: '0 16px',
-                        borderRadius: '18px',
-                        border: isSelected ? 'none' : '1.5px solid var(--accent)',
-                        background: isSelected ? 'var(--accent)' : 'transparent',
-                        color: isSelected ? '#fff' : 'var(--accent)',
-                        fontSize: 'var(--text-caption)',
-                        fontWeight: 'var(--weight-semibold)',
-                      }}
-                    >
-                      {isSelected ? (
-                        <><Check size={14} /> 已选</>
-                      ) : (
-                        '选择'
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
+                name={item.name}
+                desc={item.desc}
+                image={productImages[item.id]}
+                fallbackIcon={currentIcon}
+                tag={item.tag}
+                price={productPrices[item.id]}
+                selected={isSelected}
+                onToggle={() => toggleItem(item.id)}
+              />
             )
           })}
         </div>
       </div>
 
       {/* ── 固定底部操作栏 ── */}
-      <div className="fixed-bottom" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(245, 245, 243, 0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderTop: '1px solid rgba(232, 234, 232, 0.5)', zIndex: 10, padding: 'var(--space-4) var(--space-page)' }}>
+      <div className="fixed-bottom fixed-bottom-floating">
         {/* 确认成功提示 */}
         {confirmed ? (
           <div
@@ -310,8 +192,10 @@ export default function ProductOptionsPage() {
             >
               已选 {selected.size} 项产品
             </div>
-            <button
-              className="btn btn-primary btn-block btn-lg"
+            <Button
+              block
+              size="lg"
+              disabled={selected.size === 0}
               style={{
                 opacity: selected.size === 0 ? 0.5 : 1,
                 pointerEvents: selected.size === 0 ? 'none' : 'auto',
@@ -319,7 +203,7 @@ export default function ProductOptionsPage() {
               onClick={handleAddToPlan}
             >
               加入改造方案
-            </button>
+            </Button>
           </>
         )}
       </div>

@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import {
-  ChevronLeft,
   ChevronRight,
   UserCheck,
   Camera,
@@ -8,6 +7,7 @@ import {
   Shield,
 } from 'lucide-react'
 import { useAppStage } from '../context/AppStageContext'
+import { PageHeader } from '../components'
 
 /* ── 选项卡片数据 ── */
 interface ChoiceOption {
@@ -56,12 +56,7 @@ export default function AssessmentChoicePage() {
   return (
     <>
       {/* ── 页面头部 ── */}
-      <div className="page-header">
-        <button className="page-header-back" onClick={() => navigate(-1)}>
-          <ChevronLeft size={20} />
-        </button>
-        <span className="page-header-title">选择评估方式</span>
-      </div>
+      <PageHeader title="选择评估方式" onBack={() => navigate(-1)} />
 
       {/* ── 可滚动内容区域 ── */}
       <div className="subpage-content">

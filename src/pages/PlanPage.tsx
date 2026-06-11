@@ -1,12 +1,10 @@
 import { useNavigate } from 'react-router-dom'
 import {
-  ChevronLeft,
   AlertTriangle,
-  Lightbulb,
-  PhoneCall,
   ChevronRight,
 } from 'lucide-react'
 import { riskFindings, planItems } from '../data/mock'
+import { Button, Chip, PageHeader, SectionHeader } from '../components'
 
 /* 导入图片资源 */
 import antislipImg from '../assets/images/antislip.png'
@@ -32,17 +30,12 @@ export default function PlanPage() {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+    <div className="screen-frame">
       {/* ── 页面头部 ── */}
-      <div className="page-header" style={{ flexShrink: 0 }}>
-        <button className="page-header-back" onClick={() => navigate('/')}>
-          <ChevronLeft size={22} />
-        </button>
-        <span className="page-header-title">推荐方案</span>
-      </div>
+      <PageHeader title="推荐方案" backTo="/" iconSize={22} />
 
       {/* ── 可滚动内容区域 ── */}
-      <div className="subpage-content" style={{ flex: 1, overflowY: 'auto', paddingBottom: 'var(--space-4)' }}>
+      <div className="subpage-content">
         {/* ── 说明文字 ── */}
         <p
           className="page-section"
@@ -60,34 +53,15 @@ export default function PlanPage() {
 
         {/* ── 重点风险 ── */}
         <div className="page-section">
-          <div className="section-header">
-            <span className="section-title">重点风险</span>
-          </div>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+          <SectionHeader title="重点风险" />
+          <div className="risk-chip-row">
             {riskFindings.map((risk) => (
               <div 
                 key={risk.id}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '6px 14px',
-                  background: 'var(--surface-card)',
-                  border: '1px solid var(--border-light)',
-                  borderRadius: 'var(--radius-pill)',
-                  boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
-                }}
+                className="risk-chip"
               >
                 <AlertTriangle size={14} color="var(--text-secondary)" />
-                <span
-                  style={{
-                    fontSize: 'var(--text-caption)',
-                    fontWeight: 'var(--weight-medium)',
-                    color: 'var(--text-secondary)',
-                  }}
-                >
-                  {risk.title}
-                </span>
+                <span className="risk-chip-label">{risk.title}</span>
               </div>
             ))}
           </div>
@@ -95,9 +69,7 @@ export default function PlanPage() {
 
         {/* ── 优先建议 ── */}
         <div className="page-section">
-          <div className="section-header">
-            <span className="section-title">优先建议</span>
-          </div>
+          <SectionHeader title="优先建议" />
           {recommendedItems.map((item) => (
             <div className="plan-item-card" key={item.id}>
               <div className="plan-item-image">
@@ -107,7 +79,7 @@ export default function PlanPage() {
                 <div className="plan-item-name">{item.name}</div>
                 <div className="plan-item-desc">{item.desc}</div>
                 <div className="plan-item-tag">
-                  <span className="chip chip-accent">推荐</span>
+                  <Chip>推荐</Chip>
                 </div>
               </div>
             </div>
@@ -116,9 +88,7 @@ export default function PlanPage() {
 
         {/* ── 可选补充 ── */}
         <div className="page-section">
-          <div className="section-header">
-            <span className="section-title">可选补充</span>
-          </div>
+          <SectionHeader title="可选补充" />
           {optionalItems.map((item) => (
             <div className="plan-item-card" key={item.id}>
               <div className="plan-item-image">
@@ -128,7 +98,7 @@ export default function PlanPage() {
                 <div className="plan-item-name">{item.name}</div>
                 <div className="plan-item-desc">{item.desc}</div>
                 <div className="plan-item-tag">
-                  <span className="chip chip-accent">可选</span>
+                  <Chip>可选</Chip>
                 </div>
               </div>
             </div>
@@ -139,18 +109,7 @@ export default function PlanPage() {
         <div className="page-section">
           <button
             onClick={() => navigate('/assessment')}
-            style={{
-              background: 'none',
-              border: 'none',
-              padding: 0,
-              cursor: 'pointer',
-              fontSize: 'var(--text-body-sm)',
-              fontWeight: 'var(--weight-medium)',
-              color: 'var(--text-accent)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '2px',
-            }}
+            className="btn-link"
           >
             查看完整评估报告 <ChevronRight size={16} />
           </button>
@@ -158,25 +117,17 @@ export default function PlanPage() {
       </div>
 
       {/* ── 固定底部 CTA ── */}
-      <div className="fixed-bottom" style={{ flexShrink: 0, position: 'relative', background: 'var(--surface-page)', borderTop: '1px solid var(--border-light)', zIndex: 10, padding: 'var(--space-4) var(--space-page)' }}>
-        <button
-          className="btn btn-primary btn-block btn-lg"
+      <div className="fixed-bottom fixed-bottom-attached">
+        <Button
+          block
+          size="lg"
           onClick={() => navigate('/products')}
         >
           定制改造产品
-        </button>
+        </Button>
         <button
           onClick={() => navigate('/plan/confirm')}
-          style={{
-            background: 'none',
-            border: 'none',
-            width: '100%',
-            padding: 'var(--space-3) 0 0',
-            fontSize: 'var(--text-caption)',
-            color: 'var(--text-tertiary)',
-            cursor: 'pointer',
-            textAlign: 'center',
-          }}
+          className="btn-subtle-block"
         >
           跳过，由服务站推荐方案
         </button>

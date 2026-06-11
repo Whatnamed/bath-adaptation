@@ -141,7 +141,7 @@ export default function FamilyBindPage() {
     ...familyDetails
   })
 
-  const updateForm = (key: keyof FamilyDetails, val: any) => {
+  const updateForm = (key: keyof FamilyDetails, val: FamilyDetails[keyof FamilyDetails]) => {
     setForm((prev) => ({ ...prev, [key]: val }))
   }
 

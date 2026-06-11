@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
 import {
-  ChevronLeft,
   PhoneCall,
   Grip,
   Lightbulb,
@@ -10,6 +9,7 @@ import {
   ChevronRight,
   Phone,
 } from 'lucide-react'
+import { Card, PageHeader, SectionHeader } from '../components'
 
 /* ── 维护与提醒页 ── */
 export default function MaintenancePage() {
@@ -74,20 +74,13 @@ export default function MaintenancePage() {
   return (
     <>
       {/* ── 页面头部 ── */}
-      <div className="page-header">
-        <button className="page-header-back" onClick={() => navigate(-1)}>
-          <ChevronLeft size={20} />
-        </button>
-        <span className="page-header-title">维护与提醒</span>
-      </div>
+      <PageHeader title="维护与提醒" onBack={() => navigate(-1)} />
 
       {/* ── 可滚动内容区域 ── */}
       <div className="subpage-content">
         {/* ── 设备状态 ── */}
         <div className="page-section">
-          <div className="section-header">
-            <span className="section-title">设备状态</span>
-          </div>
+          <SectionHeader title="设备状态" />
 
           {devices.map((device, i) => {
             const Icon = device.icon
@@ -122,11 +115,9 @@ export default function MaintenancePage() {
 
         {/* ── 即将到来的维护 ── */}
         <div className="page-section">
-          <div className="section-header">
-            <span className="section-title">即将到来的维护</span>
-          </div>
+          <SectionHeader title="即将到来的维护" />
 
-          <div className="card" style={{ padding: 'var(--space-3) var(--space-5)' }}>
+          <Card className="card-compact-y">
           {reminders.map((item, i) => (
             <div className="reminder-item" key={i}>
               {/* 图标 */}
@@ -147,14 +138,12 @@ export default function MaintenancePage() {
               <ChevronRight size={18} style={{ color: 'var(--text-tertiary)' }} />
             </div>
           ))}
-          </div>
+          </Card>
         </div>
 
         {/* ── 报修入口 ── */}
         <div className="page-section">
-          <div className="section-header">
-            <span className="section-title">需要维修？</span>
-          </div>
+          <SectionHeader title="需要维修？" />
 
           <div className="card-warm">
             <div className="flex items-center gap-3" style={{ marginBottom: 'var(--space-3)' }}>

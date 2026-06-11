@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import {
   MessageSquare,
   Headphones,
@@ -9,9 +9,6 @@ import {
   CalendarDays,
   UserCheck,
   ChevronRight,
-  Home,
-  ClipboardList,
-  User,
   ShieldCheck,
   CalendarClock,
   Heart,
@@ -22,6 +19,7 @@ import {
 } from 'lucide-react'
 import { reminders, stageSteps, stageCards } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
+import { BottomNav, Card, Chip, SectionHeader, Stepper } from '../components'
 
 /* 图片素材导入 */
 import logoImg from '../assets/images/00_brand/logo_anyu_flat_icon.png'
@@ -30,7 +28,6 @@ import elderAvatar from '../assets/images/00_brand/avatar_elder_default.png'
 /* ── 首页 ── */
 export default function HomePage() {
   const navigate = useNavigate()
-  const location = useLocation()
   const { stage, familyDetails } = useAppStage()
 
   /* 当前阶段的配置数据 - 动态将 '张奶奶' 替换为用户填写的真实姓名 */
@@ -90,27 +87,12 @@ export default function HomePage() {
     completed: <CheckCircle size={24} color="var(--accent)" />,
   }
 
-  /* 状态卡片背景色映射 */
-  const cardBgs: Record<string, string> = {
-    welcome: '#EAF3E5',
-    action: '#EAF3E5',
-    waiting: '#FFF8E7',
-    success: '#E8F5E9',
-  }
-
-  /* 底部导航数据 */
-  const tabs = [
-    { path: '/', label: '首页', icon: <Home size={24} /> },
-    { path: '/services', label: '服务', icon: <ClipboardList size={24} /> },
-    { path: '/profile', label: '我的', icon: <User size={24} /> },
-  ]
-
   return (
     <>
       {/* ── App Header ── */}
       <div className="app-header">
         <div className="app-header-brand">
-          <img src={logoImg} alt="安浴到家" style={{ width: 28, height: 28, borderRadius: 6 }} />
+          <img src={logoImg} alt="安浴到家" className="app-header-logo" />
           <span className="app-header-title">安浴到家</span>
           <span className="app-header-subtitle">让父母洗浴更安全，子女更安心</span>
         </div>
@@ -131,11 +113,8 @@ export default function HomePage() {
         {/* ── 家庭选择器（未绑定时不显示） ── */}
         {showFamilySelector && (
           <div className="family-selector page-section" onClick={() => navigate('/bind')}>
-            <div
-              className="avatar"
-              style={{ background: 'var(--accent-soft)', overflow: 'hidden' }}
-            >
-              <img src={elderAvatar} alt="老人头像" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <div className="avatar">
+              <img src={elderAvatar} alt="老人头像" className="avatar-image" />
             </div>
             <div className="family-selector-info">
               <span className="family-selector-name">
@@ -151,7 +130,7 @@ export default function HomePage() {
           <div className="page-section task-summary-header">
             <div className="task-summary-title">
               今天需要处理{' '}
-              <span className="highlight-number pop-in" style={{ fontSize: 32 }}>1</span>
+              <span className="highlight-number highlight-number-large pop-in">1</span>
               {' '}项服务
             </div>
             <div className="task-summary-subtitle">及时处理，让改造更快落地</div>
@@ -161,11 +140,7 @@ export default function HomePage() {
         {/* ── 状态卡片（核心：根据 stage 变化） ── */}
         {card && (
           <div
-            className="task-card page-section page-enter"
-            style={{
-              background: cardBgs[card.variant] ?? '#EAF3E5',
-              cursor: 'pointer',
-            }}
+            className={`task-card task-card-clickable task-card-${card.variant} page-section page-enter`}
             onClick={() => navigate(card.ctaRoute)}
           >
             <div className="task-card-top">
@@ -178,7 +153,7 @@ export default function HomePage() {
               </div>
               {card.badge && (
                 <div className="task-card-badge">
-                  <span className="chip chip-accent">{card.badge}</span>
+                  <Chip>{card.badge}</Chip>
                 </div>
               )}
             </div>
@@ -191,73 +166,34 @@ export default function HomePage() {
         {/* ── 服务进度（unbound/idle 不显示） ── */}
         {showProgress && (
           <div className="page-section">
-            <div className="section-header">
-              <span className="section-title">服务进度</span>
+            <SectionHeader
+              title="服务进度"
+              action={
               <button className="section-action" onClick={() => navigate('/progress')}>
                 查看全部 <ChevronRight size={14} />
               </button>
-            </div>
+              }
+            />
 
-            <div className="card">
-              <div className="stepper">
-                {steps.map((step, i) => {
-                  /* 节点样式类名 */
-                  const nodeClass =
-                    step.status === 'done'
-                      ? 'stepper-node-done'
-                      : step.status === 'current'
-                      ? 'stepper-node-current'
-                      : 'stepper-node-pending'
-
-                  /* 状态文本样式类名 */
-                  const statusClass =
-                    step.status === 'done'
-                      ? 'stepper-status-done'
-                      : step.status === 'current'
-                      ? 'stepper-status-current'
-                      : 'stepper-status-pending'
-
-                  /* 连接线（最后一步不需要） */
-                  const showLine = i < steps.length - 1
-                  const nextStep = steps[i + 1]
-                  const lineClass =
-                    step.status === 'done' && nextStep?.status !== 'pending'
-                      ? 'stepper-line-done'
-                      : 'stepper-line-pending'
-
-                  return (
-                    <div className="stepper-step step-stagger" key={step.key}>
-                      <div className={`stepper-node ${nodeClass}`}>
-                        {step.status === 'done' ? (
-                          <CheckCircle size={18} />
-                        ) : (
-                          stepIcons[step.key]
-                        )}
-                      </div>
-                      <span className="stepper-label">{step.label}</span>
-                      <span className={`stepper-status ${statusClass}`}>{step.date}</span>
-                      {showLine && (
-                        <div className={`stepper-line ${lineClass}`} />
-                      )}
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
+            <Card>
+              <Stepper steps={steps} icons={stepIcons} />
+            </Card>
           </div>
         )}
 
         {/* ── 贴心提醒（仅完工阶段显示） ── */}
         {showReminders && (
           <div className="page-section">
-            <div className="section-header">
-              <span className="section-title">贴心提醒</span>
+            <SectionHeader
+              title="贴心提醒"
+              action={
               <button className="section-action" onClick={() => navigate('/maintenance')}>
                 全部提醒 <ChevronRight size={14} />
               </button>
-            </div>
+              }
+            />
 
-            <div className="card" style={{ padding: 'var(--space-3) var(--space-5)' }}>
+            <Card className="card-compact-y">
               {reminders.map((item) => (
                 <div className="reminder-item" key={item.id}>
                   <div
@@ -276,17 +212,15 @@ export default function HomePage() {
                   <ChevronRight size={16} color="var(--text-tertiary)" />
                 </div>
               ))}
-            </div>
+            </Card>
           </div>
         )}
 
         {/* ── unbound 阶段的欢迎介绍区域 ── */}
         {stage === 'unbound' && (
           <div className="page-section">
-            <div className="section-header">
-              <span className="section-title">我们的服务</span>
-            </div>
-            <div className="card">
+            <SectionHeader title="我们的服务" />
+            <Card>
               {[
                 { icon: <ShieldCheck size={20} color="var(--accent)" />, title: '安全评估', desc: '专业人员上门或自行拍照，全面评估卫浴安全隐患' },
                 { icon: <Wrench size={20} color="var(--accent)" />, title: '适老改造', desc: '防滑、扶手、恒温花洒等适老化产品安装' },
@@ -322,27 +256,13 @@ export default function HomePage() {
                   </div>
                 </div>
               ))}
-            </div>
+            </Card>
           </div>
         )}
       </div>
 
       {/* ── 底部导航 ── */}
-      <nav className="bottom-nav">
-        {tabs.map((tab) => {
-          const isActive = location.pathname === tab.path
-          return (
-            <button
-              key={tab.path}
-              className={`bottom-nav-item ${isActive ? 'active' : ''}`}
-              onClick={() => navigate(tab.path)}
-            >
-              {tab.icon}
-              <span className="bottom-nav-label">{tab.label}</span>
-            </button>
-          )
-        })}
-      </nav>
+      <BottomNav />
     </>
   )
 }

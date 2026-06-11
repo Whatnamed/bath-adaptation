@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
 
 /* ── 应用生命周期阶段 ── */
@@ -101,7 +102,7 @@ export function AppStageProvider({
 
   /* ── 演示流程自动推进器 ── */
   useEffect(() => {
-    let timer: any = null
+    let timer: ReturnType<typeof setTimeout> | null = null
 
     if (stage === 'assessment_pending') {
       // 等待专业评估，8秒后自动推进到方案待确认

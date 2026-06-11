@@ -58,6 +58,23 @@
   margin-bottom: var(--space-5);
 }
 
+.task-card-clickable {
+  cursor: pointer;
+}
+
+.task-card-welcome,
+.task-card-action {
+  background: #EAF3E5;
+}
+
+.task-card-waiting {
+  background: #FFF8E7;
+}
+
+.task-card-success {
+  background: #E8F5E9;
+}
+
 .task-card-top {
   display: flex;
   align-items: flex-start;
@@ -122,6 +139,16 @@
 
 .task-card-cta:active {
   transform: scale(0.98);
+}
+
+.highlight-number-large {
+  font-size: 32px;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 /* ── 进度步进器 ── */
@@ -285,6 +312,29 @@
   margin-bottom: 0;
 }
 
+.risk-chip-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.risk-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--surface-card);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-pill);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.risk-chip-label {
+  font-size: var(--text-caption);
+  font-weight: var(--weight-medium);
+  color: var(--text-secondary);
+}
+
 .plan-item-card {
   background: var(--surface-card);
   border-radius: var(--radius-xl);
@@ -328,6 +378,108 @@
 
 .plan-item-tag {
   margin-top: var(--space-3);
+}
+
+.product-card {
+  background: var(--surface-card);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  margin-bottom: var(--space-3);
+  border: 2px solid transparent;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.product-card.is-selected {
+  border-color: var(--accent);
+  background: var(--accent-softer);
+}
+
+.product-card-check {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.product-card-media {
+  background: var(--surface-page);
+  overflow: hidden;
+}
+
+.product-card-media img {
+  width: 100%;
+  display: block;
+}
+
+.product-card-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 180px;
+}
+
+.product-card-body {
+  padding: var(--space-4);
+}
+
+.product-card-heading {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-1);
+}
+
+.product-card-name {
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--text-primary);
+}
+
+.product-card-desc {
+  font-size: var(--text-caption);
+  color: var(--text-secondary);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-2);
+}
+
+.product-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-2);
+}
+
+.product-card-price {
+  font-size: var(--text-body-sm);
+  font-weight: var(--weight-bold);
+  color: var(--accent-deep);
+}
+
+.product-card-select {
+  height: 36px;
+  padding: 0 16px;
+  border-radius: 18px;
+  border: 1.5px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+}
+
+.product-card-select.is-selected {
+  border: none;
+  background: var(--accent);
+  color: var(--text-inverse);
 }
 
 /* ── 费用页 ── */
@@ -489,6 +641,7 @@
   gap: var(--space-4);
   font-size: var(--text-caption);
   color: var(--text-tertiary);
+  margin-top: var(--space-3);
 }
 
 /* ── 我的页面 ── */
@@ -530,10 +683,12 @@
   display: flex;
   align-items: center;
   gap: var(--space-3);
+  width: 100%;
   padding: var(--space-4);
   background: transparent;
   cursor: pointer;
   transition: background var(--duration-fast) var(--ease-out);
+  text-align: left;
 }
 
 .menu-item:not(:last-child) {
