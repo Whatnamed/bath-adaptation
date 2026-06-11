@@ -63,20 +63,34 @@ export default function PlanPage() {
           <div className="section-header">
             <span className="section-title">重点风险</span>
           </div>
-          {riskFindings.map((risk) => (
-            <div className="plan-risk-item" key={risk.id}>
-              <AlertTriangle size={18} color="var(--warning)" />
-              <span
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-2)' }}>
+            {riskFindings.map((risk) => (
+              <div 
+                key={risk.id}
                 style={{
-                  fontSize: 'var(--text-body-sm)',
-                  fontWeight: 'var(--weight-medium)',
-                  color: 'var(--text-primary)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '6px 14px',
+                  background: 'var(--surface-card)',
+                  border: '1px solid var(--border-light)',
+                  borderRadius: 'var(--radius-pill)',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
                 }}
               >
-                {risk.title}
-              </span>
-            </div>
-          ))}
+                <AlertTriangle size={14} color="var(--text-secondary)" />
+                <span
+                  style={{
+                    fontSize: 'var(--text-caption)',
+                    fontWeight: 'var(--weight-medium)',
+                    color: 'var(--text-secondary)',
+                  }}
+                >
+                  {risk.title}
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
 
         {/* ── 优先建议 ── */}
