@@ -78,20 +78,23 @@ const SelfAssessmentPage: React.FC = () => {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       {/* 全屏预览 */}
       {previewImg && (
         <div
           onClick={() => setPreviewImg(null)}
           style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(0,0,0,0.9)',
+            position: 'absolute',
+            top: 'calc(-1 * var(--statusbar-height))',
+            left: 0,
+            right: 0,
+            bottom: 0,
+            background: 'rgba(0,0,0,0.95)',
             zIndex: 9999,
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            cursor: 'pointer',
+            cursor: 'zoom-out',
           }}
         >
           <img

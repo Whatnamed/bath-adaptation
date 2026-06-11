@@ -166,7 +166,7 @@ function AnimatedRoutes() {
         animate={{ opacity: 1, x: 0 }}
         exit={{ opacity: 0, x: -20 }}
         transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-        style={{ display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}
+        style={{ position: 'relative', zIndex: 11, display: 'flex', flexDirection: 'column', flex: 1, overflow: 'hidden' }}
       >
         <Routes location={location}>
           <Route path="/" element={<HomePage />} />
