@@ -107,7 +107,7 @@ export default function ProductOptionsPage() {
   const currentIcon = categoryIcons[activeCategoryId]
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+    <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
       {/* ── 页面头部 ── */}
       <div className="page-header" style={{ flexShrink: 0 }}>
         <button className="page-header-back" onClick={() => navigate(`/products${fromSource ? `?from=${fromSource}` : ''}`)}>
@@ -117,7 +117,7 @@ export default function ProductOptionsPage() {
       </div>
 
       {/* ── 可滚动内容区域 ── */}
-      <div className="subpage-content" style={{ flex: 1, overflowY: 'auto', paddingBottom: 'var(--space-4)' }}>
+      <div className="subpage-content" style={{ flex: 1, overflowY: 'auto', paddingBottom: '120px' }}>
         {/* ── 顶部引导 ── */}
         <div
           className="page-section"
@@ -253,19 +253,16 @@ export default function ProductOptionsPage() {
                         e.stopPropagation()
                         toggleItem(item.id)
                       }}
+                      className="btn"
                       style={{
-                        padding: '6px 16px',
-                        borderRadius: '20px',
+                        height: '36px',
+                        padding: '0 16px',
+                        borderRadius: '18px',
                         border: isSelected ? 'none' : '1.5px solid var(--accent)',
                         background: isSelected ? 'var(--accent)' : 'transparent',
                         color: isSelected ? '#fff' : 'var(--accent)',
                         fontSize: 'var(--text-caption)',
                         fontWeight: 'var(--weight-semibold)',
-                        cursor: 'pointer',
-                        transition: 'all 0.2s ease',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '4px',
                       }}
                     >
                       {isSelected ? (
@@ -283,7 +280,7 @@ export default function ProductOptionsPage() {
       </div>
 
       {/* ── 固定底部操作栏 ── */}
-      <div className="fixed-bottom" style={{ flexShrink: 0, position: 'relative', background: 'var(--surface-page)', borderTop: '1px solid var(--border-light)', zIndex: 10, padding: 'var(--space-4) var(--space-page)' }}>
+      <div className="fixed-bottom" style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'rgba(245, 245, 243, 0.8)', backdropFilter: 'blur(12px)', WebkitBackdropFilter: 'blur(12px)', borderTop: '1px solid rgba(232, 234, 232, 0.5)', zIndex: 10, padding: 'var(--space-4) var(--space-page)' }}>
         {/* 确认成功提示 */}
         {confirmed ? (
           <div
