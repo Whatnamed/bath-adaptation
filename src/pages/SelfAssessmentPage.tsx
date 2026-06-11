@@ -9,6 +9,9 @@ import {
   Droplets,
 } from 'lucide-react'
 import { useAppStage } from '../context/AppStageContext'
+import selfOverall from '../assets/images/03_assessment_scenes/self_photo/self_01_bathroom_overall.png'
+import selfToilet from '../assets/images/03_assessment_scenes/self_photo/self_02_squat_toilet_area.png'
+import selfShower from '../assets/images/03_assessment_scenes/self_photo/self_03_shower_wash_area.png'
 
 /* 拍照区域定义 */
 interface PhotoArea {
@@ -16,6 +19,7 @@ interface PhotoArea {
   icon: React.ReactNode
   title: string
   description: string
+  guideImg: string
 }
 
 const PHOTO_AREAS: PhotoArea[] = [
@@ -24,18 +28,21 @@ const PHOTO_AREAS: PhotoArea[] = [
     icon: <Home size={22} style={{ color: 'var(--accent)' }} />,
     title: '卫生间整体',
     description: '在门口拍摄卫生间全景，展示整体布局',
+    guideImg: selfOverall,
   },
   {
     id: 'area_toilet',
     icon: <Armchair size={22} style={{ color: 'var(--accent)' }} />,
     title: '马桶/蹲便器区域',
     description: '拍摄马桶或蹲便器及周围空间',
+    guideImg: selfToilet,
   },
   {
     id: 'area_shower',
     icon: <Droplets size={22} style={{ color: 'var(--accent)' }} />,
     title: '淋浴/洗浴区域',
     description: '拍摄淋浴区域，包含地面和墙面',
+    guideImg: selfShower,
   },
 ]
 
@@ -44,6 +51,7 @@ const SelfAssessmentPage: React.FC = () => {
   const { stage, setStage } = useAppStage()
 
   const [uploaded, setUploaded] = useState<Set<string>>(new Set())
+  const [previewImg, setPreviewImg] = useState<string | null>(null)
   const doneCount = uploaded.size
   const canSubmit = doneCount === 3
 
@@ -71,6 +79,29 @@ const SelfAssessmentPage: React.FC = () => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+      {/* 全屏预览 */}
+      {previewImg && (
+        <div
+          onClick={() => setPreviewImg(null)}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: 'rgba(0,0,0,0.9)',
+            zIndex: 9999,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+          }}
+        >
+          <img
+            src={previewImg}
+            alt="预览"
+            style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
+          />
+        </div>
+      )}
+
       {/* ---- 顶栏 ---- */}
       <header className="page-header" style={{ flexShrink: 0 }}>
         <button className="page-header-back" onClick={() => navigate(-1)}>
@@ -157,20 +188,50 @@ const SelfAssessmentPage: React.FC = () => {
                 {/* 拍照 / 已上传 区域 */}
                 {done ? (
                   /* 已上传状态 */
-                  <div style={{
-                    height: '120px',
-                    borderRadius: '12px',
-                    background: 'var(--accent-soft)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    gap: 'var(--space-1)',
-                  }}>
-                    <CheckCircle size={28} style={{ color: 'var(--accent)' }} />
-                    <span style={{ fontSize: 'var(--text-caption)', color: 'var(--accent)', fontWeight: 'var(--weight-medium)' }}>
-                      已上传
-                    </span>
+                  <div
+                    onClick={() => setPreviewImg(area.guideImg)}
+                    style={{
+                      height: '140px',
+                      borderRadius: '12px',
+                      overflow: 'hidden',
+                      position: 'relative',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <img
+                      src={area.guideImg}
+                      alt={area.title}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                    {/* 已上传角标 */}
+                    <div style={{
+                      position: 'absolute',
+                      top: 8,
+                      right: 8,
+                      background: 'var(--accent)',
+                      borderRadius: '50%',
+                      width: 24,
+                      height: 24,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                      <CheckCircle size={14} color="#fff" />
+                    </div>
+                    {/* 底部文字 */}
+                    <div style={{
+                      position: 'absolute',
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      background: 'linear-gradient(transparent, rgba(0,0,0,0.5))',
+                      padding: '16px 12px 8px',
+                      color: '#fff',
+                      fontSize: 'var(--text-caption)',
+                      fontWeight: 'var(--weight-medium)',
+                    }}>
+                      已上传 · 点击查看大图
+                    </div>
                   </div>
                 ) : (
                   /* 未上传：虚线拍照区 */

@@ -10,6 +10,33 @@ import {
 import { productOptions } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
 
+/* 产品缩略图导入 */
+import prodT1 from '../assets/images/01_products/toilet/product_toilet_t1_squat_to_seat_adapter.png'
+import prodT2 from '../assets/images/01_products/toilet/product_toilet_t2_raised_height_toilet.png'
+import prodT3 from '../assets/images/01_products/toilet/product_toilet_t3_smart_toilet.png'
+import prodT4 from '../assets/images/01_products/toilet/product_toilet_t4_toilet_with_support_rails.png'
+import prodS1 from '../assets/images/01_products/shower/product_shower_s1_wall_mounted_folding_seat.png'
+import prodS2 from '../assets/images/01_products/shower/product_shower_s2_thermostatic_digital_shower.png'
+import prodS3 from '../assets/images/01_products/shower/product_shower_s3_anti_slip_floor_sample.png'
+import prodS4 from '../assets/images/01_products/shower/product_shower_s4_shower_partition_glass.png'
+import prodB1 from '../assets/images/01_products/basin/product_basin_b1_rounded_anti_bump_basin.png'
+import prodB2 from '../assets/images/01_products/basin/product_basin_b2_basin_with_support_rails.png'
+import prodB3 from '../assets/images/01_products/basin/product_basin_b3_wall_mounted_accessible_basin.png'
+import prodB4 from '../assets/images/01_products/basin/product_basin_b4_floating_elderly_washstand.png'
+import antislipImg from '../assets/images/antislip.png'
+import handrailImg from '../assets/images/handrail.png'
+import nightlightImg from '../assets/images/02_recommendation_cards/recommend_motion_led_night_light.png'
+import callbuttonImg from '../assets/images/02_recommendation_cards/recommend_emergency_call_button.png'
+
+/* 产品缩略图映射 */
+const productThumbs: Record<string, string> = {
+  t1: prodT1, t2: prodT2, t3: prodT3, t4: prodT4,
+  s1: prodS1, s2: prodS2, s3: prodS3, s4: prodS4,
+  b1: prodB1, b2: prodB2, b3: prodB3, b4: prodB4,
+  default1: antislipImg, default2: handrailImg,
+  default3: nightlightImg, default4: callbuttonImg,
+}
+
 /* ── 产品价格映射（模拟价格数据） ── */
 const productPrices: Record<string, number> = {
   /* 马桶类 */
@@ -97,15 +124,28 @@ export default function PlanConfirmPage() {
                 key={item.id}
                 style={{ minHeight: 44 }}
               >
-                {/* 左侧绿色对勾 */}
+                {/* 产品缩略图 */}
                 <div
-                  className="icon-circle icon-circle-sm"
                   style={{
-                    background: 'var(--accent-soft)',
-                    color: 'var(--accent)',
+                    width: 44,
+                    height: 44,
+                    borderRadius: 8,
+                    overflow: 'hidden',
+                    background: '#f5f7f3',
+                    flexShrink: 0,
                   }}
                 >
-                  <Check size={16} />
+                  {productThumbs[item.id] ? (
+                    <img
+                      src={productThumbs[item.id]}
+                      alt={item.name}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                    />
+                  ) : (
+                    <div style={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Check size={16} color="var(--accent)" />
+                    </div>
+                  )}
                 </div>
                 {/* 项目名 */}
                 <div className="list-row-content">

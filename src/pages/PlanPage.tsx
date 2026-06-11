@@ -11,6 +11,8 @@ import { riskFindings, planItems } from '../data/mock'
 /* 导入图片资源 */
 import antislipImg from '../assets/images/antislip.png'
 import handrailImg from '../assets/images/handrail.png'
+import nightlightImg from '../assets/images/02_recommendation_cards/recommend_motion_led_night_light.png'
+import callbuttonImg from '../assets/images/02_recommendation_cards/recommend_emergency_call_button.png'
 
 /* ── 推荐方案页 ── */
 export default function PlanPage() {
@@ -21,38 +23,12 @@ export default function PlanPage() {
   /* 可选项目 */
   const optionalItems = planItems.filter((item) => item.priority === 'optional')
 
-  /* 图片映射：每个 imageKey 对应的图片或占位 */
+  /* 图片映射：每个 imageKey 对应的图片 */
   const imageMap: Record<string, React.ReactNode> = {
     antislip: <img src={antislipImg} alt="防滑地面" />,
     handrail: <img src={handrailImg} alt="扶手安装" />,
-    nightlight: (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          background: 'var(--accent-soft)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Lightbulb size={40} color="var(--accent)" strokeWidth={1.5} />
-      </div>
-    ),
-    callbutton: (
-      <div
-        style={{
-          width: '100%',
-          height: '100%',
-          background: 'var(--accent-soft)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <PhoneCall size={40} color="var(--accent)" strokeWidth={1.5} />
-      </div>
-    ),
+    nightlight: <img src={nightlightImg} alt="感应夜灯" />,
+    callbutton: <img src={callbuttonImg} alt="紧急呼叫按钮" />,
   }
 
   return (

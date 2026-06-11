@@ -11,6 +11,27 @@ import {
 import { productOptions, productCategories } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
 
+/* 产品图片导入 */
+import prodT1 from '../assets/images/01_products/toilet/product_toilet_t1_squat_to_seat_adapter.png'
+import prodT2 from '../assets/images/01_products/toilet/product_toilet_t2_raised_height_toilet.png'
+import prodT3 from '../assets/images/01_products/toilet/product_toilet_t3_smart_toilet.png'
+import prodT4 from '../assets/images/01_products/toilet/product_toilet_t4_toilet_with_support_rails.png'
+import prodS1 from '../assets/images/01_products/shower/product_shower_s1_wall_mounted_folding_seat.png'
+import prodS2 from '../assets/images/01_products/shower/product_shower_s2_thermostatic_digital_shower.png'
+import prodS3 from '../assets/images/01_products/shower/product_shower_s3_anti_slip_floor_sample.png'
+import prodS4 from '../assets/images/01_products/shower/product_shower_s4_shower_partition_glass.png'
+import prodB1 from '../assets/images/01_products/basin/product_basin_b1_rounded_anti_bump_basin.png'
+import prodB2 from '../assets/images/01_products/basin/product_basin_b2_basin_with_support_rails.png'
+import prodB3 from '../assets/images/01_products/basin/product_basin_b3_wall_mounted_accessible_basin.png'
+import prodB4 from '../assets/images/01_products/basin/product_basin_b4_floating_elderly_washstand.png'
+
+/* 产品图片映射 */
+const productImages: Record<string, string> = {
+  t1: prodT1, t2: prodT2, t3: prodT3, t4: prodT4,
+  s1: prodS1, s2: prodS2, s3: prodS3, s4: prodS4,
+  b1: prodB1, b2: prodB2, b3: prodB3, b4: prodB4,
+}
+
 /* ── 产品价格映射 ── */
 const productPrices: Record<string, number> = {
   t1: 580, t2: 720, t3: 1680, t4: 1280,
@@ -130,10 +151,8 @@ export default function ProductOptionsPage() {
             return (
               <div
                 key={item.id}
-                className="card card-interactive stagger-item"
-                onClick={() => toggleItem(item.id)}
+                className="card stagger-item"
                 style={{
-                  cursor: 'pointer',
                   marginBottom: 'var(--space-3)',
                   border: isSelected
                     ? '2px solid var(--accent)'
@@ -166,17 +185,24 @@ export default function ProductOptionsPage() {
                   </div>
                 )}
 
-                {/* 产品占位图区域 */}
+                {/* 产品图片 */}
                 <div
                   style={{
-                    height: 120,
-                    background: 'var(--accent-soft)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
+                    background: '#f5f7f3',
+                    overflow: 'hidden',
                   }}
                 >
-                  {currentIcon}
+                  {productImages[item.id] ? (
+                    <img
+                      src={productImages[item.id]}
+                      alt={item.name}
+                      style={{ width: '100%', display: 'block' }}
+                    />
+                  ) : (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '100%', height: 180 }}>
+                      {currentIcon}
+                    </div>
+                  )}
                 </div>
 
                 {/* 卡片主体 */}
@@ -212,14 +238,42 @@ export default function ProductOptionsPage() {
                   >
                     {item.desc}
                   </div>
-                  <div
-                    style={{
-                      fontSize: 'var(--text-body-sm)',
-                      fontWeight: 'var(--weight-bold)',
-                      color: 'var(--accent-deep)',
-                    }}
-                  >
-                    ¥{productPrices[item.id] ?? '—'}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: 'var(--space-2)' }}>
+                    <div
+                      style={{
+                        fontSize: 'var(--text-body-sm)',
+                        fontWeight: 'var(--weight-bold)',
+                        color: 'var(--accent-deep)',
+                      }}
+                    >
+                      ¥{productPrices[item.id] ?? '—'}
+                    </div>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        toggleItem(item.id)
+                      }}
+                      style={{
+                        padding: '6px 16px',
+                        borderRadius: '20px',
+                        border: isSelected ? 'none' : '1.5px solid var(--accent)',
+                        background: isSelected ? 'var(--accent)' : 'transparent',
+                        color: isSelected ? '#fff' : 'var(--accent)',
+                        fontSize: 'var(--text-caption)',
+                        fontWeight: 'var(--weight-semibold)',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '4px',
+                      }}
+                    >
+                      {isSelected ? (
+                        <><Check size={14} /> 已选</>
+                      ) : (
+                        '选择'
+                      )}
+                    </button>
                   </div>
                 </div>
               </div>

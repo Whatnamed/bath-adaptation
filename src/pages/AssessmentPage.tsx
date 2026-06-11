@@ -11,17 +11,21 @@ import {
 } from 'lucide-react'
 import { assessmentResult, riskFindings } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
+import resultFloor from '../assets/images/03_assessment_scenes/result/result_01_floor_slippery.png'
+import resultToilet from '../assets/images/03_assessment_scenes/result/result_02_squat_toilet_no_grabbar.png'
+import resultNight from '../assets/images/03_assessment_scenes/result/result_03_night_path_dark.png'
+import selfOverall from '../assets/images/03_assessment_scenes/self_photo/self_01_bathroom_overall.png'
 
 /* ── 入户评估结果页 ── */
 export default function AssessmentPage() {
   const navigate = useNavigate()
   const { familyDetails } = useAppStage()
 
-  /* 照片占位区域配置 */
+  /* 照片区域配置 */
   const photos = [
-    { bg: 'var(--accent-soft)', desc: '卫生间地面（湿滑）' },
-    { bg: 'var(--surface-warm)', desc: '马桶旁（缺少扶手）' },
-    { bg: 'var(--surface-muted)', desc: '走廊夜间照明' },
+    { src: resultFloor, desc: '卫生间地面（湿滑）' },
+    { src: resultToilet, desc: '蹲厕旁（缺少扶手）' },
+    { src: resultNight, desc: '走廊夜间照明' },
   ]
 
   const fullAddress = `${familyDetails.provinceCityDistrict} ${familyDetails.townStreet} ${familyDetails.villageCommunity} ${familyDetails.houseNumber}`
@@ -102,16 +106,14 @@ export default function AssessmentPage() {
               <div
                 className="assessment-photo"
                 style={{
-                  background: photo.bg,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  overflow: 'hidden',
                   marginBottom: 'var(--space-2)',
                 }}
               >
-                <Camera
-                  size={32}
-                  style={{ color: 'var(--text-tertiary)', opacity: 0.5 }}
+                <img
+                  src={photo.src}
+                  alt={photo.desc}
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
               </div>
               <div
@@ -158,21 +160,28 @@ export default function AssessmentPage() {
                 width: '100px',
                 height: '100px',
                 borderRadius: 'var(--radius-md)',
-                background: 'var(--accent-soft)',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '4px',
+                overflow: 'hidden',
                 flexShrink: 0,
+                position: 'relative',
               }}
             >
-              <Camera size={24} style={{ color: 'var(--accent)', opacity: 0.8 }} />
+              <img
+                src={selfOverall}
+                alt="浴室全景"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
               <span
                 style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
                   fontSize: 'var(--text-micro)',
-                  color: 'var(--accent)',
+                  color: '#fff',
                   fontWeight: 'var(--weight-medium)',
+                  background: 'rgba(0,0,0,0.4)',
+                  padding: '2px 0',
+                  textAlign: 'center',
                 }}
               >
                 浴室全景

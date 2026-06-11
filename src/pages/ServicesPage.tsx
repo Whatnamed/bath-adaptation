@@ -12,6 +12,11 @@ import {
 import { serviceHistory } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
 
+/* 空状态插画导入 */
+import emptyBinding from '../assets/images/04_empty_states/empty_no_family_binding.png'
+import emptyService from '../assets/images/04_empty_states/empty_no_service_records.png'
+import emptyHistory from '../assets/images/04_empty_states/empty_no_history.png'
+
 /* ── 服务页面 ── */
 export default function ServicesPage() {
   const navigate = useNavigate()
@@ -115,7 +120,7 @@ export default function ServicesPage() {
                   gap: '16px',
                 }}
               >
-                <LinkIcon size={48} color="var(--text-tertiary)" />
+                <img src={emptyBinding} alt="未绑定家庭" style={{ width: 160, height: 160, objectFit: 'contain', opacity: 0.85 }} />
                 <span
                   style={{
                     color: 'var(--text-tertiary)',
@@ -148,7 +153,7 @@ export default function ServicesPage() {
                   gap: '16px',
                 }}
               >
-                <Plus size={48} color="var(--text-tertiary)" />
+                <img src={emptyService} alt="暂无服务" style={{ width: 160, height: 160, objectFit: 'contain', opacity: 0.85 }} />
                 <span
                   style={{
                     color: 'var(--text-tertiary)',
@@ -236,20 +241,7 @@ export default function ServicesPage() {
               gap: '12px',
             }}
           >
-            <div
-              style={{
-                width: 72,
-                height: 72,
-                borderRadius: '50%',
-                background: 'var(--surface-soft)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: 'var(--space-2)',
-              }}
-            >
-              <Package size={32} color="var(--text-tertiary)" />
-            </div>
+              <img src={emptyHistory} alt="暂无历史记录" style={{ width: 160, height: 160, objectFit: 'contain', opacity: 0.85, marginBottom: 'var(--space-2)' }} />
             <span
               style={{
                 color: 'var(--text-secondary)',

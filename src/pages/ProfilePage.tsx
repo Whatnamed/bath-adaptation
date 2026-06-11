@@ -15,6 +15,9 @@ import {
 import { stationInfo } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
 
+/* 图片素材导入 */
+import userAvatar from '../assets/images/00_brand/avatar_user_default.png'
+
 /* ── 我的页面 ── */
 export default function ProfilePage() {
   const navigate = useNavigate()
@@ -126,9 +129,9 @@ export default function ProfilePage() {
         <div className="profile-header page-section" style={{ marginTop: 'var(--space-4)' }}>
           <div
             className="avatar avatar-lg"
-            style={{ background: 'var(--accent-soft)' }}
+            style={{ background: 'var(--accent-soft)', overflow: 'hidden' }}
           >
-            <User size={32} color="#fff" />
+            <img src={userAvatar} alt="用户头像" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           </div>
           <div>
             <div className="profile-name">张建国</div>

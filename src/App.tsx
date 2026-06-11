@@ -19,6 +19,7 @@ import FamilyBindPage from './pages/FamilyBindPage'
 import AssessmentChoicePage from './pages/AssessmentChoicePage'
 import ApplyAssessmentPage from './pages/ApplyAssessmentPage'
 import SelfAssessmentPage from './pages/SelfAssessmentPage'
+import NotificationsPage from './pages/NotificationsPage'
 
 /* ── 侧栏页面导航数据 ── */
 const sidebarPages = [
@@ -45,6 +46,7 @@ const sidebarPages = [
     { path: '/progress', label: '服务进度详情' },
     { path: '/maintenance', label: '维护与提醒' },
     { path: '/assessment', label: '评估结果' },
+    { path: '/notifications', label: '消息通知' },
   ]},
 ]
 
@@ -182,6 +184,7 @@ function AnimatedRoutes() {
           <Route path="/assessment/choose" element={<AssessmentChoicePage />} />
           <Route path="/assessment/apply" element={<ApplyAssessmentPage />} />
           <Route path="/assessment/self" element={<SelfAssessmentPage />} />
+          <Route path="/notifications" element={<NotificationsPage />} />
         </Routes>
       </motion.div>
     </AnimatePresence>

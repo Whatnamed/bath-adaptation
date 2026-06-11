@@ -23,6 +23,10 @@ import {
 import { reminders, stageSteps, stageCards } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
 
+/* 图片素材导入 */
+import logoImg from '../assets/images/00_brand/logo_anyu_flat_icon.png'
+import elderAvatar from '../assets/images/00_brand/avatar_elder_default.png'
+
 /* ── 首页 ── */
 export default function HomePage() {
   const navigate = useNavigate()
@@ -106,6 +110,7 @@ export default function HomePage() {
       {/* ── App Header ── */}
       <div className="app-header">
         <div className="app-header-brand">
+          <img src={logoImg} alt="安浴到家" style={{ width: 28, height: 28, borderRadius: 6 }} />
           <span className="app-header-title">安浴到家</span>
           <span className="app-header-subtitle">让父母洗浴更安全，子女更安心</span>
         </div>
@@ -128,9 +133,9 @@ export default function HomePage() {
           <div className="family-selector page-section" onClick={() => navigate('/bind')}>
             <div
               className="avatar"
-              style={{ background: 'var(--accent-soft)' }}
+              style={{ background: 'var(--accent-soft)', overflow: 'hidden' }}
             >
-              <User size={22} color="var(--accent)" />
+              <img src={elderAvatar} alt="老人头像" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
             </div>
             <div className="family-selector-info">
               <span className="family-selector-name">
