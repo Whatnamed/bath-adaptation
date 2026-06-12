@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
-import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
-import html2canvas from 'html2canvas'
+import { HashRouter, Route, Routes, useLocation } from 'react-router-dom'
+import { toBlob } from 'html-to-image'
 import { AnimatePresence, motion } from 'motion/react'
 
 import { AppStageProvider, useAppStage } from './context/AppStageContext'
@@ -113,15 +113,6 @@ function getPreviewFileName(pathname: string) {
   return `anyu-preview-${safePath}-${phoneWidth}x${phoneHeight}.png`
 }
 
-async function canvasToPngBlob(canvas: HTMLCanvasElement) {
-  return new Promise<Blob>((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (blob) resolve(blob)
-      else reject(new Error('Failed to create PNG blob'))
-    }, 'image/png')
-  })
-}
-
 async function writeFileHandle(fileHandle: SaveFileHandle, blob: Blob) {
   const writable = await fileHandle.createWritable()
   await writable.write(blob)
@@ -141,20 +132,18 @@ async function saveCurrentPhonePreview(pathname: string, fileHandle?: SaveFileHa
   const source = document.querySelector<HTMLElement>('.phone-shell')
   if (!source) throw new Error('Phone preview not found')
 
-  const canvas = await html2canvas(source, {
+  const blob = await toBlob(source, {
     width: phoneWidth,
     height: phoneHeight,
-    scale: 1,
-    backgroundColor: null,
-    useCORS: true,
-    logging: false,
-    scrollX: 0,
-    scrollY: 0,
-    windowWidth: document.documentElement.clientWidth,
-    windowHeight: document.documentElement.clientHeight,
+    canvasWidth: phoneWidth,
+    canvasHeight: phoneHeight,
+    pixelRatio: 1,
+    cacheBust: true,
+    skipFonts: true,
   })
 
-  const blob = await canvasToPngBlob(canvas)
+  if (!blob) throw new Error('Failed to create PNG blob')
+
   if (fileHandle) {
     await writeFileHandle(fileHandle, blob)
     return
@@ -236,7 +225,7 @@ export default function App() {
 
   return (
     <AppStageProvider initialStage="unbound">
-      <BrowserRouter>
+      <HashRouter>
         <div className="preview-container">
           <PreviewShortcuts />
           <PhoneShell>
@@ -252,7 +241,7 @@ export default function App() {
             )}
           </PhoneShell>
         </div>
-      </BrowserRouter>
+      </HashRouter>
     </AppStageProvider>
   )
 }
