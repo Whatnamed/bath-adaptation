@@ -1,11 +1,10 @@
-import { useState } from 'react'
-import { BrowserRouter, Routes, Route, useLocation, useNavigate } from 'react-router-dom'
+import { useCallback, useEffect, useState } from 'react'
+import { BrowserRouter, Route, Routes, useLocation } from 'react-router-dom'
+import html2canvas from 'html2canvas'
 import { AnimatePresence, motion } from 'motion/react'
 
-/* ── 全局状态 ── */
-import { AppStageProvider, useAppStage, allStages, stageLabels } from './context/AppStageContext'
-
-/* ── 页面组件 ── */
+import { AppStageProvider, useAppStage } from './context/AppStageContext'
+import { HomeIndicator, PhoneShell, StatusBar } from './components'
 import HomePage from './pages/HomePage'
 import ServicesPage from './pages/ServicesPage'
 import ProfilePage from './pages/ProfilePage'
@@ -21,91 +20,28 @@ import AssessmentChoicePage from './pages/AssessmentChoicePage'
 import ApplyAssessmentPage from './pages/ApplyAssessmentPage'
 import SelfAssessmentPage from './pages/SelfAssessmentPage'
 import NotificationsPage from './pages/NotificationsPage'
-import { HomeIndicator, PhoneShell, StatusBar } from './components'
-
-/* ── 侧栏页面导航数据 ── */
-const sidebarPages = [
-  { group: 'Tab 页面', items: [
-    { path: '/', label: '首页' },
-    { path: '/services', label: '服务' },
-    { path: '/profile', label: '我的' },
-  ]},
-  { group: '流程页面', items: [
-    { path: '/bind', label: '绑定家庭' },
-    { path: '/assessment/choose', label: '评估方式选择' },
-    { path: '/assessment/apply', label: '申请专业评估' },
-    { path: '/assessment/self', label: '自行拍照评估' },
-  ]},
-  { group: '方案与产品', items: [
-    { path: '/plan', label: '推荐方案' },
-    { path: '/plan/confirm', label: '方案确认 / 费用' },
-    { path: '/products', label: '改造类别选择' },
-    { path: '/products/toilet', label: '马桶产品选项' },
-    { path: '/products/shower', label: '淋浴产品选项' },
-    { path: '/products/basin', label: '洗漱台产品选项' },
-  ]},
-  { group: '服务与售后', items: [
-    { path: '/progress', label: '服务进度详情' },
-    { path: '/maintenance', label: '维护与提醒' },
-    { path: '/assessment', label: '评估结果' },
-    { path: '/notifications', label: '消息通知' },
-  ]},
-]
 
 const primaryTabPaths = new Set(['/', '/services', '/profile'])
+const phoneWidth = 430
+const phoneHeight = 932
 
-/* ── 侧栏组件 ── */
-function PageSidebar() {
-  const location = useLocation()
-  const navigate = useNavigate()
-  const { stage, setStage } = useAppStage()
-
-  return (
-    <aside className="page-sidebar">
-      <div className="sidebar-header">
-        <div className="sidebar-title">页面导航</div>
-      </div>
-      <div className="sidebar-scroll">
-        {sidebarPages.map((group) => (
-          <div className="sidebar-group" key={group.group}>
-            <div className="sidebar-group-label">{group.group}</div>
-            {group.items.map((item) => (
-              <button
-                key={item.path}
-                className={`sidebar-item ${location.pathname === item.path ? 'active' : ''}`}
-                onClick={() => navigate(item.path)}
-              >
-                <span className="sidebar-item-dot" />
-                {item.label}
-              </button>
-            ))}
-          </div>
-        ))}
-
-        {/* ── 阶段切换器 ── */}
-        <div className="sidebar-group sidebar-stage-group">
-          <div className="sidebar-group-label">阶段切换（演示）</div>
-          <select
-            value={stage}
-            onChange={(e) => setStage(e.target.value as typeof stage)}
-            className="sidebar-stage-select"
-          >
-            {allStages.map((s) => (
-              <option key={s} value={s}>
-                {stageLabels[s]}
-              </option>
-            ))}
-          </select>
-          <div className="sidebar-stage-help">
-            切换阶段后首页和服务页将联动变化
-          </div>
-        </div>
-      </div>
-    </aside>
-  )
+interface SaveWritable {
+  write: (data: Blob) => Promise<void> | void
+  close: () => Promise<void> | void
 }
 
-/* ── 动画页面路由 ── */
+interface SaveFileHandle {
+  createWritable: () => Promise<SaveWritable>
+}
+
+type SaveFilePicker = (options: {
+  suggestedName: string
+  types: Array<{
+    description: string
+    accept: Record<string, string[]>
+  }>
+}) => Promise<SaveFileHandle>
+
 interface AnimatedRoutesProps {
   onOpenImagePreview: (src: string) => void
 }
@@ -135,7 +71,6 @@ function AnimatedRoutes({ onOpenImagePreview }: AnimatedRoutesProps) {
           <Route path="/assessment" element={<AssessmentPage />} />
           <Route path="/products" element={<CategoryPage />} />
           <Route path="/products/:categoryId" element={<ProductOptionsPage />} />
-          {/* 新增流程页面 */}
           <Route path="/bind" element={<FamilyBindPage />} />
           <Route path="/assessment/choose" element={<AssessmentChoicePage />} />
           <Route path="/assessment/apply" element={<ApplyAssessmentPage />} />
@@ -160,7 +95,6 @@ function PhoneImagePreview({ src, onClose }: PhoneImagePreviewProps) {
   )
 }
 
-/* ── 全局 Toast 提示组件 ── */
 function GlobalToast() {
   const { toast } = useAppStage()
 
@@ -174,7 +108,129 @@ function GlobalToast() {
   )
 }
 
-/* ── 主应用 ── */
+function getPreviewFileName(pathname: string) {
+  const safePath = pathname === '/' ? 'home' : pathname.replace(/^\/+/, '').replace(/[/?#&=]+/g, '-')
+  return `anyu-preview-${safePath}-${phoneWidth}x${phoneHeight}.png`
+}
+
+async function canvasToPngBlob(canvas: HTMLCanvasElement) {
+  return new Promise<Blob>((resolve, reject) => {
+    canvas.toBlob((blob) => {
+      if (blob) resolve(blob)
+      else reject(new Error('Failed to create PNG blob'))
+    }, 'image/png')
+  })
+}
+
+async function writeFileHandle(fileHandle: SaveFileHandle, blob: Blob) {
+  const writable = await fileHandle.createWritable()
+  await writable.write(blob)
+  await writable.close()
+}
+
+function downloadBlob(blob: Blob, fileName: string) {
+  const link = document.createElement('a')
+  const url = URL.createObjectURL(blob)
+  link.download = fileName
+  link.href = url
+  link.click()
+  setTimeout(() => URL.revokeObjectURL(url), 1000)
+}
+
+async function saveCurrentPhonePreview(pathname: string, fileHandle?: SaveFileHandle | null) {
+  const source = document.querySelector<HTMLElement>('.phone-shell')
+  if (!source) throw new Error('Phone preview not found')
+
+  const canvas = await html2canvas(source, {
+    width: phoneWidth,
+    height: phoneHeight,
+    scale: 1,
+    backgroundColor: null,
+    useCORS: true,
+    logging: false,
+    scrollX: 0,
+    scrollY: 0,
+    windowWidth: document.documentElement.clientWidth,
+    windowHeight: document.documentElement.clientHeight,
+  })
+
+  const blob = await canvasToPngBlob(canvas)
+  if (fileHandle) {
+    await writeFileHandle(fileHandle, blob)
+    return
+  }
+
+  downloadBlob(blob, getPreviewFileName(pathname))
+}
+
+function PreviewShortcuts() {
+  const location = useLocation()
+  const [isSaving, setIsSaving] = useState(false)
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle')
+
+  const handleSave = useCallback(async () => {
+    if (isSaving) return
+
+    setIsSaving(true)
+    setSaveStatus('idle')
+
+    try {
+      const fileName = getPreviewFileName(location.pathname)
+      const picker = (window as Window & { showSaveFilePicker?: SaveFilePicker }).showSaveFilePicker
+      let fileHandle: SaveFileHandle | null = null
+
+      if (picker) {
+        try {
+          fileHandle = await picker.call(window, {
+            suggestedName: fileName,
+            types: [
+              {
+                description: 'PNG image',
+                accept: { 'image/png': ['.png'] },
+              },
+            ],
+          })
+        } catch (error) {
+          if (error instanceof DOMException && error.name === 'AbortError') return
+          throw error
+        }
+      }
+
+      await saveCurrentPhonePreview(location.pathname, fileHandle)
+      setSaveStatus('success')
+    } catch {
+      setSaveStatus('error')
+    } finally {
+      setIsSaving(false)
+    }
+  }, [isSaving, location.pathname])
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+        event.preventDefault()
+        void handleSave()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [handleSave])
+
+  useEffect(() => {
+    if (saveStatus === 'idle') return undefined
+
+    const timer = window.setTimeout(() => setSaveStatus('idle'), 1800)
+    return () => window.clearTimeout(timer)
+  }, [saveStatus])
+
+  if (!isSaving && saveStatus === 'idle') return null
+
+  const label = isSaving ? '生成中' : saveStatus === 'success' ? '已保存' : '保存失败'
+
+  return <div className={`preview-save-status ${saveStatus === 'error' ? 'is-error' : ''}`}>{label}</div>
+}
+
 export default function App() {
   const [previewImg, setPreviewImg] = useState<string | null>(null)
 
@@ -182,7 +238,7 @@ export default function App() {
     <AppStageProvider initialStage="unbound">
       <BrowserRouter>
         <div className="preview-container">
-          <PageSidebar />
+          <PreviewShortcuts />
           <PhoneShell>
             <StatusBar />
             <GlobalToast />

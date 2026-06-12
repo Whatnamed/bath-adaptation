@@ -15,6 +15,32 @@
   padding: 20px;
 }
 
+.preview-save-status {
+  position: fixed;
+  top: 20px;
+  right: 24px;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid rgba(232, 234, 232, 0.86);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.78);
+  color: var(--accent-deep);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-medium);
+  box-shadow: var(--shadow-card);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  pointer-events: none;
+}
+
+.preview-save-status.is-error {
+  color: var(--danger);
+}
+
 /* ── 侧栏页面切换器 ── */
 .page-sidebar {
   width: 180px;
