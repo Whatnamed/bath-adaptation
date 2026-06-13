@@ -196,6 +196,83 @@
   display: flex;
   align-items: center;
   gap: 5px;
+  color: var(--text-primary);
+  transform: translateY(-1px);
+}
+
+.status-signal {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  width: 18px;
+  height: 12px;
+}
+
+.status-signal span {
+  width: 3px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.status-signal span:nth-child(1) {
+  height: 4px;
+}
+
+.status-signal span:nth-child(2) {
+  height: 6px;
+}
+
+.status-signal span:nth-child(3) {
+  height: 8px;
+}
+
+.status-signal span:nth-child(4) {
+  height: 10px;
+}
+
+.status-wifi {
+  width: 17px;
+  height: 12px;
+  display: block;
+  overflow: visible;
+}
+
+.status-wifi path {
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.status-battery {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 26px;
+  height: 13px;
+  margin-left: 1px;
+  padding: 2px;
+  border: 1.35px solid currentColor;
+  border-radius: 3px;
+}
+
+.status-battery-fill {
+  display: block;
+  width: 18px;
+  height: 7px;
+  border-radius: 1.5px;
+  background: currentColor;
+}
+
+.status-battery-cap {
+  position: absolute;
+  right: -3px;
+  top: 4px;
+  width: 2px;
+  height: 5px;
+  border-radius: 0 1px 1px 0;
+  background: currentColor;
+  opacity: 0.45;
 }
 
 /* ── App 顶栏（首页用） ── */
