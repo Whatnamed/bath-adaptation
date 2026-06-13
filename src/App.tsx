@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { HashRouter, Route, Routes, useLocation } from 'react-router-dom'
-import { toBlob } from 'html-to-image'
+import { toBlob, toPng } from 'html-to-image'
 import { AnimatePresence, motion } from 'motion/react'
 
 import { AppStageProvider, useAppStage } from './context/AppStageContext'
@@ -124,15 +124,24 @@ function downloadBlob(blob: Blob, fileName: string) {
   const url = URL.createObjectURL(blob)
   link.download = fileName
   link.href = url
+  link.rel = 'noopener'
+  link.style.display = 'none'
+  document.body.appendChild(link)
   link.click()
-  setTimeout(() => URL.revokeObjectURL(url), 1000)
+  link.remove()
+  setTimeout(() => URL.revokeObjectURL(url), 2000)
+}
+
+async function dataUrlToBlob(dataUrl: string) {
+  const response = await fetch(dataUrl)
+  return response.blob()
 }
 
 async function saveCurrentPhonePreview(pathname: string, fileHandle?: SaveFileHandle | null) {
   const source = document.querySelector<HTMLElement>('.phone-shell')
   if (!source) throw new Error('Phone preview not found')
 
-  const blob = await toBlob(source, {
+  const captureOptions = {
     width: phoneWidth,
     height: phoneHeight,
     canvasWidth: phoneWidth,
@@ -140,8 +149,13 @@ async function saveCurrentPhonePreview(pathname: string, fileHandle?: SaveFileHa
     pixelRatio: 1,
     cacheBust: true,
     skipFonts: true,
-  })
+  }
 
+  let blob = await toBlob(source, captureOptions)
+  if (!blob) {
+    const dataUrl = await toPng(source, captureOptions)
+    blob = await dataUrlToBlob(dataUrl)
+  }
   if (!blob) throw new Error('Failed to create PNG blob')
 
   if (fileHandle) {
@@ -154,12 +168,14 @@ async function saveCurrentPhonePreview(pathname: string, fileHandle?: SaveFileHa
 
 function PreviewShortcuts() {
   const location = useLocation()
+  const savingRef = useRef(false)
   const [isSaving, setIsSaving] = useState(false)
   const [saveStatus, setSaveStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
   const handleSave = useCallback(async () => {
-    if (isSaving) return
+    if (savingRef.current) return
 
+    savingRef.current = true
     setIsSaving(true)
     setSaveStatus('idle')
 
@@ -187,23 +203,31 @@ function PreviewShortcuts() {
 
       await saveCurrentPhonePreview(location.pathname, fileHandle)
       setSaveStatus('success')
-    } catch {
+    } catch (error) {
+      console.error('Failed to save preview image', error)
       setSaveStatus('error')
     } finally {
+      savingRef.current = false
       setIsSaving(false)
     }
-  }, [isSaving, location.pathname])
+  }, [location.pathname])
 
   useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 's') {
+    const handleShortcut = (event: KeyboardEvent) => {
+      const isSaveShortcut =
+        (event.ctrlKey || event.metaKey) &&
+        (event.key.toLowerCase() === 's' || event.code === 'KeyS')
+
+      if (isSaveShortcut) {
         event.preventDefault()
+        event.stopPropagation()
+        if (event.repeat) return
         void handleSave()
       }
     }
 
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    document.addEventListener('keydown', handleShortcut, true)
+    return () => document.removeEventListener('keydown', handleShortcut, true)
   }, [handleSave])
 
   useEffect(() => {
