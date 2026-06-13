@@ -15,6 +15,7 @@ import ProgressPage from './pages/ProgressPage'
 import MaintenancePage from './pages/MaintenancePage'
 import AssessmentPage from './pages/AssessmentPage'
 import CategoryPage from './pages/CategoryPage'
+import ProductDetailPage from './pages/ProductDetailPage'
 import ProductOptionsPage from './pages/ProductOptionsPage'
 import FamilyBindPage from './pages/FamilyBindPage'
 import AssessmentChoicePage from './pages/AssessmentChoicePage'
@@ -72,6 +73,7 @@ function AnimatedRoutes({ onOpenImagePreview }: AnimatedRoutesProps) {
           <Route path="/maintenance" element={<MaintenancePage />} />
           <Route path="/assessment" element={<AssessmentPage />} />
           <Route path="/products" element={<CategoryPage />} />
+          <Route path="/products/:categoryId/:productId" element={<ProductDetailPage />} />
           <Route path="/products/:categoryId" element={<ProductOptionsPage />} />
           <Route path="/bind" element={<FamilyBindPage />} />
           <Route path="/assessment/choose" element={<AssessmentChoicePage />} />

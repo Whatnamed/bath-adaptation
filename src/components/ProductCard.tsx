@@ -11,6 +11,7 @@ interface ProductCardProps {
   price?: number
   selected?: boolean
   onToggle?: () => void
+  onOpen?: () => void
 }
 
 export function ProductCard({
@@ -22,9 +23,22 @@ export function ProductCard({
   price,
   selected = false,
   onToggle,
+  onOpen,
 }: ProductCardProps) {
   return (
-    <div className={`product-card stagger-item ${selected ? 'is-selected' : ''}`}>
+    <div
+      className={`product-card stagger-item ${selected ? 'is-selected' : ''} ${onOpen ? 'is-clickable' : ''}`}
+      role={onOpen ? 'button' : undefined}
+      tabIndex={onOpen ? 0 : undefined}
+      onClick={onOpen}
+      onKeyDown={(event) => {
+        if (!onOpen) return
+        if (event.key === 'Enter' || event.key === ' ') {
+          event.preventDefault()
+          onOpen()
+        }
+      }}
+    >
       {selected && (
         <div className="product-card-check">
           <Check size={14} color="#fff" strokeWidth={3} />

@@ -7,6 +7,7 @@ import {
   CheckCircle,
 } from 'lucide-react'
 import { productOptions, productCategories } from '../data/mock'
+import { productDetails } from '../data/productDetails'
 import { useAppStage } from '../context/AppStageContext'
 import { Button, FixedBottomBar, PageHeader, ProductCard } from '../components'
 
@@ -32,12 +33,6 @@ const productImages: Record<string, string> = {
 }
 
 /* ── 产品价格映射 ── */
-const productPrices: Record<string, number> = {
-  t1: 580, t2: 720, t3: 1680, t4: 1280,
-  s1: 360, s2: 480, s3: 380, s4: 220,
-  b1: 450, b2: 560, b3: 380, b4: 680,
-}
-
 /* ── 类别图标映射 ── */
 const categoryIcons: Record<string, React.ReactNode> = {
   toilet: <Armchair size={36} style={{ color: 'var(--accent)', opacity: 0.6 }} />,
@@ -137,9 +132,10 @@ export default function ProductOptionsPage() {
                 image={productImages[item.id]}
                 fallbackIcon={currentIcon}
                 tag={item.tag}
-                price={productPrices[item.id]}
+                price={productDetails[item.id]?.price}
                 selected={isSelected}
                 onToggle={() => toggleItem(item.id)}
+                onOpen={() => navigate(`/products/${activeCategoryId}/${item.id}${fromSource ? `?from=${fromSource}` : ''}`)}
               />
             )
           })}
