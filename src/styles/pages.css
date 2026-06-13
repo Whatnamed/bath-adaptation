@@ -935,6 +935,13 @@
   margin-top: var(--space-4);
 }
 
+.assessment-choice-lede {
+  margin-top: var(--space-4);
+  color: var(--text-secondary);
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-relaxed);
+}
+
 .product-category-title {
   font-size: var(--text-body);
   font-weight: var(--weight-semibold);

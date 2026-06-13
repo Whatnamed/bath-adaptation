@@ -5,6 +5,7 @@ import { AnimatePresence, motion } from 'motion/react'
 
 import { AppStageProvider, useAppStage } from './context/AppStageContext'
 import { HomeIndicator, PhoneShell, StatusBar } from './components'
+import logoImg from './assets/images/00_brand/logo_anyu_flat_icon.png'
 import HomePage from './pages/HomePage'
 import ServicesPage from './pages/ServicesPage'
 import ProfilePage from './pages/ProfilePage'
@@ -24,6 +25,7 @@ import NotificationsPage from './pages/NotificationsPage'
 const primaryTabPaths = new Set(['/', '/services', '/profile'])
 const phoneWidth = 430
 const phoneHeight = 932
+const splashStorageKey = 'anyu-splash-seen'
 
 interface SaveWritable {
   write: (data: Blob) => Promise<void> | void
@@ -105,6 +107,66 @@ function GlobalToast() {
       <div className="global-toast-dot" />
       <div className="global-toast-text">{toast}</div>
     </div>
+  )
+}
+
+function hasSplashParam() {
+  const searchParams = new URLSearchParams(window.location.search)
+  if (searchParams.get('splash') === '1') return true
+
+  const hashQueryStart = window.location.hash.indexOf('?')
+  if (hashQueryStart === -1) return false
+
+  const hashParams = new URLSearchParams(window.location.hash.slice(hashQueryStart + 1))
+  return hashParams.get('splash') === '1'
+}
+
+function BrandSplash() {
+  const [visible, setVisible] = useState(() => {
+    if (hasSplashParam()) return true
+    return sessionStorage.getItem(splashStorageKey) !== '1'
+  })
+
+  const handleEnter = () => {
+    sessionStorage.setItem(splashStorageKey, '1')
+    setVisible(false)
+  }
+
+  return (
+    <AnimatePresence>
+      {visible && (
+        <motion.div
+          className="brand-splash"
+          initial={{ opacity: 1 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <motion.div
+            className="brand-splash-content"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.36, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <img className="brand-splash-logo" src={logoImg} alt="" />
+            <div className="brand-splash-title">安浴到家</div>
+            <div className="brand-splash-subtitle">让父母洗浴更安全，子女更安心</div>
+            <div className="brand-splash-desc">农村卫浴适老化微改造服务系统</div>
+            <div className="brand-splash-flow">先评估风险｜再匹配方案｜安装后持续维护</div>
+          </motion.div>
+          <motion.button
+            type="button"
+            className="brand-splash-button"
+            onClick={handleEnter}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.12, duration: 0.34, ease: [0.16, 1, 0.3, 1] }}
+          >
+            进入服务
+          </motion.button>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 }
 
@@ -263,6 +325,7 @@ export default function App() {
                 onClose={() => setPreviewImg(null)}
               />
             )}
+            <BrandSplash />
           </PhoneShell>
         </div>
       </HashRouter>

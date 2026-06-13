@@ -1,16 +1,15 @@
 import { useNavigate } from 'react-router-dom'
 import {
-  UserCheck,
   Camera,
-  ShoppingBag,
+  Ruler,
   Shield,
+  UserCheck,
 } from 'lucide-react'
-import { useAppStage } from '../context/AppStageContext'
+import type { ReactNode } from 'react'
 import { ChoiceCard, InfoNote, PageHeader } from '../components'
 
-/* ── 选项卡片数据 ── */
 interface ChoiceOption {
-  icon: React.ReactNode
+  icon: ReactNode
   tone: 'accent' | 'warning' | 'info'
   title: string
   desc: string
@@ -18,65 +17,48 @@ interface ChoiceOption {
   onClick: () => void
 }
 
-/* ── 评估方式选择页 ── */
 export default function AssessmentChoicePage() {
   const navigate = useNavigate()
-  const { setStage } = useAppStage()
 
   const options: ChoiceOption[] = [
     {
       icon: <UserCheck size={28} />,
       tone: 'accent',
-      title: '申请专业评估',
-      desc: '由评估员上门实地检查，出具专业评估报告',
+      title: '让工作人员上门看一看',
+      desc: '适合不确定怎么改、家里情况复杂、老人不方便拍照的家庭。预约后工作人员会上门测量空间并记录风险。',
       chip: '免费',
       onClick: () => navigate('/assessment/apply'),
     },
     {
       icon: <Camera size={28} />,
       tone: 'info',
-      title: '自行拍照评估',
-      desc: '拍摄卫浴现场照片，系统智能分析安全风险',
+      title: '我先拍照片做初步评估',
+      desc: '适合子女不在家、想先了解大概风险的情况。按指引拍摄卫生间照片，系统先生成初步建议。',
       chip: '快速',
-      onClick: () => navigate('/assessment/self'),
+      onClick: () => navigate('/assessment/self?start=photo'),
     },
     {
-      icon: <ShoppingBag size={28} />,
+      icon: <Ruler size={28} />,
       tone: 'warning',
-      title: '我已了解需求，直接选购',
-      desc: '跳过评估，直接浏览和选择改造产品',
-      onClick: () => {
-        setStage('plan_pending')
-        navigate('/products?from=direct')
-      },
+      title: '我已有尺寸或草图',
+      desc: '适合已经量过尺寸，或有手绘平面图的家庭。上传草图或填写关键尺寸，更快匹配改造方案。',
+      onClick: () => navigate('/assessment/self?start=space'),
     },
   ]
 
   return (
     <>
-      {/* ── 页面头部 ── */}
       <PageHeader title="选择评估方式" onBack={() => navigate(-1)} />
 
-      {/* ── 可滚动内容区域 ── */}
       <div className="subpage-content">
-        {/* ── 说明文字 ── */}
-        <div className="page-section">
-          <div
-            style={{
-              fontSize: 'var(--text-body-sm)',
-              color: 'var(--text-secondary)',
-              lineHeight: 'var(--leading-relaxed)',
-            }}
-          >
-            选择一种方式，让我们了解您家的卫浴情况
-          </div>
+        <div className="page-section assessment-choice-lede">
+          选择最适合当前情况的方式。照片用于识别风险，尺寸和草图用于判断产品是否适合安装。
         </div>
 
-        {/* ── 三张选项卡片 ── */}
         <div className="page-section">
-          {options.map((opt, i) => (
+          {options.map((opt) => (
             <ChoiceCard
-              key={i}
+              key={opt.title}
               icon={opt.icon}
               tone={opt.tone}
               title={opt.title}
@@ -87,10 +69,9 @@ export default function AssessmentChoicePage() {
           ))}
         </div>
 
-        {/* ── 底部安全提示 ── */}
         <div className="page-section">
           <InfoNote icon={<Shield size={16} />}>
-              无论选择哪种方式，我们都会确保方案的安全性和专业性
+            无论选择哪种方式，最终方案都会经过上门复核，确保安全性和可安装性。
           </InfoNote>
         </div>
       </div>

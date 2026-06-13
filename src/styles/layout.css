@@ -488,6 +488,80 @@
   object-fit: contain;
 }
 
+.brand-splash {
+  position: absolute;
+  inset: 0;
+  z-index: 9000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 118px var(--space-page) 58px;
+  background:
+    radial-gradient(circle at 50% 24%, rgba(213, 229, 212, 0.7), transparent 34%),
+    linear-gradient(180deg, var(--surface-page) 0%, var(--surface-soft) 100%);
+  color: var(--text-primary);
+}
+
+.brand-splash-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.brand-splash-logo {
+  width: 72px;
+  height: 72px;
+  margin-bottom: var(--space-6);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-elevated);
+}
+
+.brand-splash-title {
+  color: var(--accent-deep);
+  font-size: 34px;
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+}
+
+.brand-splash-subtitle {
+  margin-top: var(--space-3);
+  color: var(--text-primary);
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+}
+
+.brand-splash-desc {
+  margin-top: var(--space-2);
+  color: var(--text-secondary);
+  font-size: var(--text-body-sm);
+  line-height: var(--leading-normal);
+}
+
+.brand-splash-flow {
+  margin-top: var(--space-8);
+  padding: 10px 14px;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-pill);
+  background: rgba(255, 255, 255, 0.58);
+  color: var(--accent-deep);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-medium);
+  box-shadow: var(--shadow-card);
+}
+
+.brand-splash-button {
+  width: 100%;
+  min-height: 56px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--text-inverse);
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
+  box-shadow: var(--shadow-float);
+}
+
 /* ── 内容区域 ── */
 .page-content {
   flex: 1;
