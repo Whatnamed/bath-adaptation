@@ -26,7 +26,7 @@ export default function ProgressPage() {
   /* ── 1. 根据 stage 动态生成卡片文字 ── */
   let currentStatusTitle = '状态更新中'
   let currentStatusDesc = '正在获取最新服务进度，请稍候...'
-  let showConfirmBtnType: 'none' | 'plan' | 'maintenance' | 'contact_assessor' | 'contact_installer' = 'none'
+  let showConfirmBtnType: 'none' | 'assessment' | 'plan' | 'maintenance' | 'contact_assessor' | 'contact_installer' = 'none'
 
   if (stage === 'unbound') {
     currentStatusTitle = '未绑定家庭'
@@ -39,8 +39,12 @@ export default function ProgressPage() {
     currentStatusDesc = `评估申请已提交。评估员将联系您并在 6月15日 上门，前往：${familyDetails.provinceCityDistrict}${familyDetails.townStreet}${familyDetails.villageCommunity}${familyDetails.houseNumber}。`
     showConfirmBtnType = 'contact_assessor'
   } else if (stage === 'self_assessing') {
-    currentStatusTitle = '自助拍照评估中'
-    currentStatusDesc = '已开始自行拍照评估。请完成所有区域的照片上传，以生成评估报告。'
+    currentStatusTitle = '自助评估分析中'
+    currentStatusDesc = '照片和空间信息已提交，系统正在整理卫浴风险和可安装性判断，请稍候查看评估结果。'
+  } else if (stage === 'assessment_complete') {
+    currentStatusTitle = '评估结果已生成'
+    currentStatusDesc = '卫浴空间风险和布局说明已整理完成。请先查看评估结果，再进入推荐改造方案。'
+    showConfirmBtnType = 'assessment'
   } else if (stage === 'plan_pending') {
     currentStatusTitle = '方案待确认'
     currentStatusDesc = '评估已完成，推荐适老化改造方案已生成！请立即查看推荐改造方案并进行在线确认。'
@@ -104,16 +108,53 @@ export default function ProgressPage() {
     })
   } else if (stage === 'self_assessing') {
     timelineData.push({
-      step: '自行评估',
+      step: '自助评估',
       status: 'current',
-      date: '进行中',
-      desc: '正由用户自行拍摄并上传卫浴现场细节照片',
+      date: '分析中',
+      desc: '照片和空间信息已提交，正在生成卫浴风险评估结果',
+    })
+    timelineData.push({
+      step: '评估结果',
+      status: 'pending',
+      date: '待生成',
+      desc: '生成后可查看空间风险、照片记录和评估说明',
     })
     timelineData.push({
       step: '方案确认',
       status: 'pending',
-      date: '待评估',
-      desc: '照片智能分析完成后生成适老改造方案',
+      date: '待查看结果',
+      desc: '查看评估结果后，再进入推荐改造方案',
+    })
+    timelineData.push({
+      step: '上门安装',
+      status: 'pending',
+      date: '待预约',
+      desc: '确认方案及费用后预约上门安装时间',
+    })
+    timelineData.push({
+      step: '使用教学',
+      status: 'pending',
+      date: '待完成',
+      desc: '安装完成后由专业师傅面对面指导使用',
+    })
+    timelineData.push({
+      step: '完工回访',
+      status: 'pending',
+      date: '待安排',
+      desc: '服务站将在完工后 7 天内上门回访复检',
+    })
+  } else if (stage === 'assessment_complete') {
+    timelineData.push({
+      step: '评估结果',
+      status: 'current',
+      date: '已生成',
+      desc: '卫浴风险点和空间说明已生成，待用户查看',
+    })
+    timelineData.push({
+      step: '方案确认',
+      status: 'pending',
+      date: '待进入',
+      desc: '查看评估结果后进入推荐方案，并确认产品与费用',
     })
     timelineData.push({
       step: '上门安装',
@@ -298,6 +339,8 @@ export default function ProgressPage() {
             </span>
             <span className="chip chip-accent">
               {stage === 'assessment_pending' ? '等待评估' :
+               stage === 'self_assessing' ? '分析中' :
+               stage === 'assessment_complete' ? '评估完成' :
                stage === 'plan_pending' ? '方案待确认' :
                stage === 'plan_confirmed' ? '已预约安装' :
                stage === 'installing' ? '施工中' :
@@ -451,6 +494,17 @@ export default function ProgressPage() {
             >
               <ClipboardCheck size={20} />
               查看推荐方案
+              <ChevronRight size={18} />
+            </button>
+          )}
+
+          {showConfirmBtnType === 'assessment' && (
+            <button
+              className="btn btn-primary btn-block btn-lg"
+              onClick={() => navigate('/assessment')}
+            >
+              <ClipboardCheck size={20} />
+              查看评估结果
               <ChevronRight size={18} />
             </button>
           )}

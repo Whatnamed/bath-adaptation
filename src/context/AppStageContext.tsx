@@ -7,7 +7,8 @@ export type AppStage =
   | 'idle'               // 已绑定，等待开始
   | 'assessment_pending' // 已申请专业评估，等待上门
   | 'self_assessing'     // 自行拍照评估中
-  | 'plan_pending'       // 评估完成，方案待确认
+  | 'assessment_complete' // 评估完成，等待查看结果
+  | 'plan_pending'       // 方案待确认
   | 'plan_confirmed'     // 方案已确认，待安装
   | 'installing'         // 安装进行中
   | 'completed'          // 完工，售后阶段
@@ -18,6 +19,7 @@ export const stageLabels: Record<AppStage, string> = {
   idle: '已绑定 · 待开始',
   assessment_pending: '等待专业评估',
   self_assessing: '自行拍照评估中',
+  assessment_complete: '评估结果已生成',
   plan_pending: '方案待确认',
   plan_confirmed: '方案已确认 · 待安装',
   installing: '安装进行中',
@@ -30,6 +32,7 @@ export const allStages: AppStage[] = [
   'idle',
   'assessment_pending',
   'self_assessing',
+  'assessment_complete',
   'plan_pending',
   'plan_confirmed',
   'installing',
@@ -105,15 +108,15 @@ export function AppStageProvider({
     let timer: ReturnType<typeof setTimeout> | null = null
 
     if (stage === 'assessment_pending') {
-      // 等待专业评估，8秒后自动推进到方案待确认
+      // 等待专业评估，8秒后自动生成评估结果
       timer = setTimeout(() => {
-        setStage('plan_pending')
-        showToast('【演示模拟】评估员王建华师傅已录入评估结果，适老改造方案已为您生成！')
+        setStage('assessment_complete')
+        showToast('【演示模拟】评估员王建华师傅已录入评估结果，请先查看卫浴风险报告。')
       }, 8000)
     } else if (stage === 'self_assessing') {
       // 自助评估资料提交后，等待系统分析再生成评估结果
       timer = setTimeout(() => {
-        setStage('plan_pending')
+        setStage('assessment_complete')
         showToast('【演示模拟】自助评估资料已分析完成，卫浴风险评估结果已生成。')
       }, 6000)
     } else if (stage === 'plan_confirmed') {

@@ -81,6 +81,9 @@ export default function MaintenancePage() {
         {/* ── 设备状态 ── */}
         <div className="page-section">
           <SectionHeader title="设备状态" />
+          <p className="maintenance-status-note">
+            完工后由服务站定期回访，设备状态可通过自测和复检记录持续更新。
+          </p>
 
           {devices.map((device, i) => {
             const Icon = device.icon

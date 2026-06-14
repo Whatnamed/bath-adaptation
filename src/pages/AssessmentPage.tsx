@@ -25,7 +25,8 @@ function SpaceRiskMap() {
 
   return (
     <Card className="assessment-map-card">
-      <SectionHeader title="空间布局与风险点" action={<ShieldAlert size={18} />} />
+      <SectionHeader title="空间风险示意（待复核）" action={<ShieldAlert size={18} />} />
+      <div className="assessment-map-replace-note">平面布局素材预留位</div>
       <div className="assessment-layout-map">
         <svg viewBox="0 0 320 210" aria-label="卫生间空间布局示意图">
           <rect className="map-room" x="28" y="22" width="264" height="162" rx="12" />
@@ -66,7 +67,7 @@ function SpaceRiskMap() {
         ))}
       </div>
       <InfoNote icon={<ImageIcon size={16} />}>
-        示意图根据照片和空间信息生成，最终以上门复核为准。
+        当前为风险位置示意，不作为施工图。后续可替换为正式平面布局素材，最终以上门复核为准。
       </InfoNote>
     </Card>
   )
@@ -74,7 +75,7 @@ function SpaceRiskMap() {
 
 export default function AssessmentPage() {
   const navigate = useNavigate()
-  const { familyDetails } = useAppStage()
+  const { familyDetails, stage, setStage } = useAppStage()
 
   const photos = [
     { src: resultFloor, desc: '卫生间地面（湿滑）' },
@@ -84,6 +85,12 @@ export default function AssessmentPage() {
 
   const fullAddress = `${familyDetails.provinceCityDistrict} ${familyDetails.townStreet} ${familyDetails.villageCommunity} ${familyDetails.houseNumber}`
   const summary = assessmentResult.summary.replace('桂林村 142 号', `${familyDetails.villageCommunity} ${familyDetails.houseNumber}`)
+  const handleOpenPlan = () => {
+    if (stage === 'assessment_complete') {
+      setStage('plan_pending')
+    }
+    navigate('/plan')
+  }
 
   return (
     <div className="screen-frame screen-frame-overlay">
@@ -147,7 +154,7 @@ export default function AssessmentPage() {
       </div>
 
       <FixedBottomBar variant="attached">
-        <Button block size="lg" onClick={() => navigate('/plan')}>
+        <Button block size="lg" onClick={handleOpenPlan}>
           查看推荐方案
           <ChevronRight size={18} />
         </Button>

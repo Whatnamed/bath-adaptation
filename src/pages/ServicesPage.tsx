@@ -18,6 +18,7 @@ export default function ServicesPage() {
   const stageStatusMap: Record<string, { text: string; chipText: string }> = {
     assessment_pending: { text: '等待评估', chipText: '等待中' },
     self_assessing: { text: '自行评估中', chipText: '进行中' },
+    assessment_complete: { text: '评估结果已生成', chipText: '待查看' },
     plan_pending: { text: '方案待确认', chipText: '进行中' },
     plan_confirmed: { text: '待安装', chipText: '已预约' },
     installing: { text: '安装中', chipText: '进行中' },

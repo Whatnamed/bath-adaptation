@@ -940,6 +940,7 @@
 .assessment-map-card {
   padding: var(--space-4);
   margin-bottom: var(--space-5);
+  background: var(--surface-muted);
 }
 
 .assessment-map-card .section-header {
@@ -947,14 +948,28 @@
 }
 
 .assessment-map-card .section-header svg {
-  color: var(--accent);
+  color: var(--text-tertiary);
+}
+
+.assessment-map-replace-note {
+  display: inline-flex;
+  align-items: center;
+  min-height: 26px;
+  margin-bottom: var(--space-3);
+  padding: 0 10px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--text-tertiary);
+  font-size: var(--text-micro);
+  font-weight: var(--weight-medium);
 }
 
 .assessment-layout-map {
   overflow: hidden;
-  border: 1px solid var(--border-light);
+  border: 1px dashed var(--border);
   border-radius: var(--radius-lg);
-  background: var(--surface-muted);
+  background: var(--surface-card);
+  opacity: 0.82;
 }
 
 .assessment-layout-map svg {
@@ -1172,6 +1187,13 @@
   box-shadow: var(--shadow-card);
   margin-bottom: var(--space-3);
   border: 1px solid rgba(232, 234, 232, 0.72);
+}
+
+.maintenance-status-note {
+  margin: calc(var(--space-2) * -1) 0 var(--space-4);
+  color: var(--text-secondary);
+  font-size: var(--text-caption);
+  line-height: var(--leading-relaxed);
 }
 
 .device-card-header {

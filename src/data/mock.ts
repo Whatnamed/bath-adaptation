@@ -279,6 +279,12 @@ export const stageSteps: Record<string, typeof serviceOrder.steps> = {
     { key: 'install', label: '上门安装', status: 'pending', date: '待预约' },
     { key: 'training', label: '使用教学', status: 'pending', date: '待完成' },
   ],
+  assessment_complete: [
+    { key: 'assessment', label: '评估结果', status: 'done', date: '已生成' },
+    { key: 'plan', label: '方案确认', status: 'current', date: '待查看' },
+    { key: 'install', label: '上门安装', status: 'pending', date: '待预约' },
+    { key: 'training', label: '使用教学', status: 'pending', date: '待完成' },
+  ],
   plan_pending: [
     { key: 'assessment', label: '入户评估', status: 'done', date: '5月18日' },
     { key: 'plan', label: '方案确认', status: 'current', date: '进行中' },
@@ -344,12 +350,20 @@ export const stageCards: Record<string, {
     badge: '进行中',
     variant: 'waiting',
   },
-  plan_pending: {
+  assessment_complete: {
     title: '评估结果已生成',
     desc: '先查看卫浴空间风险和布局说明，再确认推荐改造方案',
     cta: '查看评估结果',
     ctaRoute: '/assessment',
     badge: '最重要',
+    variant: 'action',
+  },
+  plan_pending: {
+    title: '方案待确认',
+    desc: '已根据评估结果生成推荐改造方案，请确认产品和服务安排',
+    cta: '查看推荐方案',
+    ctaRoute: '/plan',
+    badge: '待确认',
     variant: 'action',
   },
   plan_confirmed: {

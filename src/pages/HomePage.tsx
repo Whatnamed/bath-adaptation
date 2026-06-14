@@ -81,6 +81,7 @@ export default function HomePage() {
     idle: <Sparkles size={24} color="var(--accent)" />,
     assessment_pending: <Clock size={24} color="var(--warning)" />,
     self_assessing: <Camera size={24} color="var(--accent)" />,
+    assessment_complete: <ClipboardCheck size={24} color="var(--accent)" />,
     plan_pending: <ClipboardCheck size={24} color="var(--accent)" />,
     plan_confirmed: <CalendarDays size={24} color="var(--info)" />,
     installing: <Wrench size={24} color="var(--accent)" />,
