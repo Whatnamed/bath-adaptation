@@ -496,7 +496,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 118px var(--space-page) 58px;
+  padding: 132px var(--space-page) 58px;
   background:
     radial-gradient(circle at 50% 24%, rgba(213, 229, 212, 0.7), transparent 34%),
     linear-gradient(180deg, var(--surface-page) 0%, var(--surface-soft) 100%);
@@ -513,7 +513,7 @@
 .brand-splash-logo {
   width: 72px;
   height: 72px;
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-8);
   border-radius: var(--radius-xl);
   box-shadow: var(--shadow-elevated);
 }
@@ -526,7 +526,7 @@
 }
 
 .brand-splash-subtitle {
-  margin-top: var(--space-3);
+  margin-top: var(--space-4);
   color: var(--text-primary);
   font-size: var(--text-body);
   font-weight: var(--weight-semibold);
@@ -537,18 +537,6 @@
   color: var(--text-secondary);
   font-size: var(--text-body-sm);
   line-height: var(--leading-normal);
-}
-
-.brand-splash-flow {
-  margin-top: var(--space-8);
-  padding: 10px 14px;
-  border: 1px solid var(--border-light);
-  border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.58);
-  color: var(--accent-deep);
-  font-size: var(--text-caption);
-  font-weight: var(--weight-medium);
-  box-shadow: var(--shadow-card);
 }
 
 .brand-splash-button {

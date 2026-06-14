@@ -110,6 +110,12 @@ export function AppStageProvider({
         setStage('plan_pending')
         showToast('【演示模拟】评估员王建华师傅已录入评估结果，适老改造方案已为您生成！')
       }, 8000)
+    } else if (stage === 'self_assessing') {
+      // 自助评估资料提交后，等待系统分析再生成评估结果
+      timer = setTimeout(() => {
+        setStage('plan_pending')
+        showToast('【演示模拟】自助评估资料已分析完成，卫浴风险评估结果已生成。')
+      }, 6000)
     } else if (stage === 'plan_confirmed') {
       // 方案已确认，8秒后自动推进到安装进行中
       timer = setTimeout(() => {

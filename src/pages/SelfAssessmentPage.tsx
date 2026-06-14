@@ -9,6 +9,7 @@ import {
   Home,
   LayoutTemplate,
   Ruler,
+  ShieldCheck,
 } from 'lucide-react'
 import type { ReactNode } from 'react'
 import { useAppStage } from '../context/AppStageContext'
@@ -41,32 +42,32 @@ const photoAreas: PhotoArea[] = [
     id: 'area_overall',
     icon: <Home size={22} />,
     title: '卫生间整体',
-    description: '在门口拍摄卫生间全景，展示整体布局和动线。',
+    description: '站在门口拍全景，尽量拍到门槛、如厕区和淋浴区。',
     guideImg: selfOverall,
   },
   {
     id: 'area_toilet',
     icon: <Armchair size={22} />,
     title: '马桶 / 蹲便区',
-    description: '拍摄如厕区域、两侧墙面和可借力位置。',
+    description: '拍清楚两侧墙面、起身借力位置和周围空间。',
     guideImg: selfToilet,
   },
   {
     id: 'area_shower',
     icon: <Droplets size={22} />,
-    title: '淋浴 / 洗浴区域',
-    description: '拍摄地面、墙面、花洒和出浴位置。',
+    title: '淋浴 / 洗浴区',
+    description: '拍清楚地面、花洒、排水和出浴转身位置。',
     guideImg: selfShower,
   },
 ]
 
 const dimensionFields = [
-  { id: 'length', label: '卫生间长度', placeholder: '如 2200', unit: 'mm' },
-  { id: 'width', label: '卫生间宽度', placeholder: '如 1600', unit: 'mm' },
+  { id: 'length', label: '卫生间长', placeholder: '如 2200', unit: 'mm' },
+  { id: 'width', label: '卫生间宽', placeholder: '如 1600', unit: 'mm' },
   { id: 'doorWidth', label: '门宽', placeholder: '如 720', unit: 'mm' },
-  { id: 'threshold', label: '门槛高度', placeholder: '如 80', unit: 'mm' },
+  { id: 'threshold', label: '门槛高', placeholder: '如 80', unit: 'mm' },
   { id: 'toiletWall', label: '如厕区到侧墙', placeholder: '如 350', unit: 'mm' },
-  { id: 'showerWidth', label: '淋浴区宽度', placeholder: '如 900', unit: 'mm' },
+  { id: 'showerWidth', label: '淋浴区宽', placeholder: '如 900', unit: 'mm' },
   { id: 'wall', label: '墙面材质', placeholder: '瓷砖 / 水泥 / 不确定', unit: '' },
   { id: 'power', label: '电源插座', placeholder: '有 / 无 / 不确定', unit: '' },
 ]
@@ -100,32 +101,63 @@ function LayoutMini({ variant }: { variant: LayoutOption['variant'] }) {
   )
 }
 
+function InsightCard({ type }: { type: 'photo' | 'space' }) {
+  const isPhoto = type === 'photo'
+
+  return (
+    <Card className="self-insight-card">
+      <div className="self-insight-heading">
+        <IconBadge tone={isPhoto ? 'info' : 'warning'} size="md">
+          {isPhoto ? <Camera size={18} /> : <Ruler size={18} />}
+        </IconBadge>
+        <div>
+          <div className="self-insight-title">
+            {isPhoto ? '照片初步风险建议' : '空间可安装性初判'}
+          </div>
+          <div className="self-insight-desc">
+            {isPhoto
+              ? '已识别湿滑、起身借力不足和夜间照明风险。'
+              : '已记录空间条件，可先判断扶手、坐浴椅等产品是否适配。'}
+          </div>
+        </div>
+      </div>
+      <div className="self-insight-list">
+        {(isPhoto
+          ? ['建议优先补充扶手和防滑处理', '安装前仍需补充尺寸或草图', '最终方案以上门复核为准']
+          : ['墙面和门槛信息会影响安装方式', '仍需现场照片确认真实风险点', '完整方案需照片和空间信息共同生成']
+        ).map((item) => (
+          <span key={item}>
+            <ShieldCheck size={13} />
+            {item}
+          </span>
+        ))}
+      </div>
+    </Card>
+  )
+}
+
 export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmentPageProps) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { stage, setStage } = useAppStage()
+  const { setStage } = useAppStage()
+  const entryMode: 'photo' | 'space' = searchParams.get('start') === 'space' ? 'space' : 'photo'
 
-  const [activeStep, setActiveStep] = useState<'photo' | 'space'>(
-    searchParams.get('start') === 'space' ? 'space' : 'photo',
-  )
+  const [activeStep, setActiveStep] = useState<'photo' | 'space'>(entryMode)
   const [uploaded, setUploaded] = useState<Set<string>>(new Set())
   const [dimensionValues, setDimensionValues] = useState<Record<string, string>>({})
   const [dimensionSaved, setDimensionSaved] = useState(false)
   const [sketchUploaded, setSketchUploaded] = useState(false)
   const [selectedLayout, setSelectedLayout] = useState('')
+  const [photoAdviceViewed, setPhotoAdviceViewed] = useState(false)
+  const [spaceAdviceViewed, setSpaceAdviceViewed] = useState(false)
 
   const doneCount = uploaded.size
   const photosDone = doneCount === photoAreas.length
   const spaceDone = dimensionSaved || sketchUploaded || selectedLayout !== ''
-  const canSubmit = photosDone && spaceDone
-
-  const markSelfAssessing = () => {
-    if (stage !== 'self_assessing') setStage('self_assessing')
-  }
+  const primaryDone = entryMode === 'photo' ? photosDone : spaceDone
 
   const handleUpload = (areaId: string) => {
     if (uploaded.has(areaId)) return
-    markSelfAssessing()
     setUploaded((prev) => {
       const next = new Set(prev)
       next.add(areaId)
@@ -139,45 +171,64 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
   }
 
   const handleSaveDimensions = () => {
-    markSelfAssessing()
     setDimensionSaved(true)
   }
 
   const handleSketchUpload = () => {
-    markSelfAssessing()
     setSketchUploaded(true)
   }
 
   const handleSelectLayout = (id: string) => {
-    markSelfAssessing()
     setSelectedLayout(id)
   }
 
-  const handleSubmit = () => {
-    if (!photosDone) {
-      setActiveStep('photo')
+  const getPrimaryLabel = () => {
+    if (entryMode === 'photo' && !photoAdviceViewed) return '查看初步风险建议'
+    if (entryMode === 'space' && !spaceAdviceViewed) return '查看空间可安装性初判'
+    if (entryMode === 'photo') return spaceDone ? '提交完整评估资料' : '提交照片初评'
+    return photosDone ? '提交完整评估资料' : '提交空间初评'
+  }
+
+  const primaryDisabled =
+    (entryMode === 'photo' && !photoAdviceViewed && !photosDone) ||
+    (entryMode === 'space' && !spaceAdviceViewed && !spaceDone) ||
+    (photoAdviceViewed && spaceAdviceViewed && !primaryDone)
+
+  const handlePrimaryAction = () => {
+    if (entryMode === 'photo' && !photoAdviceViewed) {
+      if (!photosDone) {
+        setActiveStep('photo')
+        return
+      }
+      setPhotoAdviceViewed(true)
       return
     }
 
-    if (!spaceDone) {
-      setActiveStep('space')
+    if (entryMode === 'space' && !spaceAdviceViewed) {
+      if (!spaceDone) {
+        setActiveStep('space')
+        return
+      }
+      setSpaceAdviceViewed(true)
       return
     }
 
-    setStage('plan_pending')
+    setStage('self_assessing')
     navigate('/')
   }
 
   return (
     <div className="screen-frame screen-frame-overlay">
-      <PageHeader title="拍照评估" onBack={() => navigate(-1)} />
+      <PageHeader title="自助评估" onBack={() => navigate(-1)} />
 
       <div className="subpage-content subpage-content-roomy">
         <div className="self-assessment-lede">
-          <div>
-            <h2>补充卫浴现场信息</h2>
-            <p>照片用于识别风险，尺寸信息用于判断扶手、坐浴椅、蹲改坐等产品是否适合安装。</p>
-          </div>
+          <h2>{entryMode === 'photo' ? '先拍照片，获取初步风险建议' : '先填空间信息，判断安装条件'}</h2>
+          <p>
+            {entryMode === 'photo'
+              ? '拍完三处现场照片后，可先查看风险建议；空间信息可继续补充。'
+              : '填写尺寸、上传草图或选择模板是必要任务；现场照片可稍后补拍。'}
+          </p>
         </div>
 
         <div className="self-step-tabs">
@@ -186,7 +237,7 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
             className={activeStep === 'photo' ? 'is-active' : ''}
             onClick={() => setActiveStep('photo')}
           >
-            拍摄现场照片
+            {entryMode === 'space' ? '现场照片（可选）' : '拍摄现场照片'}
             <span>{doneCount} / {photoAreas.length}</span>
           </button>
           <button
@@ -194,7 +245,7 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
             className={activeStep === 'space' ? 'is-active' : ''}
             onClick={() => setActiveStep('space')}
           >
-            补充空间信息
+            {entryMode === 'space' ? '空间信息（必要）' : '补充空间信息'}
             <span>{spaceDone ? '已完成' : '待补充'}</span>
           </button>
         </div>
@@ -208,6 +259,8 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
                 <i style={{ width: `${(doneCount / photoAreas.length) * 100}%` }} />
               </div>
             </div>
+
+            {photoAdviceViewed && <InsightCard type="photo" />}
 
             <div className="self-photo-list">
               {photoAreas.map((area) => {
@@ -248,10 +301,14 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
           </div>
         ) : (
           <div className="self-step-panel">
-            <SectionHeader title="补充空间信息" />
+            <SectionHeader title={entryMode === 'space' ? '填写空间信息' : '补充空间信息'} />
             <InfoNote icon={<Ruler size={16} />}>
-              不需要画专业图纸。填写尺寸、上传草图或选择相似布局，任选一种完成即可。
+              {entryMode === 'space'
+                ? '空间信息是本次入口的必要任务。填写尺寸、上传草图或选择相似布局，任意一种即可提交空间初评。'
+                : '不需要画专业图纸。填写尺寸、上传草图或选择相似布局，任意一种即可补充空间信息。'}
             </InfoNote>
+
+            {spaceAdviceViewed && <InsightCard type="space" />}
 
             <Card className="space-card">
               <div className="space-card-heading">
@@ -287,7 +344,7 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
                 <IconBadge tone="info"><FileImage size={18} /></IconBadge>
                 <div>
                   <div className="space-card-title">上传手绘草图 / 平面图</div>
-                  <div className="space-card-desc">适合子女已经画过草图，或家里有平面图照片。</div>
+                  <div className="space-card-desc">适合已经画过草图，或家里有平面图照片。</div>
                 </div>
                 {sketchUploaded && <CheckCircle size={18} className="space-done-icon" />}
               </div>
@@ -319,6 +376,11 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
                   </button>
                 ))}
               </div>
+              {selectedLayout && (
+                <div className="layout-template-hint">
+                  已选择：{layoutOptions.find((item) => item.id === selectedLayout)?.title}。后续上门会复核真实尺寸。
+                </div>
+              )}
             </Card>
           </div>
         )}
@@ -326,15 +388,17 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
 
       <FixedBottomBar variant="attached">
         <div className="self-submit-summary">
-          照片 {doneCount}/{photoAreas.length} · 空间信息 {spaceDone ? '已完成' : '待补充'}
+          {entryMode === 'space'
+            ? `空间信息 ${spaceDone ? '已完成' : '必要'} · 照片 ${doneCount}/${photoAreas.length} 可选`
+            : `照片 ${doneCount}/${photoAreas.length} · 空间信息 ${spaceDone ? '已补充' : '可选'}`}
         </div>
         <Button
           block
           size="lg"
-          disabled={!canSubmit}
-          onClick={handleSubmit}
+          disabled={primaryDisabled}
+          onClick={handlePrimaryAction}
         >
-          提交照片和空间信息
+          {getPrimaryLabel()}
         </Button>
       </FixedBottomBar>
     </div>

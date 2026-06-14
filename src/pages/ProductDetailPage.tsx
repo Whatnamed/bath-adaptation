@@ -60,12 +60,15 @@ export default function ProductDetailPage() {
   const handleAddToPlan = () => {
     if (!product || !detail) return
 
-    const current = new Set(selectedProducts[categoryId] ?? [])
-    current.add(productId)
-    setSelectedProducts({
-      ...selectedProducts,
-      [categoryId]: Array.from(current),
-    })
+    if (!selected) {
+      const current = new Set(selectedProducts[categoryId] ?? [])
+      current.add(productId)
+      setSelectedProducts({
+        ...selectedProducts,
+        [categoryId]: Array.from(current),
+      })
+    }
+
     navigate(backTo)
   }
 

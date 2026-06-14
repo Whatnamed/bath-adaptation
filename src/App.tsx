@@ -154,7 +154,6 @@ function BrandSplash() {
             <div className="brand-splash-title">安浴到家</div>
             <div className="brand-splash-subtitle">让父母洗浴更安全，子女更安心</div>
             <div className="brand-splash-desc">农村卫浴适老化微改造服务系统</div>
-            <div className="brand-splash-flow">先评估风险｜再匹配方案｜安装后持续维护</div>
           </motion.div>
           <motion.button
             type="button"

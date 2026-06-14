@@ -543,11 +543,11 @@
 
 .choice-card {
   display: flex;
-  align-items: center;
-  gap: var(--space-4);
+  align-items: flex-start;
+  gap: var(--space-3);
   width: 100%;
   margin-bottom: var(--space-3);
-  padding: var(--space-5);
+  padding: var(--space-4);
   border: 1px solid rgba(232, 234, 232, 0.72);
   border-radius: var(--radius-xl);
   background: var(--surface-card);
@@ -564,7 +564,7 @@
   font-size: var(--text-body);
   font-weight: var(--weight-semibold);
   color: var(--text-primary);
-  margin-bottom: var(--space-1);
+  margin-bottom: 6px;
 }
 
 .choice-card-desc {
@@ -578,7 +578,21 @@
   margin-bottom: 0;
 }
 
+.choice-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: var(--space-2);
+}
+
+.choice-card-details span {
+  color: var(--text-secondary);
+  font-size: var(--text-caption);
+  line-height: 1.55;
+}
+
 .choice-card-arrow {
+  margin-top: 19px;
   color: var(--text-tertiary);
   flex-shrink: 0;
 }
