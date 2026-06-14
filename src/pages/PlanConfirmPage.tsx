@@ -23,7 +23,6 @@ import prodB1 from '../assets/images/01_products/basin/product_basin_b1_rounded_
 import prodB2 from '../assets/images/01_products/basin/product_basin_b2_basin_with_support_rails.png'
 import prodB3 from '../assets/images/01_products/basin/product_basin_b3_wall_mounted_accessible_basin.png'
 import prodB4 from '../assets/images/01_products/basin/product_basin_b4_floating_elderly_washstand.png'
-import antislipImg from '../assets/images/antislip.png'
 import handrailImg from '../assets/images/handrail.png'
 import nightlightImg from '../assets/images/02_recommendation_cards/recommend_motion_led_night_light.png'
 import callbuttonImg from '../assets/images/02_recommendation_cards/recommend_emergency_call_button.png'
@@ -33,8 +32,9 @@ const productThumbs: Record<string, string> = {
   t1: prodT1, t2: prodT2, t3: prodT3, t4: prodT4,
   s1: prodS1, s2: prodS2, s3: prodS3, s4: prodS4,
   b1: prodB1, b2: prodB2, b3: prodB3, b4: prodB4,
-  default1: antislipImg, default2: handrailImg,
-  default3: nightlightImg, default4: callbuttonImg,
+  default1: nightlightImg, default2: prodT4,
+  default3: handrailImg, default4: prodS1,
+  default5: callbuttonImg,
 }
 
 /* ── 产品价格映射（模拟价格数据） ── */
@@ -85,10 +85,11 @@ export default function PlanConfirmPage() {
   const displayItems = hasCustomSelection
     ? selectedItemsList
     : [
-        { id: 'default1', name: '防滑地面处理', price: 380, category: 'shower' },
-        { id: 'default2', name: '助力扶手安装', price: 260, category: 'toilet' },
-        { id: 'default3', name: '夜间照明系统', price: 150, category: 'basin' },
-        { id: 'default4', name: '紧急呼叫按钮', price: 120, category: 'basin' },
+        { id: 'default1', name: '入口防滑与夜间提示', price: 320, category: 'shower' },
+        { id: 'default2', name: '坐便辅助模块', price: 580, category: 'toilet' },
+        { id: 'default3', name: '双侧助起扶手', price: 260, category: 'toilet' },
+        { id: 'default4', name: '坐式淋浴模块', price: 740, category: 'shower' },
+        { id: 'default5', name: '紧急呼叫拉绳', price: 120, category: 'basin' },
       ]
 
   /* 动态计算费用 */

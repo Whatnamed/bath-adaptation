@@ -67,11 +67,11 @@ function AnimatedRoutes({ onOpenImagePreview }: AnimatedRoutesProps) {
           <Route path="/" element={<HomePage />} />
           <Route path="/services" element={<ServicesPage />} />
           <Route path="/profile" element={<ProfilePage />} />
-          <Route path="/plan" element={<PlanPage />} />
+          <Route path="/plan" element={<PlanPage onOpenImagePreview={onOpenImagePreview} />} />
           <Route path="/plan/confirm" element={<PlanConfirmPage />} />
           <Route path="/progress" element={<ProgressPage />} />
           <Route path="/maintenance" element={<MaintenancePage />} />
-          <Route path="/assessment" element={<AssessmentPage />} />
+          <Route path="/assessment" element={<AssessmentPage onOpenImagePreview={onOpenImagePreview} />} />
           <Route path="/products" element={<CategoryPage />} />
           <Route path="/products/:categoryId/:productId" element={<ProductDetailPage />} />
           <Route path="/products/:categoryId" element={<ProductOptionsPage />} />

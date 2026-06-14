@@ -4,76 +4,22 @@ import {
   ChevronRight,
   Image as ImageIcon,
   MapPin,
-  ShieldAlert,
   UserCheck,
 } from 'lucide-react'
 import { assessmentResult, riskFindings } from '../data/mock'
 import { useAppStage } from '../context/AppStageContext'
-import { Button, Card, FixedBottomBar, InfoNote, PageHeader, SectionHeader } from '../components'
+import { Button, Card, FixedBottomBar, LayoutPlanPreview, PageHeader, SectionHeader } from '../components'
 import resultFloor from '../assets/images/03_assessment_scenes/result/result_01_floor_slippery.png'
 import resultToilet from '../assets/images/03_assessment_scenes/result/result_02_squat_toilet_no_grabbar.png'
 import resultNight from '../assets/images/03_assessment_scenes/result/result_03_night_path_dark.png'
 import selfOverall from '../assets/images/03_assessment_scenes/self_photo/self_01_bathroom_overall.png'
+import layoutRiskAssessment from '../assets/images/03_assessment_scenes/layout/layout_risk_assessment.png'
 
-function SpaceRiskMap() {
-  const risks = [
-    { id: 1, title: '门槛较高', desc: '夜间进出容易绊倒' },
-    { id: 2, title: '蹲厕缺少借力点', desc: '起身时需要扶墙' },
-    { id: 3, title: '淋浴湿区防滑不足', desc: '出浴转身容易打滑' },
-    { id: 4, title: '照明覆盖不足', desc: '夜间动线不清楚' },
-  ]
-
-  return (
-    <Card className="assessment-map-card">
-      <SectionHeader title="空间风险示意（待复核）" action={<ShieldAlert size={18} />} />
-      <div className="assessment-map-replace-note">平面布局素材预留位</div>
-      <div className="assessment-layout-map">
-        <svg viewBox="0 0 320 210" aria-label="卫生间空间布局示意图">
-          <rect className="map-room" x="28" y="22" width="264" height="162" rx="12" />
-          <path className="map-door" d="M135 184v-36q40 0 58 36" />
-          <text className="map-label" x="128" y="176">门</text>
-
-          <rect className="map-zone" x="52" y="46" width="76" height="54" rx="8" />
-          <text className="map-label" x="90" y="78">蹲厕区</text>
-
-          <rect className="map-zone map-zone-soft" x="188" y="46" width="72" height="54" rx="8" />
-          <text className="map-label" x="224" y="78">淋浴区</text>
-
-          <rect className="map-zone" x="54" y="124" width="72" height="30" rx="8" />
-          <text className="map-label" x="90" y="144">洗手区</text>
-
-          <path className="map-route" d="M158 160C148 128 154 94 188 72" />
-          <text className="map-route-label" x="164" y="124">夜间动线</text>
-
-          <circle className="map-risk" cx="154" cy="164" r="13" />
-          <circle className="map-risk" cx="128" cy="70" r="13" />
-          <circle className="map-risk" cx="214" cy="100" r="13" />
-          <circle className="map-risk" cx="198" cy="66" r="13" />
-          <text className="map-risk-text" x="154" y="169">1</text>
-          <text className="map-risk-text" x="128" y="75">2</text>
-          <text className="map-risk-text" x="214" y="105">3</text>
-          <text className="map-risk-text" x="198" y="71">4</text>
-        </svg>
-      </div>
-      <div className="assessment-map-risks">
-        {risks.map((risk) => (
-          <div key={risk.id} className="assessment-map-risk-row">
-            <span>{risk.id}</span>
-            <div>
-              <strong>{risk.title}</strong>
-              <em>{risk.desc}</em>
-            </div>
-          </div>
-        ))}
-      </div>
-      <InfoNote icon={<ImageIcon size={16} />}>
-        当前为风险位置示意，不作为施工图。后续可替换为正式平面布局素材，最终以上门复核为准。
-      </InfoNote>
-    </Card>
-  )
+interface AssessmentPageProps {
+  onOpenImagePreview?: (src: string) => void
 }
 
-export default function AssessmentPage() {
+export default function AssessmentPage({ onOpenImagePreview }: AssessmentPageProps) {
   const navigate = useNavigate()
   const { familyDetails, stage, setStage } = useAppStage()
 
@@ -107,6 +53,16 @@ export default function AssessmentPage() {
           <p>{summary}</p>
         </Card>
 
+        <LayoutPlanPreview
+          title="空间风险示意（待复核）"
+          description="基于照片与空间信息生成的现状示意，用于标注主要风险位置，最终以上门复核为准。"
+          imageSrc={layoutRiskAssessment}
+          imageAlt="现状卫生间空间风险平面图"
+          points={riskFindings}
+          note="这不是施工图，仅用于说明风险位置与后续方案匹配关系。"
+          onOpenImagePreview={onOpenImagePreview}
+        />
+
         <div className="page-section">
           <SectionHeader title="现场记录" />
           {photos.map((photo) => (
@@ -118,8 +74,6 @@ export default function AssessmentPage() {
             </div>
           ))}
         </div>
-
-        <SpaceRiskMap />
 
         <div className="page-section">
           <SectionHeader title="自助评估资料" />
