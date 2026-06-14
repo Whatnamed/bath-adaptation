@@ -365,7 +365,7 @@ export const stageCards: Record<string, {
   },
   assessment_pending: {
     title: '评估申请已提交',
-    desc: '评估员将在6月15日上门评估，届时请确保家中有人',
+    desc: '评估员将按您选择的时段上门评估，届时请确保家中有人',
     cta: '查看申请详情',
     ctaRoute: '/progress',
     badge: '等待中',
@@ -373,7 +373,7 @@ export const stageCards: Record<string, {
   },
   self_assessing: {
     title: '自助评估资料已提交',
-    desc: '系统正在分析照片和空间信息，稍后生成卫浴风险评估结果',
+    desc: '系统正在分析自助评估资料，稍后生成卫浴风险评估结果',
     cta: '查看处理进度',
     ctaRoute: '/progress',
     badge: '进行中',

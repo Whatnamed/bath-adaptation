@@ -18,20 +18,85 @@ import {
   Sparkles,
 } from 'lucide-react'
 import { reminders, stageSteps, stageCards } from '../data/mock'
-import { useAppStage } from '../context/AppStageContext'
+import { useAppStage, type AppStage, type AssessmentSource } from '../context/AppStageContext'
 import { BottomNav, Card, Chip, SectionHeader, Stepper } from '../components'
 
 /* 图片素材导入 */
 import logoImg from '../assets/images/00_brand/logo_anyu_flat_icon.png'
 import elderAvatar from '../assets/images/00_brand/avatar_elder_default.png'
 
+function getSourceCardOverride(stage: AppStage, source: AssessmentSource) {
+  if (stage === 'self_assessing') {
+    if (source === 'photo_initial') {
+      return {
+        title: '照片初评资料已提交',
+        desc: '系统正在分析现场照片，稍后生成初步风险建议',
+        badge: '照片初评',
+      }
+    }
+
+    if (source === 'space_initial') {
+      return {
+        title: '空间初判资料已提交',
+        desc: '系统正在判断尺寸、草图或布局模板的可安装性',
+        badge: '空间初判',
+      }
+    }
+
+    if (source === 'complete_self') {
+      return {
+        title: '自助评估资料已提交',
+        desc: '照片和空间信息已提交，正在生成完整初步评估',
+        badge: '完整初评',
+      }
+    }
+  }
+
+  if (stage === 'assessment_complete') {
+    if (source === 'professional') {
+      return {
+        title: '上门评估结果已生成',
+        desc: '先查看评估员记录的卫浴风险，再进入推荐改造方案',
+        badge: '待查看',
+      }
+    }
+
+    if (source === 'photo_initial') {
+      return {
+        title: '照片初评结果已生成',
+        desc: '先查看照片识别出的风险位置，后续仍建议补充空间信息',
+        badge: '初步结果',
+      }
+    }
+
+    if (source === 'space_initial') {
+      return {
+        title: '空间初判结果已生成',
+        desc: '先查看可安装性和空间风险说明，后续仍建议补拍现场照片',
+        badge: '初步结果',
+      }
+    }
+
+    if (source === 'complete_self') {
+      return {
+        title: '自助评估结果已生成',
+        desc: '先查看卫浴空间风险和布局说明，再确认推荐改造方案',
+        badge: '待查看',
+      }
+    }
+  }
+
+  return null
+}
+
 /* ── 首页 ── */
 export default function HomePage() {
   const navigate = useNavigate()
-  const { stage, familyDetails } = useAppStage()
+  const { stage, familyDetails, assessmentSource } = useAppStage()
 
   /* 当前阶段的配置数据 - 动态将 '张奶奶' 替换为用户填写的真实姓名 */
-  const rawCard = stageCards[stage]
+  const sourceOverride = getSourceCardOverride(stage, assessmentSource)
+  const rawCard = sourceOverride ? { ...stageCards[stage], ...sourceOverride } : stageCards[stage]
   const card = rawCard
     ? {
         ...rawCard,

@@ -24,10 +24,10 @@ export default function AssessmentChoicePage() {
     {
       icon: <UserCheck size={26} />,
       tone: 'accent',
-      title: '工作人员上门评估',
+      title: '工作人员上门看一看',
       details: [
-        '适合：不确定怎么改、老人不方便拍照',
-        '会做：测量空间并记录卫浴风险',
+        '最省心、最准确，适合不确定怎么改的家庭',
+        '上门测量空间，记录风险点和安装条件',
       ],
       chip: '免费',
       onClick: () => navigate('/assessment/apply'),
@@ -37,8 +37,8 @@ export default function AssessmentChoicePage() {
       tone: 'info',
       title: '先拍照片做初步评估',
       details: [
-        '适合：子女不在家，想先了解风险',
-        '会做：先给照片风险建议，再补尺寸',
+        '先看哪里有风险，适合子女不在家时使用',
+        '拍完三处照片后，先生成照片初评建议',
       ],
       chip: '快速',
       onClick: () => navigate('/assessment/self?start=photo'),
@@ -48,8 +48,8 @@ export default function AssessmentChoicePage() {
       tone: 'warning',
       title: '我已有尺寸或草图',
       details: [
-        '适合：已经量过，或有手绘平面图',
-        '会做：先判断可安装性，再补现场照片',
+        '先看能不能装，适合已经量过或画过草图',
+        '填写尺寸、上传草图或选择相似布局即可初判',
       ],
       onClick: () => navigate('/assessment/self?start=space'),
     },
@@ -62,6 +62,13 @@ export default function AssessmentChoicePage() {
       <div className="subpage-content">
         <div className="page-section assessment-choice-lede">
           照片用于识别风险，尺寸和草图用于判断产品是否适合安装。
+        </div>
+
+        <div className="page-section assessment-choice-guide">
+          <strong>怎么选</strong>
+          <span>不确定怎么改：上门</span>
+          <span>想先看风险：拍照</span>
+          <span>已有尺寸：草图 / 尺寸</span>
         </div>
 
         <div className="page-section assessment-choice-list">

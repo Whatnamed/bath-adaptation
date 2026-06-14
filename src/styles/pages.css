@@ -1472,6 +1472,30 @@
   margin-top: var(--space-4);
 }
 
+.assessment-choice-guide {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--accent-light);
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+}
+
+.assessment-choice-guide strong {
+  color: var(--accent-deep);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
+}
+
+.assessment-choice-guide span {
+  color: var(--text-secondary);
+  font-size: var(--text-micro);
+  line-height: var(--leading-normal);
+}
+
 .assessment-service-card {
   margin-top: var(--space-4);
   margin-bottom: var(--space-8);

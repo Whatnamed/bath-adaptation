@@ -6,19 +6,26 @@ export type AppStage =
   | 'unbound'            // 未绑定家庭
   | 'idle'               // 已绑定，等待开始
   | 'assessment_pending' // 已申请专业评估，等待上门
-  | 'self_assessing'     // 自行拍照评估中
+  | 'self_assessing'     // 自助评估分析中
   | 'assessment_complete' // 评估完成，等待查看结果
   | 'plan_pending'       // 方案待确认
   | 'plan_confirmed'     // 方案已确认，待安装
   | 'installing'         // 安装进行中
   | 'completed'          // 完工，售后阶段
 
+export type AssessmentSource =
+  | 'professional'
+  | 'photo_initial'
+  | 'space_initial'
+  | 'complete_self'
+  | null
+
 /* 阶段中文名映射（侧栏切换器用） */
 export const stageLabels: Record<AppStage, string> = {
   unbound: '未绑定家庭',
   idle: '已绑定 · 待开始',
   assessment_pending: '等待专业评估',
-  self_assessing: '自行拍照评估中',
+  self_assessing: '自助评估分析中',
   assessment_complete: '评估结果已生成',
   plan_pending: '方案待确认',
   plan_confirmed: '方案已确认 · 待安装',
@@ -68,6 +75,8 @@ export const defaultFamilyDetails: FamilyDetails = {
 interface AppStageContextType {
   stage: AppStage
   setStage: (stage: AppStage) => void
+  assessmentSource: AssessmentSource
+  setAssessmentSource: (source: AssessmentSource) => void
   familyDetails: FamilyDetails
   setFamilyDetails: (details: FamilyDetails) => void
   selectedProducts: Record<string, string[]> // categoryId -> productIds
@@ -87,6 +96,7 @@ export function AppStageProvider({
   initialStage?: AppStage
 }) {
   const [stage, setStage] = useState<AppStage>(initialStage)
+  const [assessmentSource, setAssessmentSource] = useState<AssessmentSource>(null)
   const [familyDetails, setFamilyDetails] = useState<FamilyDetails>(defaultFamilyDetails)
   const [selectedProducts, setSelectedProducts] = useState<Record<string, string[]>>({
     toilet: [],
@@ -111,13 +121,19 @@ export function AppStageProvider({
       // 等待专业评估，8秒后自动生成评估结果
       timer = setTimeout(() => {
         setStage('assessment_complete')
-        showToast('【演示模拟】评估员王建华师傅已录入评估结果，请先查看卫浴风险报告。')
+        showToast('【演示模拟】评估员王建华师傅已录入上门评估结果，请先查看卫浴风险报告。')
       }, 8000)
     } else if (stage === 'self_assessing') {
       // 自助评估资料提交后，等待系统分析再生成评估结果
       timer = setTimeout(() => {
         setStage('assessment_complete')
-        showToast('【演示模拟】自助评估资料已分析完成，卫浴风险评估结果已生成。')
+        const sourceToast =
+          assessmentSource === 'photo_initial'
+            ? '照片初评资料已分析完成，初步风险建议已生成。'
+            : assessmentSource === 'space_initial'
+              ? '空间信息已分析完成，可安装性初判结果已生成。'
+              : '自助评估资料已分析完成，卫浴风险评估结果已生成。'
+        showToast(`【演示模拟】${sourceToast}`)
       }, 6000)
     } else if (stage === 'plan_confirmed') {
       // 方案已确认，8秒后自动推进到安装进行中
@@ -136,13 +152,15 @@ export function AppStageProvider({
     return () => {
       if (timer) clearTimeout(timer)
     }
-  }, [stage])
+  }, [assessmentSource, stage])
 
   return (
     <AppStageContext.Provider
       value={{
         stage,
         setStage,
+        assessmentSource,
+        setAssessmentSource,
         familyDetails,
         setFamilyDetails,
         selectedProducts,

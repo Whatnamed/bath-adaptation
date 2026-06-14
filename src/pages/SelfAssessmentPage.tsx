@@ -139,7 +139,7 @@ function InsightCard({ type }: { type: 'photo' | 'space' }) {
 export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmentPageProps) {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const { setStage } = useAppStage()
+  const { setStage, setAssessmentSource } = useAppStage()
   const entryMode: 'photo' | 'space' = searchParams.get('start') === 'space' ? 'space' : 'photo'
 
   const [activeStep, setActiveStep] = useState<'photo' | 'space'>(entryMode)
@@ -154,8 +154,11 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
   const doneCount = uploaded.size
   const photosDone = doneCount === photoAreas.length
   const spaceDone = dimensionSaved || sketchUploaded || selectedLayout !== ''
-  const primaryDone = entryMode === 'photo' ? photosDone : spaceDone
-
+  const spaceStatusLabel = dimensionSaved || sketchUploaded
+    ? '已完成'
+    : selectedLayout
+      ? '模板参考'
+      : '待补充'
   const handleUpload = (areaId: string) => {
     if (uploaded.has(areaId)) return
     setUploaded((prev) => {
@@ -191,8 +194,7 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
 
   const primaryDisabled =
     (entryMode === 'photo' && !photoAdviceViewed && !photosDone) ||
-    (entryMode === 'space' && !spaceAdviceViewed && !spaceDone) ||
-    (photoAdviceViewed && spaceAdviceViewed && !primaryDone)
+    (entryMode === 'space' && !spaceAdviceViewed && !spaceDone)
 
   const handlePrimaryAction = () => {
     if (entryMode === 'photo' && !photoAdviceViewed) {
@@ -213,6 +215,11 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
       return
     }
 
+    setAssessmentSource(photosDone && spaceDone
+      ? 'complete_self'
+      : entryMode === 'photo'
+        ? 'photo_initial'
+        : 'space_initial')
     setStage('self_assessing')
     navigate('/')
   }
@@ -227,7 +234,7 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
           <p>
             {entryMode === 'photo'
               ? '拍完三处现场照片后，可先查看风险建议；空间信息可继续补充。'
-              : '填写尺寸、上传草图或选择模板是必要任务；现场照片可稍后补拍。'}
+              : '填写尺寸、上传草图或选择模板后，可先判断安装条件；现场照片可稍后补拍。'}
           </p>
         </div>
 
@@ -237,7 +244,7 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
             className={activeStep === 'photo' ? 'is-active' : ''}
             onClick={() => setActiveStep('photo')}
           >
-            {entryMode === 'space' ? '现场照片（可选）' : '拍摄现场照片'}
+            {entryMode === 'space' ? '现场照片（可补拍）' : '拍摄现场照片'}
             <span>{doneCount} / {photoAreas.length}</span>
           </button>
           <button
@@ -245,8 +252,8 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
             className={activeStep === 'space' ? 'is-active' : ''}
             onClick={() => setActiveStep('space')}
           >
-            {entryMode === 'space' ? '空间信息（必要）' : '补充空间信息'}
-            <span>{spaceDone ? '已完成' : '待补充'}</span>
+            {entryMode === 'space' ? '空间信息（主任务）' : '补充空间信息'}
+            <span>{spaceStatusLabel}</span>
           </button>
         </div>
 
@@ -304,7 +311,7 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
             <SectionHeader title={entryMode === 'space' ? '填写空间信息' : '补充空间信息'} />
             <InfoNote icon={<Ruler size={16} />}>
               {entryMode === 'space'
-                ? '空间信息是本次入口的必要任务。填写尺寸、上传草图或选择相似布局，任意一种即可提交空间初评。'
+                ? '空间信息是本次入口的主任务。填写尺寸、上传草图或选择相似布局，任意一种即可提交空间初判。'
                 : '不需要画专业图纸。填写尺寸、上传草图或选择相似布局，任意一种即可补充空间信息。'}
             </InfoNote>
 
@@ -381,7 +388,7 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
               </div>
               {selectedLayout && (
                 <div className="layout-template-hint">
-                  已选择：{layoutOptions.find((item) => item.id === selectedLayout)?.title}。后续上门会复核真实尺寸。
+                  已选择：{layoutOptions.find((item) => item.id === selectedLayout)?.title}。布局模板仅作为空间类型参考，最终需填写尺寸或上门复核。
                 </div>
               )}
             </Card>
@@ -392,8 +399,8 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
       <FixedBottomBar variant="attached">
         <div className="self-submit-summary">
           {entryMode === 'space'
-            ? `空间信息 ${spaceDone ? '已完成' : '必要'} · 照片 ${doneCount}/${photoAreas.length} 可选`
-            : `照片 ${doneCount}/${photoAreas.length} · 空间信息 ${spaceDone ? '已补充' : '可选'}`}
+            ? `空间信息 ${spaceStatusLabel === '待补充' ? '主任务' : spaceStatusLabel} · 照片 ${doneCount}/${photoAreas.length} 可补拍`
+            : `照片 ${doneCount}/${photoAreas.length} · 空间信息 ${spaceStatusLabel === '待补充' ? '可补充' : spaceStatusLabel}`}
         </div>
         <Button
           block

@@ -10,13 +10,31 @@ import {
 import { useAppStage } from '../context/AppStageContext'
 import { Button, Card, FixedBottomBar, IconBadge, InfoNote, PageHeader, SectionHeader } from '../components'
 
-const appointmentDates = [
-  { id: 'jun13', label: '今天', date: '6月13日', weekday: '周六' },
-  { id: 'jun14', label: '明天', date: '6月14日', weekday: '周日' },
-  { id: 'jun15', label: '后天', date: '6月15日', weekday: '周一' },
-  { id: 'jun16', label: '可预约', date: '6月16日', weekday: '周二' },
-  { id: 'jun17', label: '可预约', date: '6月17日', weekday: '周三' },
-]
+interface AppointmentDate {
+  id: string
+  label: string
+  date: string
+  weekday: string
+}
+
+const weekdayLabels = ['周日', '周一', '周二', '周三', '周四', '周五', '周六']
+
+function createAppointmentDates(): AppointmentDate[] {
+  const today = new Date()
+  const labels = ['今天', '明天', '后天', '可预约', '可预约']
+
+  return labels.map((label, index) => {
+    const date = new Date(today)
+    date.setDate(today.getDate() + index)
+
+    return {
+      id: `day-${index}`,
+      label,
+      date: `${date.getMonth() + 1}月${date.getDate()}日`,
+      weekday: weekdayLabels[date.getDay()],
+    }
+  })
+}
 
 const periodOptions = [
   { id: 'morning', label: '上午' },
@@ -40,9 +58,10 @@ const appointmentSlots: Record<string, Array<{ id: string; label: string }>> = {
 
 export default function ApplyAssessmentPage() {
   const navigate = useNavigate()
-  const { setStage } = useAppStage()
+  const { setStage, setAssessmentSource } = useAppStage()
 
-  const [selectedDate, setSelectedDate] = useState('jun14')
+  const appointmentDates = useMemo(() => createAppointmentDates(), [])
+  const [selectedDate, setSelectedDate] = useState('day-1')
   const [selectedPeriod, setSelectedPeriod] = useState('afternoon')
   const [selectedSlot, setSelectedSlot] = useState('14-16')
   const [note, setNote] = useState('')
@@ -66,6 +85,7 @@ export default function ApplyAssessmentPage() {
 
     setSubmitting(true)
     setTimeout(() => {
+      setAssessmentSource('professional')
       setStage('assessment_pending')
       navigate('/')
     }, 800)

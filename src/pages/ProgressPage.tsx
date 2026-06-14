@@ -7,7 +7,7 @@ import {
   Wrench,
 } from 'lucide-react'
 import { serviceOrder, contacts } from '../data/mock'
-import { useAppStage } from '../context/AppStageContext'
+import { useAppStage, type AssessmentSource } from '../context/AppStageContext'
 
 /* ── 进度时间线接口 ── */
 interface TimelineItem {
@@ -18,48 +18,145 @@ interface TimelineItem {
   person?: string
 }
 
+function getSelfAssessingProgressCopy(source: AssessmentSource) {
+  if (source === 'photo_initial') {
+    return {
+      title: '照片初评分析中',
+      desc: '三处现场照片已提交，系统正在识别湿滑、起身借力和照明等风险；空间尺寸可在后续继续补充。',
+      timelineDesc: '现场照片已提交，正在生成照片初步风险建议',
+      resultDesc: '生成后可查看照片识别出的风险位置和补充建议',
+      chip: '照片初评',
+    }
+  }
+
+  if (source === 'space_initial') {
+    return {
+      title: '空间可安装性初判中',
+      desc: '尺寸、草图或相似布局已提交，系统正在判断扶手、坐浴椅等产品的安装条件；现场照片可后续补拍。',
+      timelineDesc: '空间信息已提交，正在判断基础可安装条件',
+      resultDesc: '生成后可查看空间初判和需要复核的安装条件',
+      chip: '空间初判',
+    }
+  }
+
+  if (source === 'complete_self') {
+    return {
+      title: '自助完整评估分析中',
+      desc: '照片和空间信息已提交，系统正在整理卫浴风险和可安装性判断，请稍候查看评估结果。',
+      timelineDesc: '照片和空间信息已提交，正在生成卫浴风险评估结果',
+      resultDesc: '生成后可查看空间风险、照片记录和评估说明',
+      chip: '完整初评',
+    }
+  }
+
+  return {
+    title: '自助评估分析中',
+    desc: '自助评估资料已提交，系统正在整理卫浴风险和可安装性判断，请稍候查看评估结果。',
+    timelineDesc: '自助评估资料已提交，正在生成卫浴风险评估结果',
+    resultDesc: '生成后可查看空间风险、照片记录和评估说明',
+    chip: '分析中',
+  }
+}
+
+function getAssessmentCompleteProgressCopy(source: AssessmentSource) {
+  if (source === 'professional') {
+    return {
+      title: '上门评估结果已生成',
+      desc: '评估员已完成卫浴空间风险和布局说明。请先查看评估结果，再进入推荐改造方案。',
+      timelineDesc: '评估员已录入风险点和空间说明，待用户查看',
+      chip: '上门结果',
+    }
+  }
+
+  if (source === 'photo_initial') {
+    return {
+      title: '照片初评结果已生成',
+      desc: '照片识别出的风险位置已整理完成。请先查看初评结果，后续仍建议补充空间信息或上门复核。',
+      timelineDesc: '照片初步风险建议已生成，待用户查看',
+      chip: '初评完成',
+    }
+  }
+
+  if (source === 'space_initial') {
+    return {
+      title: '空间初判结果已生成',
+      desc: '空间可安装性说明已整理完成。请先查看初判结果，后续仍建议补拍现场照片或上门复核。',
+      timelineDesc: '空间可安装性初判已生成，待用户查看',
+      chip: '初判完成',
+    }
+  }
+
+  if (source === 'complete_self') {
+    return {
+      title: '自助评估结果已生成',
+      desc: '卫浴空间风险和布局说明已整理完成。请先查看评估结果，再进入推荐改造方案。',
+      timelineDesc: '自助评估结果已生成，待用户查看',
+      chip: '评估完成',
+    }
+  }
+
+  return {
+    title: '评估结果已生成',
+    desc: '卫浴空间风险和布局说明已整理完成。请先查看评估结果，再进入推荐改造方案。',
+    timelineDesc: '卫浴风险点和空间说明已生成，待用户查看',
+    chip: '评估完成',
+  }
+}
+
 /* ── 服务进度详情页 ── */
 export default function ProgressPage() {
   const navigate = useNavigate()
-  const { stage, familyDetails } = useAppStage()
+  const { stage, familyDetails, assessmentSource } = useAppStage()
+  const selfAssessingCopy = getSelfAssessingProgressCopy(assessmentSource)
+  const assessmentCompleteCopy = getAssessmentCompleteProgressCopy(assessmentSource)
 
   /* ── 1. 根据 stage 动态生成卡片文字 ── */
   let currentStatusTitle = '状态更新中'
   let currentStatusDesc = '正在获取最新服务进度，请稍候...'
+  let currentChipLabel = '流程中'
   let showConfirmBtnType: 'none' | 'assessment' | 'plan' | 'maintenance' | 'contact_assessor' | 'contact_installer' = 'none'
 
   if (stage === 'unbound') {
     currentStatusTitle = '未绑定家庭'
     currentStatusDesc = '请先在首页绑定您的家庭信息以开启服务。'
+    currentChipLabel = '未开始'
   } else if (stage === 'idle') {
     currentStatusTitle = '等待发起评估'
     currentStatusDesc = '您的家庭档案已建立，请在首页申请专业评估或进行自行拍照评估。'
+    currentChipLabel = '待评估'
   } else if (stage === 'assessment_pending') {
     currentStatusTitle = '等待上门评估'
-    currentStatusDesc = `评估申请已提交。评估员将联系您并在 6月15日 上门，前往：${familyDetails.provinceCityDistrict}${familyDetails.townStreet}${familyDetails.villageCommunity}${familyDetails.houseNumber}。`
+    currentStatusDesc = `评估申请已提交。评估员将按您选择的上门时段联系并前往：${familyDetails.provinceCityDistrict}${familyDetails.townStreet}${familyDetails.villageCommunity}${familyDetails.houseNumber}。`
+    currentChipLabel = '等待评估'
     showConfirmBtnType = 'contact_assessor'
   } else if (stage === 'self_assessing') {
-    currentStatusTitle = '自助评估分析中'
-    currentStatusDesc = '照片和空间信息已提交，系统正在整理卫浴风险和可安装性判断，请稍候查看评估结果。'
+    currentStatusTitle = selfAssessingCopy.title
+    currentStatusDesc = selfAssessingCopy.desc
+    currentChipLabel = selfAssessingCopy.chip
   } else if (stage === 'assessment_complete') {
-    currentStatusTitle = '评估结果已生成'
-    currentStatusDesc = '卫浴空间风险和布局说明已整理完成。请先查看评估结果，再进入推荐改造方案。'
+    currentStatusTitle = assessmentCompleteCopy.title
+    currentStatusDesc = assessmentCompleteCopy.desc
+    currentChipLabel = assessmentCompleteCopy.chip
     showConfirmBtnType = 'assessment'
   } else if (stage === 'plan_pending') {
     currentStatusTitle = '方案待确认'
     currentStatusDesc = '评估已完成，推荐适老化改造方案已生成！请立即查看推荐改造方案并进行在线确认。'
+    currentChipLabel = '方案待确认'
     showConfirmBtnType = 'plan'
   } else if (stage === 'plan_confirmed') {
     currentStatusTitle = '方案已确认 · 待安装'
     currentStatusDesc = '改造方案已确认，物料已准备就绪。安装师傅预计将在 6月12日 上门进行现场设备改造施工。'
+    currentChipLabel = '已预约安装'
     showConfirmBtnType = 'contact_installer'
   } else if (stage === 'installing') {
     currentStatusTitle = '设备安装施工中'
     currentStatusDesc = '安装师傅正在您家进行现场无障碍施工，今日将完成防滑、扶手、夜灯等项目改造，并开展现场使用教学。'
+    currentChipLabel = '施工中'
     showConfirmBtnType = 'contact_installer'
   } else if (stage === 'completed') {
     currentStatusTitle = '改造已完工'
     currentStatusDesc = '所有适老化改造设备已安装完毕并完成安全教学。已进入售后日常维护阶段，感谢您的信任！'
+    currentChipLabel = '已完工'
     showConfirmBtnType = 'maintenance'
   }
 
@@ -79,7 +176,7 @@ export default function ProgressPage() {
       step: '入户评估',
       status: 'current',
       date: '等待中',
-      desc: '评估申请已提交，排期6月15日，评估员安排上门中',
+      desc: '评估申请已提交，评估员正在确认上门时段',
       person: '评估员 王建华',
     })
     timelineData.push({
@@ -111,13 +208,13 @@ export default function ProgressPage() {
       step: '自助评估',
       status: 'current',
       date: '分析中',
-      desc: '照片和空间信息已提交，正在生成卫浴风险评估结果',
+      desc: selfAssessingCopy.timelineDesc,
     })
     timelineData.push({
       step: '评估结果',
       status: 'pending',
       date: '待生成',
-      desc: '生成后可查看空间风险、照片记录和评估说明',
+      desc: selfAssessingCopy.resultDesc,
     })
     timelineData.push({
       step: '方案确认',
@@ -148,7 +245,7 @@ export default function ProgressPage() {
       step: '评估结果',
       status: 'current',
       date: '已生成',
-      desc: '卫浴风险点和空间说明已生成，待用户查看',
+      desc: assessmentCompleteCopy.timelineDesc,
     })
     timelineData.push({
       step: '方案确认',
@@ -338,13 +435,7 @@ export default function ProgressPage() {
               服务单号：{serviceOrder.id}
             </span>
             <span className="chip chip-accent">
-              {stage === 'assessment_pending' ? '等待评估' :
-               stage === 'self_assessing' ? '分析中' :
-               stage === 'assessment_complete' ? '评估完成' :
-               stage === 'plan_pending' ? '方案待确认' :
-               stage === 'plan_confirmed' ? '已预约安装' :
-               stage === 'installing' ? '施工中' :
-               stage === 'completed' ? '已完工' : '流程中'}
+              {currentChipLabel}
             </span>
           </div>
           <div
