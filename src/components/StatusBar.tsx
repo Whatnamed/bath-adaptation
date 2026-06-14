@@ -9,7 +9,7 @@ export function StatusBar() {
           <span />
           <span />
         </span>
-        <svg className="status-wifi" viewBox="0 0 17 12" fill="none">
+        <svg className="status-wifi" viewBox="0 0 17 12" fill="none" stroke="var(--text-primary)" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round">
           <path d="M2.35 4.2a9 9 0 0 1 12.3 0" />
           <path d="M4.85 6.85a5.35 5.35 0 0 1 7.3 0" />
           <path d="M7.25 9.45a1.75 1.75 0 0 1 2.5 0" />

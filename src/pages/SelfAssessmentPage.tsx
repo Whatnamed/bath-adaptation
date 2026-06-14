@@ -327,8 +327,11 @@ export default function SelfAssessmentPage({ onOpenImagePreview }: SelfAssessmen
                       <input
                         value={dimensionValues[field.id] ?? ''}
                         onChange={(event) => handleDimensionChange(field.id, event.target.value)}
-                        placeholder={field.placeholder}
+                        aria-label={`${field.label}，${field.placeholder}`}
                       />
+                      {!dimensionValues[field.id] && (
+                        <strong className="dimension-placeholder">{field.placeholder}</strong>
+                      )}
                       {field.unit && <em>{field.unit}</em>}
                     </div>
                   </label>

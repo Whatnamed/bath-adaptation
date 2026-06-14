@@ -238,7 +238,7 @@
 }
 
 .status-wifi path {
-  stroke: currentColor;
+  stroke: var(--text-primary);
   stroke-width: 1.7;
   stroke-linecap: round;
   stroke-linejoin: round;

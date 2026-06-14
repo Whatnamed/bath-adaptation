@@ -1741,6 +1741,7 @@
 }
 
 .dimension-field div {
+  position: relative;
   display: flex;
   align-items: center;
   min-height: 38px;
@@ -1753,6 +1754,8 @@
 .dimension-field input {
   min-width: 0;
   flex: 1;
+  position: relative;
+  z-index: 1;
   border: 0;
   outline: 0;
   background: transparent;
@@ -1761,11 +1764,22 @@
   font-size: var(--text-caption);
 }
 
-.dimension-field input::placeholder {
+.dimension-placeholder {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--text-tertiary);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-regular);
+  line-height: 1;
+  pointer-events: none;
+  z-index: 0;
 }
 
 .dimension-field em {
+  position: relative;
+  z-index: 2;
   color: var(--text-tertiary);
   font-size: var(--text-micro);
   font-style: normal;
