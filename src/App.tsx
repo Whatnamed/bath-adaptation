@@ -200,6 +200,88 @@ async function dataUrlToBlob(dataUrl: string) {
   return response.blob()
 }
 
+interface ScrollStyleSnapshot {
+  element: HTMLElement
+  transform: string
+  transition: string
+  willChange: string
+}
+
+interface ScrollContainerSnapshot {
+  element: HTMLElement
+  scrollTop: number
+  scrollLeft: number
+  overflowX: string
+  overflowY: string
+  scrollBehavior: string
+  children: ScrollStyleSnapshot[]
+}
+
+function getPreviewScrollContainers(source: HTMLElement) {
+  return Array.from(source.querySelectorAll<HTMLElement>('.page-content, .subpage-content'))
+    .filter((element) => (
+      (element.scrollTop > 0 || element.scrollLeft > 0) &&
+      (element.scrollHeight > element.clientHeight || element.scrollWidth > element.clientWidth)
+    ))
+}
+
+function prepareScrolledPreviewCapture(source: HTMLElement) {
+  const snapshots: ScrollContainerSnapshot[] = getPreviewScrollContainers(source).map((element) => ({
+    element,
+    scrollTop: element.scrollTop,
+    scrollLeft: element.scrollLeft,
+    overflowX: element.style.overflowX,
+    overflowY: element.style.overflowY,
+    scrollBehavior: element.style.scrollBehavior,
+    children: Array.from(element.children)
+      .filter((child): child is HTMLElement => child instanceof HTMLElement)
+      .map((child) => ({
+        element: child,
+        transform: child.style.transform,
+        transition: child.style.transition,
+        willChange: child.style.willChange,
+      })),
+  }))
+
+  snapshots.forEach((snapshot) => {
+    const { element, scrollLeft, scrollTop } = snapshot
+    element.style.overflowX = 'hidden'
+    element.style.overflowY = 'hidden'
+    element.style.scrollBehavior = 'auto'
+    snapshot.children.forEach((childSnapshot) => {
+      const existingTransform = childSnapshot.transform && childSnapshot.transform !== 'none'
+        ? ` ${childSnapshot.transform}`
+        : ''
+      childSnapshot.element.style.transform = `translate(${-scrollLeft}px, ${-scrollTop}px)${existingTransform}`
+      childSnapshot.element.style.transition = 'none'
+      childSnapshot.element.style.willChange = 'transform'
+    })
+    element.scrollTop = 0
+    element.scrollLeft = 0
+  })
+
+  return () => {
+    snapshots.reverse().forEach((snapshot) => {
+      snapshot.children.forEach((childSnapshot) => {
+        childSnapshot.element.style.transform = childSnapshot.transform
+        childSnapshot.element.style.transition = childSnapshot.transition
+        childSnapshot.element.style.willChange = childSnapshot.willChange
+      })
+      snapshot.element.style.overflowX = snapshot.overflowX
+      snapshot.element.style.overflowY = snapshot.overflowY
+      snapshot.element.style.scrollBehavior = snapshot.scrollBehavior
+      snapshot.element.scrollTop = snapshot.scrollTop
+      snapshot.element.scrollLeft = snapshot.scrollLeft
+    })
+  }
+}
+
+function waitForFrame() {
+  return new Promise<void>((resolve) => {
+    window.requestAnimationFrame(() => resolve())
+  })
+}
+
 async function saveCurrentPhonePreview(pathname: string, fileHandle?: SaveFileHandle | null) {
   const source = document.querySelector<HTMLElement>('.phone-shell')
   if (!source) throw new Error('Phone preview not found')
@@ -214,11 +296,20 @@ async function saveCurrentPhonePreview(pathname: string, fileHandle?: SaveFileHa
     skipFonts: true,
   }
 
-  let blob = await toBlob(source, captureOptions)
-  if (!blob) {
-    const dataUrl = await toPng(source, captureOptions)
-    blob = await dataUrlToBlob(dataUrl)
-  }
+  const restoreScrolledPreview = prepareScrolledPreviewCapture(source)
+  const blob = await (async () => {
+    try {
+      await waitForFrame()
+      const capturedBlob = await toBlob(source, captureOptions)
+      if (capturedBlob) return capturedBlob
+
+      const dataUrl = await toPng(source, captureOptions)
+      return dataUrlToBlob(dataUrl)
+    } finally {
+      restoreScrolledPreview()
+    }
+  })()
+
   if (!blob) throw new Error('Failed to create PNG blob')
 
   if (fileHandle) {
